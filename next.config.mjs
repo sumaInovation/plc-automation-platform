@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    reactCompiler: true,
-  },
+  reactCompiler: true, // ✅ experimental ඇතුළෙන් අයින් කරලා මෙතනට දැම්මා
   allowedDevOrigins: ['172.20.10.2'],
 };
 
