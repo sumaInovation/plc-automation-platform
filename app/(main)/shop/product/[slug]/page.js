@@ -2,6 +2,7 @@ import connectDB from '@/lib/db';
 import Product from '@/models/Product';
 import Category from '@/models/Category';
 import { notFound } from 'next/navigation';
+import AddToCartButton from '@/components/shop/AddToCartButton';
 
 async function getProduct(slug) {
   await connectDB();
@@ -44,12 +45,7 @@ export default async function ProductDetailPage({ params }) {
 
           <p className="text-gray-700 mb-6">{product.description}</p>
 
-          <button
-            disabled={product.stock_qty === 0}
-            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
-          >
-            Add to Cart
-          </button>
+           <AddToCartButton product={product} />
 
           {product.specs && Object.keys(product.specs).length > 0 && (
             <div className="mt-8 border-t pt-6">
