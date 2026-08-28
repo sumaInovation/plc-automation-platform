@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { useCartStore } from '@/store/cartStore';
 import { useHasHydrated } from '@/hooks/useHasHydrated';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Navbar() {
   const hasHydrated = useHasHydrated();
   const itemCount = useCartStore((state) => state.getItemCount());
+  const { data: session, status } = useSession();
 
   return (
     <nav className="border-b bg-white sticky top-0 z-10">
@@ -24,7 +26,25 @@ export default function Navbar() {
               </span>
             )}
           </Link>
-          <Link href="/login">Login</Link>
+
+          {status === 'loading' ? null : session ? (
+            <div className="flex items-center gap-3">
+              {session.user.role === 'admin' && (
+                <Link href="/admin/orders" className="text-sm text-purple-600 font-medium">
+                  Admin
+                </Link>
+              )}
+              <Link href="/dashboard" className="text-sm">{session.user.name}</Link>
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="text-sm text-red-600 hover:underline"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link href="/login">Login</Link>
+          )}
         </div>
       </div>
     </nav>

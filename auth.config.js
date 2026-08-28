@@ -13,7 +13,7 @@ export const authConfig = {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
-      authorize: async () => null, // placeholder — real logic auth.js එකේ
+      authorize: async () => null,
     }),
   ],
   pages: {
@@ -23,15 +23,27 @@ export const authConfig = {
     strategy: 'jwt',
   },
   callbacks: {
+    // ⚠️ මේකයි add කරන කොටස — token එකේ role field එක session.user එකට map කරනවා
+    session({ session, token }) {
+      session.user.role = token.role;
+      session.user.id = token.id;
+      return session;
+    },
     authorized({ auth, request }) {
       const isLoggedIn = !!auth?.user;
-      const isProtected =
-        request.nextUrl.pathname.startsWith('/dashboard') ||
-        request.nextUrl.pathname.startsWith('/admin');
+      const pathname = request.nextUrl.pathname;
 
-      if (isProtected && !isLoggedIn) {
-        return false; // login page එකට auto-redirect කරනවා
+      const isAdminRoute = pathname.startsWith('/admin');
+      const isDashboardRoute = pathname.startsWith('/dashboard');
+
+      if (isAdminRoute) {
+        return isLoggedIn && auth.user.role === 'admin';
       }
+
+      if (isDashboardRoute && !isLoggedIn) {
+        return false;
+      }
+
       return true;
     },
   },
