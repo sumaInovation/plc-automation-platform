@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function NewBatchPage() {
+function NewBatchForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const courseId = searchParams.get('courseId');
@@ -47,7 +47,7 @@ export default function NewBatchPage() {
   if (!courseId) {
     return (
       <div className="max-w-md mx-auto px-4 py-8 text-center">
-        <p className="text-gray-500">Course එකක් select කරලා නෑ — Course create කරන flow එකෙන් එන්න, එහෙම නැත්නම් <a href="/admin/courses/new" className="text-blue-600 underline">Course අලුතෙන් හදන්න</a>.</p>
+        <p className="text-gray-500">Course එකක් select කරලා නෑ — <a href="/admin/courses/new" className="text-blue-600 underline">Course අලුතෙන් හදන්න</a>.</p>
       </div>
     );
   }
@@ -114,5 +114,13 @@ export default function NewBatchPage() {
         </button>
       </form>
     </div>
+  );
+}
+
+export default function NewBatchPage() {
+  return (
+    <Suspense fallback={<div className="max-w-2xl mx-auto px-4 py-8">Loading...</div>}>
+      <NewBatchForm />
+    </Suspense>
   );
 }
