@@ -37,17 +37,13 @@ export default function Navbar() {
           {status === 'loading' ? null : session ? (
             <div className="flex items-center gap-4 pl-4 border-l border-slate-200">
             {session?.user?.role === 'admin' && (
-  <div className="flex items-center gap-2">
-    <Link href="/admin/orders" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100 transition-colors">
-      Orders
-    </Link>
-    <Link href="/admin/enrollments" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100 transition-colors">
-      Enrollments
-    </Link>
-    <Link href="/admin/products" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100 transition-colors">
-  Products
-</Link>
-  </div>
+              <div className="flex items-center gap-2">
+  <Link href="/admin/orders" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100 transition-colors">Orders</Link>
+  <Link href="/admin/enrollments" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100 transition-colors">Enrollments</Link>
+  <Link href="/admin/products" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100 transition-colors">Products</Link>
+  <Link href="/admin/courses" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100 transition-colors">Courses</Link>
+</div>
+
 )}
               <Link href="/dashboard" className="text-slate-700 hover:text-slate-900 font-semibold transition-colors">
                 {session?.user?.name}
