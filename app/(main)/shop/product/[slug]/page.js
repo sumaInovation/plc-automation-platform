@@ -3,6 +3,8 @@ import Product from '@/models/Product';
 import Category from '@/models/Category';
 import { notFound } from 'next/navigation';
 import AddToCartButton from '@/components/shop/AddToCartButton';
+import ReviewSection from '@/components/shop/ReviewSection';
+
 
 async function getProduct(slug) {
   await connectDB();
@@ -60,6 +62,7 @@ export default async function ProductDetailPage({ params }) {
                   ))}
                 </tbody>
               </table>
+              <ReviewSection targetType="product" targetId={product._id} />
             </div>
           )}
         </div>

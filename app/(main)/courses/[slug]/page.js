@@ -3,6 +3,7 @@ import Course from '@/models/Course';
 import Batch from '@/models/Batch';
 import { notFound } from 'next/navigation';
 import EnrollButton from '@/components/courses/EnrollButton';
+import ReviewSection from '@/components/shop/ReviewSection';
 
 async function getCourseData(slug) {
   await connectDB();
@@ -86,7 +87,9 @@ export default async function CourseDetailPage({ params }) {
                 <EnrollButton course={course} batch={batch} />
               </div>
             ))}
+            <ReviewSection targetType="course" targetId={course._id} />
           </div>
+          
         )}
       </div>
     </div>
