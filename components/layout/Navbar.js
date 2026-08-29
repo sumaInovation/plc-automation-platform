@@ -44,6 +44,9 @@ export default function Navbar() {
     <Link href="/admin/enrollments" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100 transition-colors">
       Enrollments
     </Link>
+    <Link href="/admin/products" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100 transition-colors">
+  Products
+</Link>
   </div>
 )}
               <Link href="/dashboard" className="text-slate-700 hover:text-slate-900 font-semibold transition-colors">
