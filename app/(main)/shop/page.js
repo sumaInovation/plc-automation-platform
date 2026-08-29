@@ -3,19 +3,25 @@ import Product from '@/models/Product';
 import Category from '@/models/Category';
 import ProductCard from '@/components/shop/ProductCard';
 
-async function getProducts() {
+async function getProducts(categorySlug) {
   await connectDB();
-  const products = await Product.find({ isActive: true })
+  const filter = { isActive: true };
+
+  if (categorySlug) {
+    const category = await Category.findOne({ slug: categorySlug });
+    if (category) filter.category = category._id;
+  }
+
+  const products = await Product.find(filter)
     .populate('category', 'name slug')
     .sort({ createdAt: -1 })
-    .lean(); // .lean() — plain JS objects ලෙස return කරනවා, Server Component එකට pass කරන්න fast/safe
+    .lean();
 
-  // MongoDB ObjectId/Date objects JSON-serialize කරන්න string වලට convert කරන්න ඕන
   return JSON.parse(JSON.stringify(products));
 }
 
-export default async function ShopPage() {
-  const products = await getProducts();
+export default async function ShopPage({ params }) {
+  const products = await getProducts(params.categorySlug);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
