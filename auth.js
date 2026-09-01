@@ -7,6 +7,7 @@ import { authConfig } from './auth.config';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
+  trustHost: true,
   providers: [
     authConfig.providers[0], // Google — same config
     Credentials({
