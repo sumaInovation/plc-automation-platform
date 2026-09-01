@@ -40,6 +40,7 @@ export default function Navbar() {
                   <Link href="/admin/enrollments" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100">Enrollments</Link>
                   <Link href="/admin/products" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100">Products</Link>
                   <Link href="/admin/courses" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100">Courses</Link>
+                   <Link href="/admin/batches" className="px-3 py-1 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full hover:bg-purple-100">Batches</Link>
                 </div>
               )}
               <Link href="/dashboard" className="text-slate-700 hover:text-slate-900 font-semibold">{session?.user?.name}</Link>
@@ -92,6 +93,7 @@ export default function Navbar() {
                   <Link href="/admin/enrollments" onClick={() => setMenuOpen(false)} className="text-center px-3 py-1.5 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full">Enrollments</Link>
                   <Link href="/admin/products" onClick={() => setMenuOpen(false)} className="text-center px-3 py-1.5 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full">Products</Link>
                   <Link href="/admin/courses" onClick={() => setMenuOpen(false)} className="text-center px-3 py-1.5 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full">Courses</Link>
+                  <Link href="/admin/batches" onClick={() => setMenuOpen(false)} className="text-center px-3 py-1.5 text-xs font-semibold text-purple-700 bg-purple-50 rounded-full">Batches</Link>
                 </div>
               )}
               <Link href="/dashboard" onClick={() => setMenuOpen(false)} className="block text-sm font-semibold text-slate-700 py-2">
