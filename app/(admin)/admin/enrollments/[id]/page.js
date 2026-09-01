@@ -59,7 +59,7 @@ export default function AdminEnrollmentDetailPage() {
       )}
 
       {enrollment.status === 'payment_slip_uploaded' && (
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={() => handleAction('confirm')}
             disabled={actionLoading}

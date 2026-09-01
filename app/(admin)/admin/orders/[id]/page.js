@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 export default function AdminOrderDetailPage() {
   const { id } = useParams();
@@ -71,7 +72,7 @@ export default function AdminOrderDetailPage() {
       )}
 
       {order.status === 'payment_slip_uploaded' && (
-        <div className="flex gap-3">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={() => handleAction('confirm')}
             disabled={actionLoading}

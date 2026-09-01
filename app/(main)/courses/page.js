@@ -32,43 +32,43 @@ export default function CoursesPage() {
     <div className="max-w-7xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">PLC & Robotics Courses</h1>
 
-      <div className="space-y-3 mb-6">
-        <input
-          type="text"
-          placeholder="Search courses..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:w-80 border p-2.5 rounded-lg text-sm"
-        />
+    <div className="space-y-3 mb-6">
+  <input
+    type="text"
+    placeholder="Search courses..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="w-full sm:w-80 border p-2.5 rounded-lg text-sm"
+  />
 
-        <div className="flex gap-2 flex-wrap">
-          {['all', 'online', 'physical'].map((f) => (
-            <button
-              key={f}
-              onClick={() => setTypeFilter(f)}
-              className={`px-4 py-2 rounded text-sm capitalize ${
-                typeFilter === f ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'
-              }`}
-            >
-              {f}
-            </button>
-          ))}
+  <div className="flex gap-2 flex-wrap">
+    {['all', 'online', 'physical'].map((f) => (
+      <button
+        key={f}
+        onClick={() => setTypeFilter(f)}
+        className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-xs sm:text-sm capitalize ${
+          typeFilter === f ? 'bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'
+        }`}
+      >
+        {f}
+      </button>
+    ))}
 
-          <div className="w-px bg-slate-200 mx-1" />
+    <div className="w-px bg-slate-200 mx-1 hidden sm:block" />
 
-          {['all', 'beginner', 'intermediate', 'advanced'].map((l) => (
-            <button
-              key={l}
-              onClick={() => setLevelFilter(l)}
-              className={`px-4 py-2 rounded text-sm capitalize ${
-                levelFilter === l ? 'bg-slate-800 text-white' : 'bg-gray-100 hover:bg-gray-200'
-              }`}
-            >
-              {l}
-            </button>
-          ))}
-        </div>
-      </div>
+    {['all', 'beginner', 'intermediate', 'advanced'].map((l) => (
+      <button
+        key={l}
+        onClick={() => setLevelFilter(l)}
+        className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded text-xs sm:text-sm capitalize ${
+          levelFilter === l ? 'bg-slate-800 text-white' : 'bg-gray-100 hover:bg-gray-200'
+        }`}
+      >
+        {l}
+      </button>
+    ))}
+  </div>
+</div>
 
       <p className="text-sm text-slate-500 mb-4">{filteredCourses.length} course{filteredCourses.length !== 1 ? 's' : ''} found</p>
 

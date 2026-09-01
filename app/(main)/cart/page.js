@@ -32,9 +32,11 @@ export default function CartPage() {
 
       <div className="space-y-4 mb-8">
         {items.map((item) => (
-          <div key={item._id} className="flex items-center gap-4 border rounded-lg p-4">
-            <div className="w-20 h-20 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
+          <div key={item._id} className="flex flex-wrap sm:flex-nowrap items-center gap-3 sm:gap-4 border rounded-lg p-3 sm:p-4">
+            
+<div className="w-16 h-16 sm:w-20 sm:h-20 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
               {item.image ? (
+                // eslint-disable-next-line @next/next/no-img-element
                 <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded" />
               ) : (
                 <span className="text-gray-400 text-xs">No image</span>
@@ -77,7 +79,7 @@ export default function CartPage() {
         ))}
       </div>
 
-      <div className="border-t pt-6 flex justify-between items-center">
+      <div className="border-t pt-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <p className="text-gray-600 text-sm">Total</p>
           <p className="text-2xl font-bold">Rs. {getTotal().toLocaleString()}</p>
