@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import CourseCard from '@/components/courses/CourseCard';
-
+import NotifySubscribeForm from '@/components/courses/NotifySubscribeForm';
 export default function CoursesPage() {
   const [courses, setCourses] = useState([]);
   const [typeFilter, setTypeFilter] = useState('all');
@@ -31,6 +31,10 @@ export default function CoursesPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-6">PLC & Robotics Courses</h1>
+
+      <div className="mb-6 max-w-md">
+  <NotifySubscribeForm />
+</div>
 
     <div className="space-y-3 mb-6">
   <input
