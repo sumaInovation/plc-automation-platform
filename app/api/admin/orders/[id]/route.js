@@ -4,6 +4,9 @@ import Order from '@/models/Order';
 import Product from '@/models/Product';
 import { auth } from '@/auth';
 
+import { sendEmail } from '@/lib/email';
+import { orderConfirmedEmail } from '@/lib/emailTemplates';
+
 export async function GET(request, { params }) {
   const session = await auth();
   if (session?.user?.role !== 'admin') {
@@ -37,11 +40,16 @@ export async function PATCH(request, { params }) {
       return Response.json({ success: false, error: 'Order not found' }, { status: 404 });
     }
 
-    if (action === 'confirm') {
-      order.status = 'confirmed';
-      await order.save();
-      return Response.json({ success: true, order });
-    }
+     if (action === 'confirm') {
+  order.status = 'confirmed';
+  await order.save();
+
+  const populatedOrder = await Order.findById(id).populate('user', 'email');
+  const { subject, html } = orderConfirmedEmail(order);
+  await sendEmail({ to: populatedOrder.user.email, subject, html });
+
+  return Response.json({ success: true, order });
+}
 
     if (action === 'reject') {
       // Reject කරනකොට — stock restore කරන්න ඕන (transaction safe)

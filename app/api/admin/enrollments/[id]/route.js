@@ -4,6 +4,9 @@ import Enrollment from '@/models/Enrollment';
 import Batch from '@/models/Batch';
 import { auth } from '@/auth';
 
+import { sendEmail } from '@/lib/email';
+import { enrollmentConfirmedEmail } from '@/lib/emailTemplates';
+
 export async function GET(request, { params }) {
   const session = await auth();
   if (session?.user?.role !== 'admin') {
@@ -38,10 +41,15 @@ export async function PATCH(request, { params }) {
     }
 
     if (action === 'confirm') {
-      enrollment.status = 'confirmed';
-      await enrollment.save();
-      return Response.json({ success: true, enrollment });
-    }
+  enrollment.status = 'confirmed';
+  await enrollment.save();
+
+  const populatedEnrollment = await Enrollment.findById(id).populate('user', 'email');
+  const { subject, html } = enrollmentConfirmedEmail(enrollment);
+  await sendEmail({ to: populatedEnrollment.user.email, subject, html });
+
+  return Response.json({ success: true, enrollment });
+}
 
     if (action === 'reject') {
       // Reject කරනකොට — seat restore කරන්න ඕන (transaction safe)

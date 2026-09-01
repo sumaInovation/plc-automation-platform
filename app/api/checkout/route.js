@@ -4,6 +4,9 @@ import Order from '@/models/Order';
 import Product from '@/models/Product';
 import { auth } from '@/auth';
 
+import { sendEmail } from '@/lib/email';
+import { orderPlacedEmail } from '@/lib/emailTemplates';
+
 export async function POST(request) {
   const session = await auth();
 
@@ -70,6 +73,9 @@ const product = await Product.findOneAndUpdate(
     } finally {
       await dbSession.endSession();
     }
+
+    const { subject, html } = orderPlacedEmail(createdOrder);
+await sendEmail({ to: session.user.email, subject, html });
 
     return Response.json({
       success: true,
