@@ -1,79 +1,63 @@
 import connectDB from '@/lib/db';
 import Order from '@/models/Order';
 import { auth } from '@/auth';
-import { notFound, redirect } from 'next/navigation';
-import SlipUpload from '@/components/dashboard/SlipUpload';
+import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
-async function getOrder(id, userId) {
+async function getOrders(userId) {
   await connectDB();
-  const order = await Order.findOne({ _id: id, user: userId }).lean();
-  if (!order) return null;
-  return JSON.parse(JSON.stringify(order));
+  const orders = await Order.find({ user: userId }).sort({ createdAt: -1 }).lean();
+  return JSON.parse(JSON.stringify(orders));
 }
 
-export default async function OrderDetailPage({ params, searchParams }) {
+const statusColors = {
+  pending_payment: 'bg-gray-100 text-gray-700',
+  payment_slip_uploaded: 'bg-yellow-100 text-yellow-800',
+  confirmed: 'bg-green-100 text-green-800',
+  shipped: 'bg-blue-100 text-blue-800',
+  delivered: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-100 text-red-800',
+};
+
+export default async function MyOrdersPage() {
   const session = await auth();
   if (!session?.user) redirect('/login');
 
-  const { id } = await params;
-  const { new: isNew } = await searchParams;
-
-  const order = await getOrder(id, session.user.id);
-  if (!order) notFound();
-
-  const statusLabels = {
-    pending_payment: 'Awaiting Payment',
-    payment_slip_uploaded: 'Slip Uploaded — Under Review',
-    confirmed: 'Confirmed',
-    shipped: 'Shipped',
-    delivered: 'Delivered',
-    cancelled: 'Cancelled',
-  };
+  const orders = await getOrders(session.user.id);
 
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8">
-      {isNew === 'true' && (
-        <div className="bg-green-50 border border-green-200 text-green-800 p-4 rounded-lg mb-6">
-          ✓ Order placed successfully! Order Number: <strong>{order.orderNumber}</strong>
+    <div className="max-w-3xl mx-auto px-4 py-8">
+      <h1 className="text-2xl font-bold mb-6">My Orders</h1>
+
+      {orders.length === 0 ? (
+        <div className="border rounded-lg p-8 text-center">
+          <p className="text-slate-500 mb-3">You haven't placed any orders yet.</p>
+          <Link href="/shop" className="text-[#2C6E9E] font-medium hover:underline">Browse products →</Link>
         </div>
-      )}
-
-      <h1 className="text-2xl font-bold mb-2">Order {order.orderNumber}</h1>
-      <p className="text-sm text-gray-500 mb-6">
-        Status: <span className="font-medium">{statusLabels[order.status]}</span>
-      </p>
-
-      <div className="border rounded-lg p-4 mb-6">
-        <h2 className="font-semibold mb-3">Items</h2>
-        {order.items.map((item, i) => (
-          <div key={i} className="flex justify-between text-sm py-1">
-            <span>{item.name} × {item.qty}</span>
-            <span>Rs. {(item.price * item.qty).toLocaleString()}</span>
-          </div>
-        ))}
-        <div className="flex justify-between font-bold pt-2 mt-2 border-t">
-          <span>Total</span>
-          <span>Rs. {order.total.toLocaleString()}</span>
+      ) : (
+        <div className="space-y-3">
+          {orders.map((order) => (
+            <Link
+              key={order._id}
+              href={`/dashboard/orders/${order._id}`}
+              className="block border rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
+            >
+              <div className="flex justify-between items-start mb-2">
+                <p className="font-semibold text-sm">{order.orderNumber}</p>
+                <span className={`text-xs px-2 py-1 rounded-full ${statusColors[order.status]}`}>
+                  {order.status.replace('_', ' ')}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mb-1">
+                {new Date(order.createdAt).toLocaleDateString('en-LK', { day: 'numeric', month: 'short', year: 'numeric' })}
+              </p>
+              <p className="text-sm text-slate-600">
+                {order.items.map((i) => i.name).join(', ')}
+              </p>
+              <p className="font-bold text-sm mt-2">Rs. {order.total.toLocaleString()}</p>
+            </Link>
+          ))}
         </div>
-      </div>
-
-      {order.status === 'pending_payment' && (
-        <div className="border rounded-lg p-4 mb-6 bg-blue-50">
-          <h2 className="font-semibold mb-3">Bank Transfer Details</h2>
-          <p className="text-sm">Bank: {process.env.BANK_NAME}</p>
-          <p className="text-sm">Account Name: {process.env.BANK_ACCOUNT_NAME}</p>
-          <p className="text-sm">Account Number: {process.env.BANK_ACCOUNT_NUMBER}</p>
-          <p className="text-sm">Branch: {process.env.BANK_BRANCH}</p>
-          <p className="text-sm mt-2 font-medium">Amount: Rs. {order.total.toLocaleString()}</p>
-
-          <SlipUpload orderId={order._id} />
-        </div>
-      )}
-
-      {order.status === 'payment_slip_uploaded' && (
-        <p className="text-sm text-gray-600">
-          ඔයාගේ payment slip එක upload කරලා තියෙනවා — admin verify කරලා confirm කරන තුරු wait කරන්න.
-        </p>
       )}
     </div>
   );
