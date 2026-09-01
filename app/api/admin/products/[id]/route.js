@@ -55,7 +55,6 @@ export async function DELETE(request, { params }) {
     await connectDB();
     const { id } = await params;
 
-    // Hard delete වෙනුවට — isActive: false (soft delete). Order history වල product reference එක broken වෙන්නෙ නෑ
     const product = await Product.findByIdAndUpdate(id, { isActive: false }, { returnDocument: 'after' });
 
     if (!product) {

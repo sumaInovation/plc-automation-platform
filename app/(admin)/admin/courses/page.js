@@ -21,23 +21,25 @@ export default async function AdminCoursesPage() {
       </div>
 
       <div className="space-y-2">
-        {courses.map((c) => (
-          <div key={c._id} className="border rounded-lg p-4 flex justify-between items-center">
-            <div>
-              <p className="font-medium">{c.title}</p>
-              <p className="text-sm text-gray-500 capitalize">{c.type} — {c.level}</p>
-            </div>
-            <div className="text-right">
-              <p className="font-bold">Rs. {c.price.toLocaleString()}</p>
-              <Link
-                href={`/admin/batches/new?courseId=${c._id}&courseTitle=${encodeURIComponent(c.title)}`}
-                className="text-xs text-blue-600 hover:underline"
-              >
-                + Add Batch
-              </Link>
-            </div>
-          </div>
-        ))}
+      {courses.map((c) => (
+  <div key={c._id} className="border rounded-lg p-4 flex justify-between items-center">
+    <div>
+      <p className="font-medium">{c.title} {!c.isActive && <span className="text-xs text-red-500">(inactive)</span>}</p>
+      <p className="text-sm text-gray-500 capitalize">{c.type} — {c.level}</p>
+    </div>
+    <div className="text-right flex items-center gap-3">
+      <div>
+        <p className="font-bold">Rs. {c.price.toLocaleString()}</p>
+        <Link href={`/admin/batches/new?courseId=${c._id}&courseTitle=${encodeURIComponent(c.title)}`} className="text-xs text-blue-600 hover:underline">
+          + Add Batch
+        </Link>
+      </div>
+      <Link href={`/admin/courses/${c._id}/edit`} className="text-sm text-blue-600 hover:underline">
+        Edit
+      </Link>
+    </div>
+  </div>
+))}
       </div>
     </div>
   );

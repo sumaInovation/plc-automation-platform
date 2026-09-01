@@ -1,5 +1,5 @@
 import connectDB from '@/lib/db';
-import Product from '@/models/Product';
+import Course from '@/models/Course';
 import { auth } from '@/auth';
 
 export async function GET(request, { params }) {
@@ -10,13 +10,13 @@ export async function GET(request, { params }) {
 
   await connectDB();
   const { id } = await params;
-  const product = await Product.findById(id).lean();
+  const course = await Course.findById(id).lean();
 
-  if (!product) {
-    return Response.json({ success: false, error: 'Product not found' }, { status: 404 });
+  if (!course) {
+    return Response.json({ success: false, error: 'Course not found' }, { status: 404 });
   }
 
-  return Response.json({ success: true, product: JSON.parse(JSON.stringify(product)) });
+  return Response.json({ success: true, course: JSON.parse(JSON.stringify(course)) });
 }
 
 export async function PUT(request, { params }) {
@@ -30,16 +30,16 @@ export async function PUT(request, { params }) {
     const { id } = await params;
     const body = await request.json();
 
-    const product = await Product.findByIdAndUpdate(id, body, {
+    const course = await Course.findByIdAndUpdate(id, body, {
       returnDocument: 'after',
       runValidators: true,
     });
 
-    if (!product) {
-      return Response.json({ success: false, error: 'Product not found' }, { status: 404 });
+    if (!course) {
+      return Response.json({ success: false, error: 'Course not found' }, { status: 404 });
     }
 
-    return Response.json({ success: true, product });
+    return Response.json({ success: true, course });
   } catch (error) {
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }
@@ -55,14 +55,13 @@ export async function DELETE(request, { params }) {
     await connectDB();
     const { id } = await params;
 
-    // Hard delete වෙනුවට — isActive: false (soft delete). Order history වල product reference එක broken වෙන්නෙ නෑ
-    const product = await Product.findByIdAndUpdate(id, { isActive: false }, { returnDocument: 'after' });
+    const course = await Course.findByIdAndUpdate(id, { isActive: false }, { returnDocument: 'after' });
 
-    if (!product) {
-      return Response.json({ success: false, error: 'Product not found' }, { status: 404 });
+    if (!course) {
+      return Response.json({ success: false, error: 'Course not found' }, { status: 404 });
     }
 
-    return Response.json({ success: true, message: 'Product deactivated' });
+    return Response.json({ success: true, message: 'Course deactivated' });
   } catch (error) {
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }

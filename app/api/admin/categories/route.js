@@ -8,9 +8,13 @@ export async function GET() {
     return Response.json({ success: false, error: 'Forbidden' }, { status: 403 });
   }
 
-  await connectDB();
-  const categories = await Category.find().sort({ name: 1 }).lean();
-  return Response.json({ success: true, categories: JSON.parse(JSON.stringify(categories)) });
+  try {
+    await connectDB();
+    const categories = await Category.find().sort({ name: 1 }).lean();
+    return Response.json({ success: true, categories: JSON.parse(JSON.stringify(categories)) });
+  } catch (error) {
+    return Response.json({ success: false, error: error.message }, { status: 500 });
+  }
 }
 
 export async function POST(request) {

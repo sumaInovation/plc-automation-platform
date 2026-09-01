@@ -22,18 +22,23 @@ export default async function AdminProductsPage() {
       </div>
 
       <div className="space-y-2">
-        {products.map((p) => (
-          <div key={p._id} className="border rounded-lg p-4 flex justify-between items-center">
-            <div>
-              <p className="font-medium">{p.name}</p>
-              <p className="text-sm text-gray-500">{p.category?.name} — SKU: {p.sku}</p>
-            </div>
-            <div className="text-right">
-              <p className="font-bold">Rs. {p.price.toLocaleString()}</p>
-              <p className="text-sm text-gray-500">Stock: {p.stock_qty}</p>
-            </div>
-          </div>
-        ))}
+     {products.map((p) => (
+  <div key={p._id} className="border rounded-lg p-4 flex justify-between items-center">
+    <div>
+      <p className="font-medium">{p.name} {!p.isActive && <span className="text-xs text-red-500">(inactive)</span>}</p>
+      <p className="text-sm text-gray-500">{p.category?.name} — SKU: {p.sku}</p>
+    </div>
+    <div className="text-right flex items-center gap-3">
+      <div>
+        <p className="font-bold">Rs. {p.price.toLocaleString()}</p>
+        <p className="text-sm text-gray-500">Stock: {p.stock_qty}</p>
+      </div>
+      <Link href={`/admin/products/${p._id}/edit`} className="text-sm text-blue-600 hover:underline">
+        Edit
+      </Link>
+    </div>
+  </div>
+))}
       </div>
     </div>
   );
