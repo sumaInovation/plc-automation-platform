@@ -2,13 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import MultiImageUpload from '@/components/admin/MultiImageUpload';
 
 export default function EditProductPage() {
   const router = useRouter();
   const { id } = useParams();
   const [categories, setCategories] = useState([]);
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -31,21 +31,23 @@ export default function EditProductPage() {
 
       if (catData.success) setCategories(catData.categories);
 
-      if (prodData.success) {
-        const p = prodData.product;
-        setForm({
-          name: p.name, slug: p.slug, sku: p.sku,
-          category: p.category, description: p.description,
-          price: p.price, stock_qty: p.stock_qty,
-          brand: p.brand || '', isActive: p.isActive,
-        });
-        setExistingImage(p.images?.[0] || null);
+       if (prodData.success) {
+  const p = prodData.product;
+  setForm({
+    name: p.name, slug: p.slug, sku: p.sku,
+    category: p.category, description: p.description,
+    price: p.price, stock_qty: p.stock_qty,
+    brand: p.brand || '', isActive: p.isActive,
+  });
+  setImages(p.images || []); // ⚠️ existing images array එකම load කරගන්නවා
 
-        const specsArray = p.specs
-          ? Object.entries(p.specs).map(([key, value]) => ({ key, value }))
-          : [{ key: '', value: '' }];
-        setSpecs(specsArray.length > 0 ? specsArray : [{ key: '', value: '' }]);
-      }
+  const specsArray = p.specs
+    ? Object.entries(p.specs).map(([key, value]) => ({ key, value }))
+    : [{ key: '', value: '' }];
+  setSpecs(specsArray.length > 0 ? specsArray : [{ key: '', value: '' }]);
+}
+
+
       setLoading(false);
     }
     fetchData();
@@ -68,52 +70,41 @@ export default function EditProductPage() {
   const removeSpecRow = (index) => setSpecs(specs.filter((_, i) => i !== index));
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSaving(true);
-    setError('');
+  e.preventDefault();
+  setSaving(true);
+  setError('');
 
-    try {
-      let imageUrl = existingImage;
+  try {
+    const specsObject = {};
+    specs.forEach((s) => { if (s.key.trim()) specsObject[s.key.trim()] = s.value.trim(); });
 
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append('file', imageFile);
-        const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
-        const uploadData = await uploadRes.json();
-        if (!uploadData.success) throw new Error('Image upload failed');
-        imageUrl = uploadData.url;
-      }
+    const payload = {
+      ...form,
+      price: Number(form.price),
+      stock_qty: Number(form.stock_qty),
+      images, // කෙලින්ම state එකෙන්ම
+      specs: specsObject,
+    };
 
-      const specsObject = {};
-      specs.forEach((s) => { if (s.key.trim()) specsObject[s.key.trim()] = s.value.trim(); });
+    const res = await fetch(`/api/admin/products/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-      const payload = {
-        ...form,
-        price: Number(form.price),
-        stock_qty: Number(form.stock_qty),
-        images: imageUrl ? [imageUrl] : [],
-        specs: specsObject,
-      };
-
-      const res = await fetch(`/api/admin/products/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (!data.success) {
-        setError(data.error);
-        setSaving(false);
-        return;
-      }
-
-      router.push('/admin/products');
-    } catch (err) {
-      setError(err.message);
+    const data = await res.json();
+    if (!data.success) {
+      setError(data.error);
       setSaving(false);
+      return;
     }
-  };
+
+    router.push('/admin/products');
+  } catch (err) {
+    setError(err.message);
+    setSaving(false);
+  }
+};
 
   const handleDeactivate = async () => {
     if (!confirm('Product එක deactivate කරන්නද? Shop page එකේ පේන්නෙ නැති වෙනවා.')) return;
@@ -170,15 +161,10 @@ export default function EditProductPage() {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Product Image</label>
-          {existingImage && !imagePreview && (
-            <img src={existingImage} alt="Current" className="w-24 h-24 object-cover rounded border mb-2" />
-          )}
-          <input type="file" accept="image/*" onChange={handleImageChange} className="text-sm" />
-          {imagePreview && <img src={imagePreview} alt="New preview" className="w-24 h-24 object-cover rounded border mt-2" />}
-        </div>
-
+      <div>
+  <label className="block text-sm font-medium mb-2">Product Images</label>
+  <MultiImageUpload images={images} setImages={setImages} />
+</div>
         <div>
           <label className="block text-sm font-medium mb-2">Specifications</label>
           {specs.map((spec, i) => (

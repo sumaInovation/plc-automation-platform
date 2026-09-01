@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import MultiImageUpload from '@/components/admin/MultiImageUpload';
 
 export default function NewProductPage() {
   const router = useRouter();
   const [categories, setCategories] = useState([]);
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
+  const [images, setImages] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
 
@@ -40,13 +40,7 @@ export default function NewProductPage() {
     setForm({ ...form, name, slug });
   };
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setImagePreview(URL.createObjectURL(file));
-    }
-  };
+ 
 
   const handleSpecChange = (index, field, value) => {
     const updated = [...specs];
@@ -57,58 +51,45 @@ export default function NewProductPage() {
   const addSpecRow = () => setSpecs([...specs, { key: '', value: '' }]);
   const removeSpecRow = (index) => setSpecs(specs.filter((_, i) => i !== index));
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setUploading(true);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setError('');
+  setUploading(true);
 
-    try {
-      let imageUrl = null;
+  try {
+    const specsObject = {};
+    specs.forEach((s) => {
+      if (s.key.trim()) specsObject[s.key.trim()] = s.value.trim();
+    });
 
-      // Image තියෙනවා නම් මුලින්ම Cloudinary එකට upload කරනවා
-      if (imageFile) {
-        const formData = new FormData();
-        formData.append('file', imageFile);
-        const uploadRes = await fetch('/api/upload', { method: 'POST', body: formData });
-        const uploadData = await uploadRes.json();
-        if (!uploadData.success) throw new Error('Image upload failed');
-        imageUrl = uploadData.url;
-      }
+    const payload = {
+      ...form,
+      price: Number(form.price),
+      stock_qty: Number(form.stock_qty),
+      images, // ⚠️ දැන් images array එකම කෙලින්ම දානවා, upload logic මෙතන අවශ්‍ය නෑ (already uploaded)
+      specs: specsObject,
+    };
 
-      const specsObject = {};
-      specs.forEach((s) => {
-        if (s.key.trim()) specsObject[s.key.trim()] = s.value.trim();
-      });
+    const res = await fetch('/api/admin/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-      const payload = {
-        ...form,
-        price: Number(form.price),
-        stock_qty: Number(form.stock_qty),
-        images: imageUrl ? [imageUrl] : [],
-        specs: specsObject,
-      };
+    const data = await res.json();
 
-      const res = await fetch('/api/admin/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-
-      if (!data.success) {
-        setError(data.error);
-        setUploading(false);
-        return;
-      }
-
-      router.push('/admin/products');
-    } catch (err) {
-      setError(err.message);
+    if (!data.success) {
+      setError(data.error);
       setUploading(false);
+      return;
     }
-  };
 
+    router.push('/admin/products');
+  } catch (err) {
+    setError(err.message);
+    setUploading(false);
+  }
+};
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Add New Product</h1>
@@ -198,13 +179,12 @@ export default function NewProductPage() {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Product Image</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} className="text-sm" />
-          {imagePreview && (
-            <img src={imagePreview} alt="Preview" className="w-24 h-24 object-cover rounded border mt-2" />
-          )}
-        </div>
+  
+<div>
+  <label className="block text-sm font-medium mb-2">Product Images</label>
+  <MultiImageUpload images={images} setImages={setImages} />
+</div>
+
 
         <div>
           <label className="block text-sm font-medium mb-2">Specifications</label>

@@ -4,6 +4,7 @@ import Category from '@/models/Category';
 import { notFound } from 'next/navigation';
 import AddToCartButton from '@/components/shop/AddToCartButton';
 import ReviewSection from '@/components/shop/ReviewSection';
+import ProductGallery from '@/components/shop/ProductGallery';
 
 
 async function getProduct(slug) {
@@ -27,14 +28,7 @@ export default async function ProductDetailPage({ params }) {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
       <div className="grid md:grid-cols-2 gap-8">
-        <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center">
-          {product.images?.[0] ? (
-            <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover rounded-lg" />
-          ) : (
-            <span className="text-gray-400">No image</span>
-          )}
-        </div>
-
+          <ProductGallery images={product.images} productName={product.name} />
         <div>
           <p className="text-sm text-blue-600 font-medium mb-2">{product.category?.name}</p>
           <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
