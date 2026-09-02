@@ -6,6 +6,7 @@ import AddToCartButton from '@/components/shop/AddToCartButton';
 import ReviewSection from '@/components/shop/ReviewSection';
 import ProductGallery from '@/components/shop/ProductGallery';
 import ShareButtons from '@/components/shop/ShareButtons';
+import { ogImageUrl } from '@/lib/utils';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -19,7 +20,9 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: product.name,
       description: product.description?.slice(0, 160),
-      images: product.images?.[0] ? [{ url: product.images[0], width: 800, height: 800 }] : [],
+      images: product.images?.[0]
+  ? [{ url: ogImageUrl(product.images[0]), width: 1200, height: 630 }]
+  : [],
       url: `https://sumaautomation.lk/shop/product/${slug}`,
       type: 'website',
     },

@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import EnrollButton from '@/components/courses/EnrollButton';
 import ReviewSection from '@/components/shop/ReviewSection';
 import ShareButtons from '@/components/shop/ShareButtons';
+import { ogImageUrl } from '@/lib/utils';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -19,7 +20,9 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: course.title,
       description: course.description?.slice(0, 160),
-      images: course.image ? [{ url: course.image, width: 800, height: 450 }] : [],
+      images: course.image
+  ? [{ url: ogImageUrl(course.image), width: 1200, height: 630 }]
+  : [],
       url: `https://sumaautomation.lk/courses/${slug}`,
       type: 'website',
     },
