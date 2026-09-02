@@ -2,6 +2,7 @@ import connectDB from '@/lib/db';
 import Quotation from '@/models/Quotation';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 
 async function getQuotations(userId) {
   await connectDB();
@@ -31,22 +32,23 @@ export default async function MyQuotationsPage() {
       ) : (
         <div className="space-y-3">
           {quotations.map((q) => (
-            <div key={q._id} className="border rounded-lg p-4">
+            <Link
+              key={q._id}
+              href={`/dashboard/quotations/${q._id}`}
+              className="block border rounded-lg p-4 hover:shadow-md transition-shadow bg-white"
+            >
               <div className="flex justify-between items-start mb-2">
                 <p className="font-semibold text-sm">{q.quotationNumber}</p>
                 <span className={`text-xs px-2 py-1 rounded-full ${statusColors[q.status]}`}>{q.status}</span>
               </div>
-              
               <p className="text-sm text-slate-600">
-  {q.items && q.items.length > 0 ? q.items.map((i) => `${i.name} (×${i.qty})`).join(', ') : 'Legacy quotation'}
-</p>
-
-
-          {q.status === 'quoted' && (
-                <p className="font-bold text-lg mt-2">Rs. {q.quotedPrice.toLocaleString()}</p>
+                {q.items && q.items.length > 0 ? q.items.map((i) => `${i.name} (×${i.qty})`).join(', ') : 'Legacy quotation'}
+              </p>
+              {q.status === 'quoted' && (
+                <p className="font-bold text-lg mt-2">Rs. {q.quotedPrice?.toLocaleString()}</p>
               )}
               {q.adminNote && <p className="text-xs text-slate-500 mt-1">{q.adminNote}</p>}
-            </div>
+            </Link>
           ))}
         </div>
       )}
