@@ -39,3 +39,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# .gitignore eke me tika add karanna
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.py
+!next.config.js
+!next.config.mjs
+
+# Scraper data
+tronic_*.xlsx
+tronic_*.csv
+tronic_checkpoint*.xlsx
+
+# Env
+.env.local
