@@ -7,6 +7,7 @@ import ReviewSection from '@/components/shop/ReviewSection';
 import ProductGallery from '@/components/shop/ProductGallery';
 import ShareButtons from '@/components/shop/ShareButtons';
 import { ogImageUrl } from '@/lib/utils';
+import AddToQuoteButton from '@/components/shop/AddToQuoteButton';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -85,6 +86,9 @@ export default async function ProductDetailPage({ params }) {
           <p className="text-gray-700 mb-6">{product.description}</p>
 
            <AddToCartButton product={product} />
+           <div className="flex gap-3 mt-3">
+  <AddToQuoteButton product={product} />
+</div>
            <div className="mt-4">
   <ShareButtons
     url={`https://sumaautomation.lk/shop/product/${product.slug}`}

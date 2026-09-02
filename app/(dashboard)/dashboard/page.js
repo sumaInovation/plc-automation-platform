@@ -4,28 +4,32 @@ import Enrollment from '@/models/Enrollment';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import Quotation from '@/models/Quotation';
 
 async function getDashboardData(userId) {
   await connectDB();
 
-  const [orders, enrollments] = await Promise.all([
+  const [orders, enrollments, quotations] = await Promise.all([
     Order.find({ user: userId }).sort({ createdAt: -1 }).limit(3).lean(),
     Enrollment.find({ user: userId }).sort({ createdAt: -1 }).limit(3).lean(),
+    Quotation.find({ user: userId }).sort({ createdAt: -1 }).limit(3).lean(),
   ]);
 
-  const [totalOrders, totalEnrollments] = await Promise.all([
+  const [totalOrders, totalEnrollments, totalQuotations] = await Promise.all([
     Order.countDocuments({ user: userId }),
     Enrollment.countDocuments({ user: userId }),
+    Quotation.countDocuments({ user: userId }),
   ]);
 
   return {
     orders: JSON.parse(JSON.stringify(orders)),
     enrollments: JSON.parse(JSON.stringify(enrollments)),
+    quotations: JSON.parse(JSON.stringify(quotations)),
     totalOrders,
     totalEnrollments,
+    totalQuotations,
   };
 }
-
 const statusColors = {
   pending_payment: 'bg-gray-100 text-gray-700',
   payment_slip_uploaded: 'bg-yellow-100 text-yellow-800',
@@ -40,7 +44,7 @@ export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user) redirect('/login');
 
-  const { orders, enrollments, totalOrders, totalEnrollments } = await getDashboardData(session.user.id);
+  const { orders, enrollments, quotations, totalOrders, totalEnrollments, totalQuotations } = await getDashboardData(session.user.id);
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
@@ -48,16 +52,21 @@ export default async function DashboardPage() {
       <p className="text-slate-500 text-sm mb-8">{session.user.email}</p>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-4 mb-10">
-        <Link href="/dashboard/orders" className="border rounded-lg p-5 hover:shadow-md transition-shadow bg-white">
-          <p className="text-3xl font-bold text-[#2C6E9E]">{totalOrders}</p>
-          <p className="text-sm text-slate-500 mt-1">Total Orders</p>
-        </Link>
-        <Link href="/dashboard/learning" className="border rounded-lg p-5 hover:shadow-md transition-shadow bg-white">
-          <p className="text-3xl font-bold text-[#2C6E9E]">{totalEnrollments}</p>
-          <p className="text-sm text-slate-500 mt-1">Enrolled Courses</p>
-        </Link>
-      </div>
+        
+        <div className="grid grid-cols-3 gap-4 mb-10">
+  <Link href="/dashboard/orders" className="border rounded-lg p-5 hover:shadow-md transition-shadow bg-white">
+    <p className="text-3xl font-bold text-[#2C6E9E]">{totalOrders}</p>
+    <p className="text-sm text-slate-500 mt-1">Orders</p>
+  </Link>
+  <Link href="/dashboard/learning" className="border rounded-lg p-5 hover:shadow-md transition-shadow bg-white">
+    <p className="text-3xl font-bold text-[#2C6E9E]">{totalEnrollments}</p>
+    <p className="text-sm text-slate-500 mt-1">Courses</p>
+  </Link>
+  <Link href="/dashboard/quotations" className="border rounded-lg p-5 hover:shadow-md transition-shadow bg-white">
+    <p className="text-3xl font-bold text-[#2C6E9E]">{totalQuotations}</p>
+    <p className="text-sm text-slate-500 mt-1">Quotations</p>
+  </Link>
+</div>
 
       {/* Recent Orders */}
       <div className="mb-10">
