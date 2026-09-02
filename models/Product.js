@@ -34,6 +34,21 @@ const ProductSchema = new mongoose.Schema(
       required: [true, 'Price is required'],
       min: [0, 'Price cannot be negative'],
     },
+    
+compareAtPrice: {
+  type: Number,
+  min: [0, 'Compare price cannot be negative'],
+}, // Original/MRP price — discount calculate කරගන්න (price < compareAtPrice නම් discount පේනවා)
+
+avgRating: {
+  type: Number,
+  default: 0,
+}, // Cached — හැම review query එකකදීම recalculate කරන්නෙ නැතුව, denormalized ලෙස store කරනවා (performance)
+
+reviewCount: {
+  type: Number,
+  default: 0,
+},
     stock_qty: {
       type: Number,
       required: true,

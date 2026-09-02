@@ -1,6 +1,7 @@
 import connectDB from '@/lib/db';
 import Review from '@/models/Review';
 import Order from '@/models/Order';
+import Product from '@/models/Product';
 import Enrollment from '@/models/Enrollment';
 import { auth } from '@/auth';
 
@@ -51,6 +52,14 @@ export async function POST(request) {
     };
 
     const review = await Review.create(reviewData);
+    if (targetType === 'product') {
+  const allReviews = await Review.find({ product: targetId });
+  const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / allReviews.length;
+  await Product.findByIdAndUpdate(targetId, {
+    avgRating: Number(avgRating.toFixed(1)),
+    reviewCount: allReviews.length,
+  });
+}
     return Response.json({ success: true, review }, { status: 201 });
   } catch (error) {
     if (error.code === 11000) {

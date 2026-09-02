@@ -57,14 +57,30 @@ export default async function ProductDetailPage({ params }) {
       <div className="grid md:grid-cols-2 gap-8">
           <ProductGallery images={product.images} productName={product.name} />
         <div>
-          <p className="text-sm text-blue-600 font-medium mb-2">{product.category?.name}</p>
-          <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
-          <p className="text-gray-500 text-sm mb-4">SKU: {product.sku}</p>
-          <p className="text-3xl font-bold mb-4">Rs. {product.price.toLocaleString()}</p>
+         <p className="text-sm text-blue-600 font-medium mb-2">{product.category?.name}</p>
+<h1 className="text-2xl font-bold mb-2">{product.name}</h1>
 
-          <p className={`text-sm mb-4 ${product.stock_qty > 0 ? 'text-green-600' : 'text-red-500'}`}>
-            {product.stock_qty > 0 ? `✓ ${product.stock_qty} in stock` : '✗ Out of stock'}
-          </p>
+{product.reviewCount > 0 && (
+  <div className="flex items-center gap-1 mb-2">
+    <span className="text-amber-500">★</span>
+    <span className="text-sm font-medium">{product.avgRating}</span>
+    <span className="text-sm text-slate-400">({product.reviewCount} review{product.reviewCount !== 1 ? 's' : ''})</span>
+  </div>
+)}
+
+<p className="text-gray-500 text-sm mb-4">SKU: {product.sku}</p>
+
+<div className="flex items-baseline gap-3 mb-4">
+  <p className="text-3xl font-bold">Rs. {product.price.toLocaleString()}</p>
+  {product.compareAtPrice && product.compareAtPrice > product.price && (
+    <>
+      <p className="text-lg text-slate-400 line-through">Rs. {product.compareAtPrice.toLocaleString()}</p>
+      <span className="bg-rose-100 text-rose-700 text-sm font-bold px-2 py-0.5 rounded-full">
+        -{Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)}%
+      </span>
+    </>
+  )}
+</div>
 
           <p className="text-gray-700 mb-6">{product.description}</p>
 

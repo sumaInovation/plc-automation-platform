@@ -36,7 +36,7 @@ export default function EditProductPage() {
   setForm({
     name: p.name, slug: p.slug, sku: p.sku,
     category: p.category, description: p.description,
-    price: p.price, stock_qty: p.stock_qty,
+    price: p.price, stock_qty: p.stock_qty,compareAtPrice: p.compareAtPrice || '',
     brand: p.brand || '', isActive: p.isActive,
   });
   setImages(p.images || []); // ⚠️ existing images array එකම load කරගන්නවා
@@ -78,14 +78,14 @@ export default function EditProductPage() {
     const specsObject = {};
     specs.forEach((s) => { if (s.key.trim()) specsObject[s.key.trim()] = s.value.trim(); });
 
-    const payload = {
-      ...form,
-      price: Number(form.price),
-      stock_qty: Number(form.stock_qty),
-      images, // කෙලින්ම state එකෙන්ම
-      specs: specsObject,
-    };
-
+   const payload = {
+  ...form,
+  price: Number(form.price),
+  compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : undefined, // ⚠️
+  stock_qty: Number(form.stock_qty),
+  images,
+  specs: specsObject,
+};
     const res = await fetch(`/api/admin/products/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -151,10 +151,16 @@ export default function EditProductPage() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Price (Rs.)</label>
-            <input type="number" required min="0" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full border p-2 rounded" />
-          </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div>
+    <label className="block text-sm font-medium mb-1">Price (Rs.)</label>
+    <input type="number" required min="0" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full border p-2 rounded" />
+  </div>
+  <div>
+    <label className="block text-sm font-medium mb-1">Compare-at Price (Rs.) <span className="text-slate-400 font-normal">— optional, shows as strikethrough</span></label>
+    <input type="number" min="0" value={form.compareAtPrice} onChange={(e) => setForm({ ...form, compareAtPrice: e.target.value })} className="w-full border p-2 rounded" />
+  </div>
+</div>
           <div>
             <label className="block text-sm font-medium mb-1">Stock Quantity</label>
             <input type="number" required min="0" value={form.stock_qty} onChange={(e) => setForm({ ...form, stock_qty: e.target.value })} className="w-full border p-2 rounded" />

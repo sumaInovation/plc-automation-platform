@@ -18,6 +18,7 @@ export default function NewProductPage() {
     category: '',
     description: '',
     price: '',
+    compareAtPrice: '',
     stock_qty: '',
     brand: '',
   });
@@ -62,13 +63,14 @@ const handleSubmit = async (e) => {
       if (s.key.trim()) specsObject[s.key.trim()] = s.value.trim();
     });
 
-    const payload = {
-      ...form,
-      price: Number(form.price),
-      stock_qty: Number(form.stock_qty),
-      images, // ⚠️ දැන් images array එකම කෙලින්ම දානවා, upload logic මෙතන අවශ්‍ය නෑ (already uploaded)
-      specs: specsObject,
-    };
+      const payload = {
+  ...form,
+  price: Number(form.price),
+  compareAtPrice: form.compareAtPrice ? Number(form.compareAtPrice) : undefined, // ⚠️
+  stock_qty: Number(form.stock_qty),
+  images,
+  specs: specsObject,
+};
 
     const res = await fetch('/api/admin/products', {
       method: 'POST',
@@ -161,14 +163,16 @@ const handleSubmit = async (e) => {
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium mb-1">Price (Rs.)</label>
-            <input
-              type="number" required min="0" value={form.price}
-              onChange={(e) => setForm({ ...form, price: e.target.value })}
-              className="w-full border p-2 rounded"
-            />
-          </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <div>
+    <label className="block text-sm font-medium mb-1">Price (Rs.)</label>
+    <input type="number" required min="0" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="w-full border p-2 rounded" />
+  </div>
+  <div>
+    <label className="block text-sm font-medium mb-1">Compare-at Price (Rs.) <span className="text-slate-400 font-normal">— optional, shows as strikethrough</span></label>
+    <input type="number" min="0" value={form.compareAtPrice} onChange={(e) => setForm({ ...form, compareAtPrice: e.target.value })} className="w-full border p-2 rounded" />
+  </div>
+</div>
           <div>
             <label className="block text-sm font-medium mb-1">Stock Quantity</label>
             <input
