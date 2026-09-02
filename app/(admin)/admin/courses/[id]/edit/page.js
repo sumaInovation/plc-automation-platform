@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
+import SingleImageUpload from '@/components/admin/SingleImageUpload';
 
 export default function EditCoursePage() {
   const router = useRouter();
@@ -9,6 +10,7 @@ export default function EditCoursePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [image, setImage] = useState(null);
 
   const [form, setForm] = useState({
     title: '', slug: '', type: 'physical', description: '',
@@ -28,6 +30,7 @@ export default function EditCoursePage() {
           targetAudience: c.targetAudience, isActive: c.isActive,
         });
         setSyllabus(c.syllabus?.length > 0 ? c.syllabus : ['']);
+        setImage(c.image || null);
       }
       setLoading(false);
     }
@@ -51,6 +54,7 @@ export default function EditCoursePage() {
       ...form,
       price: Number(form.price),
       syllabus: syllabus.filter((s) => s.trim() !== ''),
+      image: image || null,
     };
 
     const res = await fetch(`/api/admin/courses/${id}`, {
@@ -131,6 +135,8 @@ export default function EditCoursePage() {
             <option value="employee">Employees</option>
           </select>
         </div>
+
+        <SingleImageUpload image={image} setImage={setImage} label="Course Thumbnail" />
 
         <div>
           <label className="block text-sm font-medium mb-2">Syllabus</label>

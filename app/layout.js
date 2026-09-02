@@ -22,8 +22,14 @@ const spaceGrotesk = Space_Grotesk({
 export const metadata = {
   title: "PLC Automation Platform",
   description: "PLC & Automation components, training for university students and professionals — Sri Lanka",
+  openGraph: {
+    title: "PLC Automation Platform",
+    description: "PLC & Automation components, training for university students and professionals — Sri Lanka",
+    url: "https://sumaautomation.lk",
+    siteName: "PLC Automation",
+    type: "website",
+  },
 };
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full`}>

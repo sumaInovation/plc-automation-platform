@@ -4,6 +4,27 @@ import Batch from '@/models/Batch';
 import { notFound } from 'next/navigation';
 import EnrollButton from '@/components/courses/EnrollButton';
 import ReviewSection from '@/components/shop/ReviewSection';
+import ShareButtons from '@/components/shop/ShareButtons';
+
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const data = await getCourseData(slug);
+
+  if (!data) return { title: 'Course Not Found' };
+  const { course } = data;
+
+  return {
+    title: `${course.title} | PLC Automation Training`,
+    description: course.description?.slice(0, 160),
+    openGraph: {
+      title: course.title,
+      description: course.description?.slice(0, 160),
+      images: course.image ? [{ url: course.image, width: 800, height: 450 }] : [],
+      url: `https://sumaautomation.lk/courses/${slug}`,
+      type: 'website',
+    },
+  };
+}
 
 async function getCourseData(slug) {
   await connectDB();
@@ -61,7 +82,12 @@ export default async function CourseDetailPage({ params }) {
           </ul>
         </div>
       )}
-
+         <div className="mb-6">
+  <ShareButtons
+    url={`https://sumaautomation.lk/courses/${course.slug}`}
+    title={course.title}
+  />
+</div>
       <div className="border rounded-lg p-4">
         <h2 className="font-semibold mb-4">Available Batches</h2>
 

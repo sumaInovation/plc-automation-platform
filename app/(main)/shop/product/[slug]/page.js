@@ -5,8 +5,32 @@ import { notFound } from 'next/navigation';
 import AddToCartButton from '@/components/shop/AddToCartButton';
 import ReviewSection from '@/components/shop/ReviewSection';
 import ProductGallery from '@/components/shop/ProductGallery';
+import ShareButtons from '@/components/shop/ShareButtons';
 
+export async function generateMetadata({ params }) {
+  const { slug } = await params;
+  const product = await getProduct(slug);
 
+  if (!product) return { title: 'Product Not Found' };
+
+  return {
+    title: `${product.name} | PLC Automation`,
+    description: product.description?.slice(0, 160),
+    openGraph: {
+      title: product.name,
+      description: product.description?.slice(0, 160),
+      images: product.images?.[0] ? [{ url: product.images[0], width: 800, height: 800 }] : [],
+      url: `https://sumaautomation.lk/shop/product/${slug}`,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: product.name,
+      description: product.description?.slice(0, 160),
+      images: product.images?.[0] ? [product.images[0]] : [],
+    },
+  };
+}
 async function getProduct(slug) {
   await connectDB();
   const product = await Product.findOne({ slug, isActive: true })
@@ -42,6 +66,12 @@ export default async function ProductDetailPage({ params }) {
           <p className="text-gray-700 mb-6">{product.description}</p>
 
            <AddToCartButton product={product} />
+           <div className="mt-4">
+  <ShareButtons
+    url={`https://sumaautomation.lk/shop/product/${product.slug}`}
+    title={product.name}
+  />
+</div>
 
           {product.specs && Object.keys(product.specs).length > 0 && (
             <div className="mt-8 border-t pt-6">

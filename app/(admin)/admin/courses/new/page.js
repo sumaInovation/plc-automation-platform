@@ -3,10 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import SingleImageUpload from '@/components/admin/SingleImageUpload';
+
 export default function NewCoursePage() {
   const router = useRouter();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [image, setImage] = useState(null);
 
   const [form, setForm] = useState({
     title: '',
@@ -45,6 +48,7 @@ export default function NewCoursePage() {
       ...form,
       price: Number(form.price),
       syllabus: syllabus.filter((s) => s.trim() !== ''),
+       image: image || null, 
     };
 
     const res = await fetch('/api/admin/courses', {
@@ -151,6 +155,8 @@ export default function NewCoursePage() {
             <option value="employee">Employees</option>
           </select>
         </div>
+           
+           <SingleImageUpload image={image} setImage={setImage} label="Course Thumbnail" />
 
         <div>
           <label className="block text-sm font-medium mb-2">Syllabus</label>
