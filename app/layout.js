@@ -20,13 +20,13 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata = {
-  title: "PLC Automation Platform",
+  title: "Suma Automation",
   description: "PLC & Automation components, training for university students and professionals — Sri Lanka",
   openGraph: {
-    title: "PLC Automation Platform",
+    title: "Suma Automation",
     description: "PLC & Automation components, training for university students and professionals — Sri Lanka",
     url: "https://sumaautomation.lk",
-    siteName: "PLC Automation",
+    siteName: "Suma Automation",
     type: "website",
   },
 };

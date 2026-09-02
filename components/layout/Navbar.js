@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCartStore } from '@/store/cartStore';
 import { useHasHydrated } from '@/hooks/useHasHydrated';
 import { useSession, signOut } from 'next-auth/react';
@@ -15,8 +16,8 @@ export default function Navbar() {
   return (
     <nav className="border-b border-slate-100 bg-white/80 backdrop-blur-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 md:px-6 h-16 flex justify-between items-center">
-        <Link href="/" className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-          PLC Automation
+        <Link href="/" className="flex items-center">
+        <Image src="/logo.png" alt="Suma Automation" width={160} height={75} priority className="h-9 w-auto" />
         </Link>
 
         {/* Desktop menu */}
