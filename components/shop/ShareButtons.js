@@ -1,9 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
+
+function subscribe() {
+  return () => {};
+}
+
+function getCanShareSnapshot() {
+  return typeof navigator !== 'undefined' && !!navigator.share;
+}
+
+function getServerSnapshot() {
+  return false;
+}
 
 export default function ShareButtons({ url, title }) {
   const [copied, setCopied] = useState(false);
+  const canNativeShare = useSyncExternalStore(subscribe, getCanShareSnapshot, getServerSnapshot);
 
   const encodedUrl = encodeURIComponent(url);
   const encodedTitle = encodeURIComponent(title);
@@ -16,6 +29,31 @@ export default function ShareButtons({ url, title }) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
+
+  const handleNativeShare = async () => {
+    try {
+      await navigator.share({ title, url });
+    } catch (err) {
+      // User cancel කලොත්, silently ignore කරනවා
+    }
+  };
+
+  if (canNativeShare) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="text-sm text-slate-500">Share:</span>
+        <button
+          onClick={handleNativeShare}
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-slate-100 hover:bg-slate-200 text-sm font-medium transition-colors"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M18 8a3 3 0 1 0-2.83-4H15a3 3 0 0 0-3 3v.2M6 12a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 0a3 3 0 0 1 2.83 2M18 20a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm-9.17-2a3 3 0 0 1 0-4M8.83 8a3 3 0 0 1 6.34 0M8.83 16a3 3 0 0 0 6.34 0" />
+          </svg>
+          Share
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center gap-2">
