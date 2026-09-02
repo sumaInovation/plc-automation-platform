@@ -49,11 +49,11 @@ export default function QuoteCartPage() {
     const res = await fetch('/api/quotations', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        items: items.map((i) => ({ product: i._id, name: i.name, qty: i.qty })),
-        contactPhone: phone,
-        message,
-      }),
+    body: JSON.stringify({
+  items: items.map((i) => ({ product: i._id, name: i.name, qty: i.qty, unitPrice: i.price })), // ⚠️ unitPrice add කරන්න
+  contactPhone: phone,
+  message,
+}),
     });
 
     const data = await res.json();

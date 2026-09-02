@@ -18,9 +18,12 @@ export default function AdminQuotationDetailPage() {
       const data = await res.json();
       if (data.success) {
         setQuotation(data.quotation);
-        setItems((data.quotation.items || []).map((it) => ({
-          ...it, unitPrice: it.unitPrice || 0, discountPercent: it.discountPercent || 0,
-        })));
+      setItems((data.quotation.items || []).map((it) => ({
+  ...it,
+  unitPrice: it.unitPrice || 0, // ⚠️ දැන් backend එකෙන් ආපු original price එකම load වෙනවා
+  discountPercent: it.discountPercent || 0,
+})));
+
         setShippingCharge(data.quotation.shippingCharge || 0);
         setAdminNote(data.quotation.adminNote || '');
       }

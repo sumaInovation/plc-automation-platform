@@ -5,24 +5,29 @@ export const useQuoteStore = create(
   persist(
     (set, get) => ({
       items: [],
+     addItem: (product, qty = 1) => {
+  const items = get().items;
+  const existing = items.find((item) => item._id === product._id);
 
-      addItem: (product, qty = 1) => {
-        const items = get().items;
-        const existing = items.find((item) => item._id === product._id);
-
-        if (existing) {
-          set({
-            items: items.map((item) =>
-              item._id === product._id ? { ...item, qty: item.qty + qty } : item
-            ),
-          });
-        } else {
-          set({
-            items: [...items, { _id: product._id, name: product.name, image: product.images?.[0] || null, qty }],
-          });
-        }
-      },
-
+  if (existing) {
+    set({
+      items: items.map((item) =>
+        item._id === product._id ? { ...item, qty: item.qty + qty } : item
+      ),
+    });
+  } else {
+    set({
+      items: [...items, {
+        _id: product._id,
+        name: product.name,
+        image: product.images?.[0] || null,
+        price: product.price, // ⚠️ මේ line එක add කරන්න — original product price එකම capture කරගන්නවා
+        qty,
+      }],
+    });
+  }
+},
+    
       removeItem: (productId) => {
         set({ items: get().items.filter((item) => item._id !== productId) });
       },

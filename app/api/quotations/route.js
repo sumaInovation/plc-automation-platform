@@ -17,9 +17,23 @@ export async function POST(request) {
       return Response.json({ success: false, error: 'No items in quote request' }, { status: 400 });
     }
 
+    // ⚠️ Product ID ගණනාවකින් actual current prices fetch කරනවා (client එකෙන් එවපු price එක trust කරන්නෙ නෑ — security + accuracy)
+    const productIds = items.map((i) => i.product);
+    const products = await Product.find({ _id: { $in: productIds } });
+    const priceMap = {};
+    products.forEach((p) => { priceMap[p._id.toString()] = p.price; });
+
+    const itemsWithPrice = items.map((item) => ({
+      product: item.product,
+      name: item.name,
+      qty: item.qty,
+      unitPrice: priceMap[item.product] || 0, // ⚠️ Product එකේ actual current price එකම auto-set වෙනවා
+      discountPercent: 0,
+    }));
+
     const quotation = await Quotation.create({
       user: session.user.id,
-      items,
+      items: itemsWithPrice,
       message,
       contactPhone,
     });

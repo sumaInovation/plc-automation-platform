@@ -5,8 +5,8 @@ const QuotationItemSchema = new mongoose.Schema(
     product: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
     name: String,
     qty: { type: Number, required: true, min: 1 },
-     unitPrice: { type: Number, default: 0 }, 
-    discountPercent: { type: Number, default: 0 },
+    unitPrice: { type: Number, default: 0 },      // ⚠️ මේ line එක තියෙනවද check කරන්න
+    discountPercent: { type: Number, default: 0 }, // ⚠️ මේ line එකත්
   },
   { _id: false }
 );
@@ -34,7 +34,11 @@ const QuotationSchema = new mongoose.Schema(
       default: 'pending',
     },
     quotedPrice: {
-      type: Number, // Total quote (all items)
+      type: Number,
+    },
+    shippingCharge: {
+      type: Number,
+      default: 0,
     },
     adminNote: {
       type: String,
@@ -44,10 +48,6 @@ const QuotationSchema = new mongoose.Schema(
       type: String,
       unique: true,
     },
-    shippingCharge: {
-  type: Number,
-  default: 0,
-},
   },
   { timestamps: true }
 );
