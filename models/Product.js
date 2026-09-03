@@ -75,5 +75,9 @@ reviewCount: {
   },
   { timestamps: true }
 );
-
+// Common queries fast කරගන්න indexes
+ProductSchema.index({ isActive: 1, createdAt: -1 }); // Shop listing + sort
+ProductSchema.index({ category: 1 });                 // Category filter
+ProductSchema.index({ price: 1 });                     // Price sort/filter
+ProductSchema.index({ name: 'text', description: 'text' });
 export default mongoose.models.Product || mongoose.model('Product', ProductSchema);
