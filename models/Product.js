@@ -34,21 +34,18 @@ const ProductSchema = new mongoose.Schema(
       required: [true, 'Price is required'],
       min: [0, 'Price cannot be negative'],
     },
-    
-compareAtPrice: {
-  type: Number,
-  min: [0, 'Compare price cannot be negative'],
-}, // Original/MRP price — discount calculate කරගන්න (price < compareAtPrice නම් discount පේනවා)
-
-avgRating: {
-  type: Number,
-  default: 0,
-}, // Cached — හැම review query එකකදීම recalculate කරන්නෙ නැතුව, denormalized ලෙස store කරනවා (performance)
-
-reviewCount: {
-  type: Number,
-  default: 0,
-},
+    compareAtPrice: {
+      type: Number,
+      min: [0, 'Compare price cannot be negative'],
+    },
+    avgRating: {
+      type: Number,
+      default: 0,
+    },
+    reviewCount: {
+      type: Number,
+      default: 0,
+    },
     stock_qty: {
       type: Number,
       required: true,
@@ -57,12 +54,12 @@ reviewCount: {
     },
     images: [
       {
-        type: String, // Cloudinary URLs
+        type: String,
       },
     ],
     specs: {
       type: Map,
-      of: String, // Flexible key-value: { voltage: "24V", brand: "Siemens", inputs: "8" }
+      of: String,
     },
     brand: {
       type: String,
@@ -70,14 +67,23 @@ reviewCount: {
     },
     isActive: {
       type: Boolean,
-      default: true, // Admin ට product එකක් temporarily hide කරන්න පුළුවන් (delete නොකර)
+      default: true,
     },
+    // 👇 මේක අලුතින් add කරන්න
+    relatedProducts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Product',
+      },
+    ],
   },
   { timestamps: true }
 );
+
 // Common queries fast කරගන්න indexes
-ProductSchema.index({ isActive: 1, createdAt: -1 }); // Shop listing + sort
-ProductSchema.index({ category: 1 });                 // Category filter
-ProductSchema.index({ price: 1 });                     // Price sort/filter
+ProductSchema.index({ isActive: 1, createdAt: -1 });
+ProductSchema.index({ category: 1 });
+ProductSchema.index({ price: 1 });
 ProductSchema.index({ name: 'text', description: 'text' });
+
 export default mongoose.models.Product || mongoose.model('Product', ProductSchema);

@@ -21,13 +21,14 @@ export default function MultiImageUpload({ images, setImages }) {
     try {
       // Files ගණනාවක් parallel ලෙස upload කරනවා
       const uploadPromises = files.map(async (file) => {
-        const formData = new FormData();
-        formData.append('file', file);
-        const res = await fetch('/api/upload', { method: 'POST', body: formData });
-        const data = await res.json();
-        if (!data.success) throw new Error('One or more uploads failed');
-        return data.url;
-      });
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('folder', 'products'); 
+  const res = await fetch('/api/upload', { method: 'POST', body: formData });
+  const data = await res.json();
+  if (!data.success) throw new Error('One or more uploads failed');
+  return data.url;
+});
 
       const uploadedUrls = await Promise.all(uploadPromises);
       setImages([...images, ...uploadedUrls]);

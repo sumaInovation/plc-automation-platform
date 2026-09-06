@@ -10,7 +10,7 @@ export async function GET(request, { params }) {
 
   await connectDB();
   const { id } = await params;
-  const product = await Product.findById(id).lean();
+  const product = await Product.findById(id).populate('relatedProducts', 'name slug price images').lean();
 
   if (!product) {
     return Response.json({ success: false, error: 'Product not found' }, { status: 404 });

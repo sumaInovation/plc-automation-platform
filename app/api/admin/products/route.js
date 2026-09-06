@@ -3,73 +3,6 @@ import Product from '@/models/Product';
 import Category from '@/models/Category';
 import { auth } from '@/auth';
 
-export async function GET(request, { params }) {
-  const session = await auth();
-  if (session?.user?.role !== 'admin') {
-    return Response.json({ success: false, error: 'Forbidden' }, { status: 403 });
-  }
-
-  await connectDB();
-  const { id } = await params;
-  const product = await Product.findById(id).lean();
-
-  if (!product) {
-    return Response.json({ success: false, error: 'Product not found' }, { status: 404 });
-  }
-
-  return Response.json({ success: true, product: JSON.parse(JSON.stringify(product)) });
-}
-
-export async function PUT(request, { params }) {
-  const session = await auth();
-  if (session?.user?.role !== 'admin') {
-    return Response.json({ success: false, error: 'Forbidden' }, { status: 403 });
-  }
-
-  try {
-    await connectDB();
-    const { id } = await params;
-    const body = await request.json();
-
-    const product = await Product.findByIdAndUpdate(id, body, {
-      returnDocument: 'after',
-      runValidators: true,
-    });
-
-    if (!product) {
-      return Response.json({ success: false, error: 'Product not found' }, { status: 404 });
-    }
-
-    return Response.json({ success: true, product });
-  } catch (error) {
-    return Response.json({ success: false, error: error.message }, { status: 500 });
-  }
-}
-
-export async function DELETE(request, { params }) {
-  const session = await auth();
-  if (session?.user?.role !== 'admin') {
-    return Response.json({ success: false, error: 'Forbidden' }, { status: 403 });
-  }
-
-  try {
-    await connectDB();
-    const { id } = await params;
-
-    // Hard delete වෙනුවට — isActive: false (soft delete). Order history වල product reference එක broken වෙන්නෙ නෑ
-    const product = await Product.findByIdAndUpdate(id, { isActive: false }, { returnDocument: 'after' });
-
-    if (!product) {
-      return Response.json({ success: false, error: 'Product not found' }, { status: 404 });
-    }
-
-    return Response.json({ success: true, message: 'Product deactivated' });
-  } catch (error) {
-    return Response.json({ success: false, error: error.message }, { status: 500 });
-  }
-}
-
-
 export async function POST(request) {
   const session = await auth();
   if (session?.user?.role !== 'admin') {
@@ -81,6 +14,56 @@ export async function POST(request) {
     const body = await request.json();
     const product = await Product.create(body);
     return Response.json({ success: true, product }, { status: 201 });
+  } catch (error) {
+    return Response.json({ success: false, error: error.message }, { status: 500 });
+  }
+}
+
+export async function GET(request) {
+  const session = await auth();
+  if (session?.user?.role !== 'admin') {
+    return Response.json({ success: false, error: 'Forbidden' }, { status: 403 });
+  }
+
+  try {
+    await connectDB();
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get('search');
+    const category = searchParams.get('category');
+    const page = Math.max(1, Number(searchParams.get('page')) || 1);
+    const limit = Number(searchParams.get('limit')) || 30;
+
+    const filter = {};
+
+    if (search) {
+      const trimmed = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      filter.$or = [
+        { name: { $regex: trimmed, $options: 'i' } },
+        { sku: { $regex: trimmed, $options: 'i' } },
+      ];
+    }
+
+    if (category) {
+      filter.category = category;
+    }
+
+    const [products, totalCount] = await Promise.all([
+      Product.find(filter)
+        .populate('category', 'name slug')
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      Product.countDocuments(filter),
+    ]);
+
+    return Response.json({
+      success: true,
+      products: JSON.parse(JSON.stringify(products)),
+      totalCount,
+      totalPages: Math.ceil(totalCount / limit),
+      currentPage: page,
+    });
   } catch (error) {
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }

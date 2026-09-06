@@ -15,12 +15,18 @@ export async function POST(request) {
       return Response.json({ success: false, error: 'No file provided' }, { status: 400 });
     }
 
+    // Folder ekak nathi unoth default eka payment-slips
+    const customFolder = formData.get('folder');
+    const folderName = customFolder || 'payment-slips';
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
     const result = await new Promise((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { folder: 'plc-automation/payment-slips' },
+        {
+          folder: `plc-automation/${folderName}`,
+        },
         (error, result) => {
           if (error) reject(error);
           else resolve(result);
@@ -29,8 +35,14 @@ export async function POST(request) {
       uploadStream.end(buffer);
     });
 
-    return Response.json({ success: true, url: result.secure_url });
+    return Response.json({ 
+      success: true, 
+      url: result.secure_url,
+      folder: folderName 
+    });
+
   } catch (error) {
+    console.error("Upload Error:", error);
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }
