@@ -1,6 +1,5 @@
 import connectDB from '@/lib/db';
 import Product from '@/models/Product';
-import Category from '@/models/Category';
 import { notFound } from 'next/navigation';
 import AddToCartButton from '@/components/shop/AddToCartButton';
 import ReviewSection from '@/components/shop/ReviewSection';
@@ -22,7 +21,7 @@ export async function generateMetadata({ params }) {
     openGraph: {
       title: product.name,
       description: product.description?.slice(0, 160),
-      images: product.images?.[0] ? [{ url: ogImageUrl(product.images[0]), width: 1200, height: 630 }] : [],
+      images: product.images?.[0]? [{ url: ogImageUrl(product.images[0]), width: 1200, height: 630 }] : [],
       url: `https://sumaautomation.lk/shop/product/${slug}`,
       type: 'website',
     },
@@ -30,7 +29,7 @@ export async function generateMetadata({ params }) {
       card: 'summary_large_image',
       title: product.name,
       description: product.description?.slice(0, 160),
-      images: product.images?.[0] ? [product.images[0]] : [],
+      images: product.images?.[0]? [product.images[0]] : [],
     },
   };
 }
@@ -38,9 +37,9 @@ export async function generateMetadata({ params }) {
 async function getProduct(slug) {
   await connectDB();
   const product = await Product.findOne({ slug, isActive: true })
-    .populate('category', 'name slug')
-    .populate('relatedProducts', 'name slug price images stock_qty avgRating reviewCount compareAtPrice')
-    .lean();
+   .populate('category', 'name slug')
+   .populate('relatedProducts', 'name slug price images stock_qty avgRating reviewCount compareAtPrice')
+   .lean();
   if (!product) return null;
   return JSON.parse(JSON.stringify(product));
 }
@@ -51,150 +50,194 @@ export default async function ProductDetailPage({ params }) {
   if (!product) notFound();
 
   const discount = product.compareAtPrice && product.compareAtPrice > product.price
-    ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+   ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
 
-  const inStock = (product.stock_qty ?? 0) > 0;
-  const lowStock = (product.stock_qty ?? 0) > 0 && (product.stock_qty ?? 0) < 10;
+  const inStock = (product.stock_qty?? 0) > 0;
+  const lowStock = (product.stock_qty?? 0) > 0 && (product.stock_qty?? 0) < 10;
 
   return (
-    <div className="min-h-screen bg-[#f6f7f9]">
-      <div className="max-w-[1280px] mx-auto px-4 pt-4">
-        <nav className="flex items-center gap-2 text-[13px] text-slate-500">
-          <Link href="/" className="hover:text-slate-800">Home</Link>
-          <span>/</span>
-          <Link href="/shop" className="hover:text-slate-800">Shop</Link>
-          <span>/</span>
-          <Link href={`/shop/category/${product.category?.slug}`} className="hover:text-slate-800">
-            {product.category?.name || 'Category'}
-          </Link>
-          <span>/</span>
-          <span className="text-slate-800 truncate max-w-[200px]">{product.name}</span>
-        </nav>
+    <div className="min-h-screen bg-white">
+      <div className="bg-[#f5f6f6] border-b border-[#ddd]">
+        <div className="max-w- mx-auto px-4 py-2 flex items-center gap-2 text- text-[#565959] overflow-x-auto whitespace-nowrap">
+          <Link href="/" className="hover:text-[#c45500] hover:underline">Home</Link><span>›</span>
+          <Link href="/shop" className="hover:text-[#c45500] hover:underline">Shop</Link><span>›</span>
+          <Link href={`/shop/category/${product.category?.slug}`} className="hover:text-[#c45500] hover:underline">{product.category?.name}</Link><span>›</span>
+          <span className="text-[#c45500] font-medium truncate max-w-">{product.name}</span>
+        </div>
       </div>
 
-      <div className="max-w-[1280px] mx-auto px-4 py-6">
-        <div className="grid lg:grid-cols-[1.15fr_0.85fr] gap-0 bg-white rounded-[24px] shadow-[0_8px_40px_rgba(0,0,0,0.06)] border border-slate-100 overflow-hidden">
-          <div className="p-4 md:p-6 lg:border-r border-slate-100">
+      <div className="max-w- mx-auto px-4 py-5">
+        {/* IMAGE SIZE WADI KARAPU THANAI - 420px -> 600px */}
+        <div className="grid lg:grid-cols-[600px_1fr_260px] xl:grid-cols-[650px_1fr_300px] gap-6">
+
+          {/* LEFT - Gallery */}
+          <div className="lg:sticky lg:top- h-fit">
             <ProductGallery images={product.images} productName={product.name} />
+            <div className="mt-4 flex items-center gap-3 text- text-[#565959]">
+              <span>Share:</span>
+              <ShareButtons url={`https://sumaautomation.lk/shop/product/${product.slug}`} title={product.name} />
+            </div>
           </div>
 
-          <div className="p-5 md:p-8 flex flex-col">
-            <div className="flex flex-wrap items-center gap-2 mb-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold border border-emerald-100">
-                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" /> 100% Genuine
-              </span>
-              <Link href={`/shop/category/${product.category?.slug}`} className="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-[11px] font-semibold border border-blue-100 hover:bg-blue-100">
-                {product.category?.name}
-              </Link>
-              {discount > 0 && (
-                <span className="px-2.5 py-1 rounded-full bg-rose-500 text-white text-[11px] font-bold">-{discount}% OFF</span>
-              )}
-            </div>
-
-            <h1 className="text-[22px] md:text-[26px] font-bold leading-tight text-slate-900 tracking-tight">
+          {/* MIDDLE - Details (Amazon style) */}
+          <div className="min-w-0">
+            <h1 className="text- leading-[1.3] font-[400] text-[#0f1111]">
               {product.name}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-3 mt-3">
-              <div className="flex items-center gap-1.5">
-                <div className="flex text-amber-400 text-[14px]">
+            <div className="mt-1.5 flex items-center gap-2">
+              <Link href={`/shop/category/${product.category?.slug}`} className="text- text-[#007185] hover:text-[#c45500] hover:underline">{product.category?.name}</Link>
+            </div>
+
+            {/* Ratings */}
+            <div className="mt-2 flex items-center gap-2 border-b border-[#e7e7e7] pb-3">
+              <div className="flex items-center">
+                <span className="text- mr-1">{product.avgRating?.toFixed(1) || '0.0'}</span>
+                <div className="flex text-[#ffa41c] text- leading-none">
                   {'★★★★★'.split('').map((s, i) => (
-                    <span key={i} className={i < Math.round(product.avgRating || 0) ? '' : 'text-slate-200'}>★</span>
+                    <span key={i} className={i < Math.round(product.avgRating || 0)? '' : 'text-[#ddd]'}>★</span>
                   ))}
                 </div>
-                <span className="text-[13px] font-semibold text-slate-800">
-                  {product.avgRating ? product.avgRating.toFixed(1) : '0.0'}
-                </span>
-                <span className="text-[13px] text-slate-500">({product.reviewCount || 0} reviews)</span>
               </div>
-              <span className="w-px h-4 bg-slate-200 hidden sm:block" />
-              <span className="text-[12px] text-slate-500">SKU: <span className="font-mono font-medium text-slate-700">{product.sku}</span></span>
-              <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${inStock ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-rose-50 border-rose-200 text-rose-700'}`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${inStock ? 'bg-emerald-500' : 'bg-rose-500'}`} />
-                {inStock ? (lowStock ? `Low Stock - ${product.stock_qty} left` : `In Stock - ${product.stock_qty}+ available`) : 'Out of Stock'}
-              </span>
+              <span className="text- text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer">{product.reviewCount || 0} ratings</span>
+              <span className="text-[#ddd]">|</span>
+              <span className="text- text-[#007185] hover:underline cursor-pointer">Search in this category</span>
             </div>
 
-            <div className="mt-5 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-              <div className="flex items-baseline gap-3 flex-wrap">
-                <span className="text-[32px] font-extrabold tracking-tight text-slate-900">
-                  Rs. {product.price.toLocaleString()}
+            {/* Price Block Amazon style */}
+            <div className="mt-3">
+              {discount > 0 && (
+                <div className="flex items-center gap-2">
+                  <span className="bg-[#cc0c39] text-white text- px-2 py-0.5 rounded-sm">-{discount}%</span>
+                  <span className="text- font-light text-[#cc0c39]"><sup className="text-">Rs.</sup>{product.price.toLocaleString()}</span>
+                </div>
+              )}
+              {!discount && (
+                <div className="text- text-[#0f1111]"><sup className="text-">Rs.</sup><span className="font-[400]">{product.price.toLocaleString()}</span></div>
+              )}
+
+              {product.compareAtPrice && product.compareAtPrice > product.price && (
+                <div className="text- text-[#565959] mt-1">
+                  M.R.P.: <span className="line-through">Rs. {product.compareAtPrice.toLocaleString()}</span>
+                  <div className="text- text-[#0f1111] mt-1">Inclusive of all taxes</div>
+                  <div className="text- font-bold text-[#067d62]">You Save: Rs. {(product.compareAtPrice - product.price).toLocaleString()} ({discount}%)</div>
+                </div>
+              )}
+            </div>
+
+            {/* Coupons / Offers Amazon style */}
+            <div className="mt-4 border-t border-[#e7e7e7] pt-3">
+              <div className="inline-flex items-center gap-2 bg-[#fff] border border-[#f69931] rounded- px-3 py-2">
+                <span className="bg-[#f69931] text-white text- font-bold px-1.5 py-0.5 rounded">Coupon</span>
+                <span className="text- text-[#067d62] font-bold">Extra Rs. 500 off - Free Delivery over 25k</span>
+              </div>
+            </div>
+
+            {/* Delivery & Stock */}
+            <div className="mt-4 text- leading-[1.5] text-[#0f1111] space-y-1 border-t border-[#e7e7e7] pt-4">
+              <div className="flex gap-2"><span className="font-bold">Brand:</span><span>{product.brand || 'Suma Automation'}</span></div>
+              <div className="flex gap-2"><span className="font-bold">SKU:</span><span className="font-mono text-">{product.sku}</span></div>
+              <div className="flex gap-2">
+                <span className="font-bold">Availability:</span>
+                <span className={inStock? 'text-[#067d62] font-bold' : 'text-[#cc0c39] font-bold'}>
+                  {inStock? `In Stock - ${product.stock_qty} left` : 'Out of Stock'}
                 </span>
-                {product.compareAtPrice && product.compareAtPrice > product.price && (
-                  <>
-                    <span className="text-[16px] text-slate-400 line-through font-medium">
-                      Rs. {product.compareAtPrice.toLocaleString()}
-                    </span>
-                    <span className="px-2 py-1 rounded-lg bg-rose-100 text-rose-700 text-[12px] font-bold">
-                      Save Rs. {(product.compareAtPrice - product.price).toLocaleString()}
-                    </span>
-                  </>
+              </div>
+            </div>
+
+            {/* About this item */}
+            <div className="mt-5">
+              <h3 className="text- font-bold text-[#0f1111] mb-2">About this item</h3>
+              <div className="text- text-[#0f1111] leading-[1.6] prose prose-sm max-w-none">
+                {product.description? (
+                  <div dangerouslySetInnerHTML={{ __html: product.description.slice(0, 400) }} />
+                ) : (
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>100% Genuine Product from Suma Automation</li>
+                    <li>1 Year Warranty & Expert Support</li>
+                    <li>Island-wide Delivery in 2-4 days</li>
+                    <li>Best for industrial automation projects</li>
+                  </ul>
                 )}
               </div>
-              <p className="text-[12px] text-slate-500 mt-1">Inclusive of all taxes • Free delivery over Rs. 25,000</p>
             </div>
+          </div>
 
-            <div className="mt-6 space-y-3">
-              <AddToCartButton product={product} />
-              <div className="grid grid-cols-2 gap-3">
-                <AddToQuoteButton product={product} />
-                <button className="h-11 rounded-xl border border-slate-200 text-slate-700 font-semibold text-sm hover:bg-slate-50 transition">
-                  ♡ Wishlist
-                </button>
+          {/* RIGHT - Buy Box Amazon style */}
+          <div className="lg:sticky lg:top- h-fit">
+            <div className="border border-[#d5d9] rounded- p-4 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+              <div className="text- text-[#0f1111] leading-none">
+                <sup className="text-">Rs.</sup>{product.price.toLocaleString()}
+              </div>
+              <div className="text- text-[#565959] mt-1">Inclusive of all taxes</div>
+
+              <div className="mt-3 text-">
+                <div className="flex items-center gap-2 text-[#067d62]"><span className="text-">✓</span> <span className="font-bold">prime</span> FREE delivery available</div>
+                <div className="text-[#0f1111] mt-1">Delivery to <span className="font-bold">{product.deliveryInfo || 'Sri Lanka'}</span></div>
+                {inStock? (
+                  <div className="text- text-[#067d62] mt-3 font-[400]">In Stock</div>
+                ) : (
+                  <div className="text- text-[#cc0c39] mt-3">Out of Stock</div>
+                )}
+                {inStock && <div className="text- text-[#565959]">Sold by <span className="text-[#007185]">Suma Automation</span> and Fulfilled by Suma.</div>}
+              </div>
+
+              {/* Quantity */}
+              <div className="mt-4">
+                <label className="text- text-[#0f1111]">Quantity:</label>
+                <select className="mt-1 w-full bg-[#f0f2f2] border border-[#d5d9d9] rounded- px-2 py-1.5 text- shadow-[0_2px_5px_rgba(0,0,0,0.05)]">
+                  <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                </select>
+              </div>
+
+              {/* Buttons - Amazon Yellow / Orange */}
+              <div className="mt-4 space-y-2">
+                <div className="[&>button]:w-full [&>button]:!bg-[#ffd814] [&>button]:!text-[#0f1111] [&>button]:!border-[#fcd200] [&>button]:hover:!bg-[#f7ca00] [&>button]:!rounded- [&>button]:!h- [&>button]:!text- [&>button]:!shadow-[0_2px_5px_rgba(213,217,217,0.5)]">
+                  <AddToCartButton product={product} />
+                </div>
+                <div className="[&>button]:w-full [&>button]:!bg-[#ffa41c] [&>button]:!text-[#0f1111] [&>button]:!border-[#ff8f00] [&>button]:hover:!bg-[#fa8900] [&>button]:!rounded- [&>button]:!h- [&>button]:!text- [&>button]:!shadow-[0_2px_5px_rgba(213,217,217,0.5)]">
+                  <AddToQuoteButton product={product} />
+                </div>
+                <div className="text- text-[#067d62] flex items-center gap-1 mt-2"><span>🔒</span> Secure transaction</div>
+              </div>
+
+              <div className="mt-4 text- space-y-2 text-[#0f1111] border-t border-[#e7e7e7] pt-3">
+                <div className="flex justify-between"><span className="text-[#565959]">Ships from</span><span>Suma Automation</span></div>
+                <div className="flex justify-between"><span className="text-[#565959]">Sold by</span><span className="text-[#007185]">Suma Automation</span></div>
+                <div className="flex justify-between"><span className="text-[#565959]">Returns</span><span className="text-[#007185]">30-day refund</span></div>
+              </div>
+
+              <div className="mt-3 flex items-center gap-2">
+                <input type="checkbox" className="rounded" />
+                <span className="text-">Add gift options</span>
               </div>
             </div>
 
-            <div className="mt-5 flex items-center gap-3">
-              <span className="text-[12px] text-slate-500 font-medium">Share:</span>
-              <ShareButtons url={`https://sumaautomation.lk/shop/product/${product.slug}`} title={product.name} />
-            </div>
-
-            <div className="mt-6 grid grid-cols-3 gap-2">
-              {[
-                { icon: '🚚', t: 'Island-wide Delivery', s: '2-4 days' },
-                { icon: '🛡', t: 'Warranty', s: '1 Year' },
-                { icon: '💬', t: 'Expert Support', s: '24/7 Help' },
-              ].map((b) => (
-                <div key={b.t} className="rounded-xl border border-slate-100 bg-slate-50/70 p-2.5 text-center">
-                  <div className="text-[16px]">{b.icon}</div>
-                  <div className="text-[11px] font-semibold text-slate-800 mt-1">{b.t}</div>
-                  <div className="text-[10px] text-slate-500">{b.s}</div>
-                </div>
-              ))}
+            {/* Small warranty box */}
+            <div className="mt-3 border border-[#d5d9d9] rounded- p-3 flex gap-3">
+              <div className="text-">🛡️</div>
+              <div className="text- leading-[1.4]">
+                <div className="font-bold">1 Year Warranty</div>
+                <div className="text-[#067d62]">Expert Support • Genuine Product</div>
+              </div>
             </div>
           </div>
         </div>
 
         <ProductTabs product={product} />
 
-        {product.relatedProducts && product.relatedProducts.length > 0 && (
-          <div className="mt-6 bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] p-6 md:p-8">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="font-bold text-[18px] text-slate-900">Related Products</h2>
-              <Link href="/shop" className="text-[13px] font-semibold text-blue-600 hover:text-blue-700">View all →</Link>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {product.relatedProducts.map((rp) => (
-                <ProductCard key={rp._id} product={rp} />
-              ))}
+        {product.relatedProducts?.length > 0 && (
+          <div className="mt-8 border-t border-[#e7e7e7] pt-6">
+            <h2 className="font-bold text- text-[#0f1111] mb-4">Customers who viewed this item also viewed</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {product.relatedProducts.map((rp) => <ProductCard key={rp._id} product={rp} />)}
             </div>
           </div>
         )}
 
-        <div className="mt-6 bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] p-6 md:p-8">
-          <h2 className="font-bold text-[18px] text-slate-900 mb-5">Customer Reviews</h2>
+        <div className="mt-8 border-t border-[#e7e7e7] pt-6">
           <ReviewSection targetType="product" targetId={product._id} />
-        </div>
-
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 flex items-center gap-3 z-50 shadow-[0_-8px_24px_rgba(0,0,0,0.08)]">
-          <div className="flex-1">
-            <div className="text-[11px] text-slate-500">Total</div>
-            <div className="font-bold text-[16px]">Rs. {product.price.toLocaleString()}</div>
-          </div>
-          <div className="flex-1">
-            <AddToCartButton product={product} />
-          </div>
         </div>
       </div>
     </div>
