@@ -53,7 +53,13 @@ export default async function OrderDetailPage({ params, searchParams }) {
         ))}
         <div className="flex justify-between font-bold pt-2 mt-2 border-t">
           <span>Total</span>
-          <span>Rs. {order.total.toLocaleString()}</span>
+          <div className="border-t pt-2 mt-2">
+  <div className="flex justify-between text-sm"><span>Subtotal</span><span>Rs. {order.subtotal.toLocaleString()}</span></div>
+  {order.deliveryCharge > 0 && (
+    <div className="flex justify-between text-sm"><span>Delivery</span><span>Rs. {order.deliveryCharge.toLocaleString()}</span></div>
+  )}
+  <div className="flex justify-between font-bold pt-1"><span>Total</span><span>Rs. {order.total.toLocaleString()}</span></div>
+</div>
         </div>
       </div>
         {order.status === 'pending_delivery_charge' && (
