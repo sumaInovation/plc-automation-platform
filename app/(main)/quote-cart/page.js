@@ -1,6 +1,4 @@
 'use client';
-import dynamic from 'next/dynamic';
-export const dynamic = 'force-dynamic';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -8,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useQuoteStore } from '@/store/quoteStore';
 import { useHasHydrated } from '@/hooks/useHasHydrated';
+
+export const dynamic = 'force-dynamic';
 
 export default function QuoteCartPage() {
   const { data: authSession, status } = useSession();
