@@ -1,4 +1,5 @@
 'use client';
+import dynamic from 'next/dynamic';
 export const dynamic = 'force-dynamic';
 
 import { useState } from 'react';
