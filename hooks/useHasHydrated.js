@@ -1,14 +1,19 @@
+'use client';
+
 import { useSyncExternalStore } from 'react';
 
 function subscribe() {
-  // Static value එකක් නිසා subscribe කරන්න දෙයක් නෑ, empty cleanup function එකක් return කරනවා
   return () => {};
 }
 
+function getSnapshot() {
+  return true;
+}
+
+function getServerSnapshot() {
+  return false;
+}
+
 export function useHasHydrated() {
-  return useSyncExternalStore(
-    subscribe,
-    () => true,   // Client snapshot — hydration ඉවර උනාට පස්සේ true
-    () => false   // Server snapshot — SSR render එකේදී false
-  );
+  return useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 }
