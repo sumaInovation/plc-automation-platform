@@ -60,9 +60,10 @@ const product = await Product.findOneAndUpdate(
             {
               user: session.user.id,
               items: orderItems,
+              subtotal: total, 
               total,
               deliveryDetails,
-              status: 'pending_payment',
+              status: 'pending_delivery_charge',
             },
           ],
           { session: dbSession }

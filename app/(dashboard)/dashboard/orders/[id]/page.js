@@ -56,7 +56,11 @@ export default async function OrderDetailPage({ params, searchParams }) {
           <span>Rs. {order.total.toLocaleString()}</span>
         </div>
       </div>
-
+        {order.status === 'pending_delivery_charge' && (
+  <div className="border rounded-lg p-4 bg-slate-50 text-sm text-slate-600">
+    We're reviewing your delivery address and calculating the delivery charge. You'll receive an email with the final total and payment instructions shortly.
+  </div>
+)}
       {order.status === 'pending_payment' && (
         <div className="border rounded-lg p-4 mb-6 bg-blue-50">
           <h2 className="font-semibold mb-3">Bank Transfer Details</h2>

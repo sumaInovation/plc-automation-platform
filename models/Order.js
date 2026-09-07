@@ -22,6 +22,15 @@ const OrderSchema = new mongoose.Schema(
       required: true,
     },
     items: [OrderItemSchema],
+     
+    deliveryCharge: {
+  type: Number,
+  default: 0,
+},
+subtotal: {
+  type: Number, // Items total, delivery charge එකෙන් වෙනම track කරගන්නවා
+},
+
     total: {
       type: Number,
       required: true,
@@ -36,6 +45,7 @@ const OrderSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: [
+        'pending_delivery_charge',
         'pending_payment',       // Order created, payment ලැබිලා නෑ තාම
         'payment_slip_uploaded', // Customer slip upload කරලා, admin review කරන්න ඉන්නවා
         'confirmed',             // Admin verify කරලා, processing
@@ -43,7 +53,7 @@ const OrderSchema = new mongoose.Schema(
         'delivered',
         'cancelled',
       ],
-      default: 'pending_payment',
+      default:'pending_delivery_charge',
     },
     paymentSlip: {
       type: String, // Cloudinary URL

@@ -10,6 +10,7 @@ export default function AdminOrderDetailPage() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [deliveryCharge, setDeliveryCharge] = useState('');
 
   useEffect(() => {
     async function fetchOrder() {
@@ -34,6 +35,22 @@ export default function AdminOrderDetailPage() {
     }
     setActionLoading(false);
   };
+
+  const handleSetDeliveryCharge = async () => {
+  if (!deliveryCharge || Number(deliveryCharge) < 0) {
+    setError('Enter a valid delivery charge');
+    return;
+  }
+  setActionLoading(true);
+  const res = await fetch(`/api/admin/orders/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'set_delivery_charge', deliveryCharge }),
+  });
+  const data = await res.json();
+  if (data.success) setOrder(data.order);
+  setActionLoading(false);
+};
 
   if (loading) return <div className="max-w-2xl mx-auto px-4 py-8">Loading...</div>;
   if (!order) return <div className="max-w-2xl mx-auto px-4 py-8">Order not found</div>;
@@ -60,7 +77,13 @@ export default function AdminOrderDetailPage() {
         ))}
         <div className="flex justify-between font-bold pt-2 mt-2 border-t">
           <span>Total</span>
-          <span>Rs. {order.total.toLocaleString()}</span>
+          <div className="border-t pt-2 mt-2">
+  <div className="flex justify-between text-sm"><span>Subtotal</span><span>Rs. {order.subtotal.toLocaleString()}</span></div>
+  {order.deliveryCharge > 0 && (
+    <div className="flex justify-between text-sm"><span>Delivery</span><span>Rs. {order.deliveryCharge.toLocaleString()}</span></div>
+  )}
+  <div className="flex justify-between font-bold pt-1"><span>Total</span><span>Rs. {order.total.toLocaleString()}</span></div>
+</div>
         </div>
       </div>
 
@@ -70,7 +93,34 @@ export default function AdminOrderDetailPage() {
           <img src={order.paymentSlip} alt="Payment slip" className="max-w-sm rounded border" />
         </div>
       )}
+        {order.status === 'pending_delivery_charge' && (
+  <div className="border rounded-lg p-4 mb-4 bg-amber-50">
+    <h2 className="font-semibold mb-3">Set Delivery Charge</h2>
 
+    <div className="mb-4 text-sm">
+      <p><strong>Delivery Address:</strong></p>
+      <p>{order.deliveryDetails.fullName} — {order.deliveryDetails.phone}</p>
+      <p>{order.deliveryDetails.address}, {order.deliveryDetails.city}</p>
+      {order.deliveryDetails.notes && <p className="text-slate-500">Note: {order.deliveryDetails.notes}</p>}
+    </div>
+
+    <p className="text-sm mb-2">Items subtotal: <strong>Rs. {order.subtotal.toLocaleString()}</strong></p>
+
+    <input
+      type="number" placeholder="Delivery charge (Rs.)" value={deliveryCharge}
+      onChange={(e) => setDeliveryCharge(e.target.value)}
+      className="w-full border p-2 rounded mb-3"
+    />
+
+    <button
+      onClick={handleSetDeliveryCharge}
+      disabled={actionLoading}
+      className="bg-blue-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-blue-700 disabled:bg-gray-300"
+    >
+      {actionLoading ? 'Saving...' : 'Set Charge & Notify Customer'}
+    </button>
+  </div>
+)}
       {order.status === 'payment_slip_uploaded' && (
         <div className="flex flex-col sm:flex-row gap-3">
           <button

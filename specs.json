@@ -1,0 +1,22 @@
+{
+  "sku": "DB-0062-TA",
+  "description": "Tang Nano 9K FPGA Development Board based on Gowin GW1NR-9 with 8640 LUT4, 64M SDR SDRAM, 32Mbit SPI Flash, 608K User Flash, HDMI + RGB + SPI screen interfaces, USB-JTAG/UART via BL702, 2 buttons, 6 LEDs, TF slot, 48P headers. Ideal for FPGA learning and RISC-V PicoRV softcore verification.",
+  "specs": {
+    "FPGA": "Gowin GW1NR-9",
+    "LUT4": "8640 Logic Units",
+    "Registers FF": "6480",
+    "SSRAM": "17280 bits Shadow SRAM",
+    "BSRAM": "468K bits (26 blocks)",
+    "User Flash": "608K bits",
+    "SDRAM": "64M bits SDR SDRAM",
+    "Multiplier": "20x 18x18 Multiplier",
+    "SPI Flash": "32M-bit SPI Flash",
+    "PLL": "2x PLL",
+    "Display": "HDMI interface, SPI screen interface, RGB screen interface",
+    "Debugger": "Onboard BL702 chip provides USB-JTAG and USB-UART",
+    "IO Features": "4mA/8mA/16mA/24mA drive, Bus Keeper, pull-up/pull-down, Open Drain per I/O",
+    "Connector": "TF card slot, 2x24P 2.54mm Header pads",
+    "Buttons": "2x Programmable buttons",
+    "LEDs": "6x Onboard programmable LEDs"
+  }
+}

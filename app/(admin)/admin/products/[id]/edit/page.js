@@ -20,6 +20,9 @@ export default function EditProductPage() {
   const [specs, setSpecs] = useState([{ key: '', value: '' }]);
   const [existingImage, setExistingImage] = useState(null);
 
+  const [confirmText, setConfirmText] = useState('');
+const [showHardDelete, setShowHardDelete] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
       const [catRes, prodRes] = await Promise.all([
@@ -114,6 +117,23 @@ export default function EditProductPage() {
     if (data.success) router.push('/admin/products');
   };
 
+  const handleHardDelete = async () => {
+  if (confirmText !== 'DELETE') {
+    setError('Type DELETE exactly to confirm permanent deletion.');
+    return;
+  }
+
+  const res = await fetch(`/api/admin/products/${id}?hard=true`, { method: 'DELETE' });
+  const data = await res.json();
+
+  if (!data.success) {
+    setError(data.error);
+    return;
+  }
+
+  router.push('/admin/products');
+};
+
   if (loading) return <div className="max-w-2xl mx-auto px-4 py-8">Loading...</div>;
 
   return (
@@ -198,6 +218,50 @@ export default function EditProductPage() {
             Deactivate
           </button>
         </div>
+        <div className="border-t pt-4 mt-4">
+  {!showHardDelete ? (
+    <button
+      type="button"
+      onClick={() => setShowHardDelete(true)}
+      className="text-sm text-red-600 hover:underline"
+    >
+      Permanently delete this product (cannot be undone)
+    </button>
+  ) : (
+    <div className="border border-red-300 bg-red-50 rounded-lg p-4">
+      <p className="text-sm text-red-800 font-medium mb-2">
+        ⚠️ This will PERMANENTLY delete this product from the database. This cannot be undone.
+      </p>
+      <p className="text-xs text-red-600 mb-3">
+        Type <strong>DELETE</strong> below to confirm. If this product has any order history, deletion will be blocked automatically — use "Deactivate" instead in that case.
+      </p>
+      <input
+        type="text"
+        placeholder="Type DELETE to confirm"
+        value={confirmText}
+        onChange={(e) => setConfirmText(e.target.value)}
+        className="w-full border border-red-300 p-2 rounded mb-3 text-sm"
+      />
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={handleHardDelete}
+          disabled={confirmText !== 'DELETE'}
+          className="bg-red-600 text-white px-4 py-2 rounded text-sm font-medium hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        >
+          Permanently Delete
+        </button>
+        <button
+          type="button"
+          onClick={() => { setShowHardDelete(false); setConfirmText(''); }}
+          className="text-sm text-slate-500 px-4 py-2"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  )}
+</div>
       </form>
     </div>
   );

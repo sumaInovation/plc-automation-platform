@@ -33,7 +33,7 @@ export default function AdminOrdersPage() {
       <h1 className="text-2xl font-bold mb-6">Admin — Orders</h1>
 
       <div className="flex gap-2 mb-6">
-        {['all', 'pending_payment', 'payment_slip_uploaded', 'confirmed', 'shipped', 'delivered', 'cancelled'].map((s) => (
+        {['all', 'pending_delivery_charge','pending_payment', 'payment_slip_uploaded', 'confirmed', 'shipped', 'delivered', 'cancelled'].map((s) => (
           <button
             key={s}
             onClick={() => setStatusFilter(s)}
