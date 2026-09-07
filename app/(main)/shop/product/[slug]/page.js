@@ -11,6 +11,16 @@ import ProductCard from '@/components/shop/ProductCard';
 import ProductTabs from '@/components/shop/ProductTabs';
 import Link from 'next/link';
 
+async function getProduct(slug) {
+  await connectDB();
+  const product = await Product.findOne({ slug, isActive: true })
+  .populate('category', 'name slug')
+  .populate('relatedProducts', 'name slug price images stock_qty avgRating reviewCount compareAtPrice')
+  .lean();
+  if (!product) return null;
+  return JSON.parse(JSON.stringify(product));
+}
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const product = await getProduct(slug);
@@ -34,27 +44,15 @@ export async function generateMetadata({ params }) {
   };
 }
 
-async function getProduct(slug) {
-  await connectDB();
-  const product = await Product.findOne({ slug, isActive: true })
-   .populate('category', 'name slug')
-   .populate('relatedProducts', 'name slug price images stock_qty avgRating reviewCount compareAtPrice')
-   .lean();
-  if (!product) return null;
-  return JSON.parse(JSON.stringify(product));
-}
-
 export default async function ProductDetailPage({ params }) {
   const { slug } = await params;
   const product = await getProduct(slug);
   if (!product) notFound();
 
   const discount = product.compareAtPrice && product.compareAtPrice > product.price
-   ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
+  ? Math.round(((product.compareAtPrice - product.price) / product.compareAtPrice) * 100)
     : 0;
-
   const inStock = (product.stock_qty?? 0) > 0;
-  const lowStock = (product.stock_qty?? 0) > 0 && (product.stock_qty?? 0) < 10;
 
   return (
     <div className="min-h-screen bg-white">
@@ -68,29 +66,52 @@ export default async function ProductDetailPage({ params }) {
       </div>
 
       <div className="max-w- mx-auto px-4 py-5">
-        {/* IMAGE SIZE WADI KARAPU THANAI - 420px -> 600px */}
-        <div className="grid lg:grid-cols-[600px_1fr_260px] xl:grid-cols-[650px_1fr_300px] gap-6">
+        <div className="grid lg:grid-cols-[600px_1fr_300px] xl:grid-cols-[650px_1fr_340px] gap-6">
 
-          {/* LEFT - Gallery */}
+          {/* LEFT - Gallery - IMAGE LOKU */}
           <div className="lg:sticky lg:top- h-fit">
-            <ProductGallery images={product.images} productName={product.name} />
-            <div className="mt-4 flex items-center gap-3 text- text-[#565959]">
-              <span>Share:</span>
+            <div className="bg-white rounded- border border-[#e7e7e7] p-2">
+              <ProductGallery images={product.images} productName={product.name} />
+            </div>
+
+            {/* SHARE - Gallery yata - Desktop + Mobile dekama */}
+            <div className="mt-3 flex items-center gap-3">
               <ShareButtons url={`https://sumaautomation.lk/shop/product/${product.slug}`} title={product.name} />
+            </div>
+
+            {/* MOBILE BUY BOX - Image ekata passe, About ekata kalin */}
+            <div className="lg:hidden mt-4 border border-[#d5d9d9] rounded- p-4 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+              <div className="flex items-baseline justify-between">
+                <div className="text- text-[#0f1111] leading-none">
+                  <sup className="text-">Rs.</sup>{product.price.toLocaleString()}
+                </div>
+                <div className={`text- font-bold ${inStock? 'text-[#067d62]' : 'text-[#cc0c39]'}`}>
+                  {inStock? 'In Stock' : 'Out of Stock'}
+                </div>
+              </div>
+              {product.compareAtPrice > product.price && (
+                <div className="text- text-[#565959] mt-1">
+                  M.R.P.: <span className="line-through">Rs. {product.compareAtPrice.toLocaleString()}</span>
+                </div>
+              )}
+              <div className="mt-4 space-y-2">
+                <div className="[&>button]:w-full [&>button]:!bg-[#ffd814] [&>button]:!text-[#0f1111] [&>button]:!border-[#fcd200] [&>button]:hover:!bg-[#f7ca00] [&>button]:!rounded- [&>button]:!h- [&>button]:!text-">
+                  <AddToCartButton product={product} />
+                </div>
+                <div className="[&>button]:w-full [&>button]:!bg-[#ffa41c] [&>button]:!text-[#0f1111] [&>button]:!border-[#ff8f00] [&>button]:hover:!bg-[#fa8900] [&>button]:!rounded- [&>button]:!h- [&>button]:!text-">
+                  <AddToQuoteButton product={product} />
+                </div>
+                <div className="text- text-[#067d62] flex items-center justify-center gap-1 mt-2">🔒 Secure transaction</div>
+              </div>
             </div>
           </div>
 
-          {/* MIDDLE - Details (Amazon style) */}
+          {/* MIDDLE - Details */}
           <div className="min-w-0">
-            <h1 className="text- leading-[1.3] font-[400] text-[#0f1111]">
+            <h1 className="text- lg:text- leading-[1.3] font-[400] text-[#0f1111]">
               {product.name}
             </h1>
 
-            <div className="mt-1.5 flex items-center gap-2">
-              <Link href={`/shop/category/${product.category?.slug}`} className="text- text-[#007185] hover:text-[#c45500] hover:underline">{product.category?.name}</Link>
-            </div>
-
-            {/* Ratings */}
             <div className="mt-2 flex items-center gap-2 border-b border-[#e7e7e7] pb-3">
               <div className="flex items-center">
                 <span className="text- mr-1">{product.avgRating?.toFixed(1) || '0.0'}</span>
@@ -101,12 +122,9 @@ export default async function ProductDetailPage({ params }) {
                 </div>
               </div>
               <span className="text- text-[#007185] hover:text-[#c45500] hover:underline cursor-pointer">{product.reviewCount || 0} ratings</span>
-              <span className="text-[#ddd]">|</span>
-              <span className="text- text-[#007185] hover:underline cursor-pointer">Search in this category</span>
             </div>
 
-            {/* Price Block Amazon style */}
-            <div className="mt-3">
+            <div className="hidden lg:block mt-3">
               {discount > 0 && (
                 <div className="flex items-center gap-2">
                   <span className="bg-[#cc0c39] text-white text- px-2 py-0.5 rounded-sm">-{discount}%</span>
@@ -114,10 +132,9 @@ export default async function ProductDetailPage({ params }) {
                 </div>
               )}
               {!discount && (
-                <div className="text- text-[#0f1111]"><sup className="text-">Rs.</sup><span className="font-[400]">{product.price.toLocaleString()}</span></div>
+                <div className="text- text-[#0f1111]"><sup className="text-">Rs.</sup>{product.price.toLocaleString()}</div>
               )}
-
-              {product.compareAtPrice && product.compareAtPrice > product.price && (
+              {product.compareAtPrice > product.price && (
                 <div className="text- text-[#565959] mt-1">
                   M.R.P.: <span className="line-through">Rs. {product.compareAtPrice.toLocaleString()}</span>
                   <div className="text- text-[#0f1111] mt-1">Inclusive of all taxes</div>
@@ -126,18 +143,8 @@ export default async function ProductDetailPage({ params }) {
               )}
             </div>
 
-            {/* Coupons / Offers Amazon style */}
-            <div className="mt-4 border-t border-[#e7e7e7] pt-3">
-              <div className="inline-flex items-center gap-2 bg-[#fff] border border-[#f69931] rounded- px-3 py-2">
-                <span className="bg-[#f69931] text-white text- font-bold px-1.5 py-0.5 rounded">Coupon</span>
-                <span className="text- text-[#067d62] font-bold">Extra Rs. 500 off - Free Delivery over 25k</span>
-              </div>
-            </div>
-
-            {/* Delivery & Stock */}
             <div className="mt-4 text- leading-[1.5] text-[#0f1111] space-y-1 border-t border-[#e7e7e7] pt-4">
-              <div className="flex gap-2"><span className="font-bold">Brand:</span><span>{product.brand || 'Suma Automation'}</span></div>
-              <div className="flex gap-2"><span className="font-bold">SKU:</span><span className="font-mono text-">{product.sku}</span></div>
+              <div className="flex gap-2"><span className="font-bold">SKU:</span><span>{product.sku}</span></div>
               <div className="flex gap-2">
                 <span className="font-bold">Availability:</span>
                 <span className={inStock? 'text-[#067d62] font-bold' : 'text-[#cc0c39] font-bold'}>
@@ -146,75 +153,60 @@ export default async function ProductDetailPage({ params }) {
               </div>
             </div>
 
-            {/* About this item */}
             <div className="mt-5">
               <h3 className="text- font-bold text-[#0f1111] mb-2">About this item</h3>
-              <div className="text- text-[#0f1111] leading-[1.6] prose prose-sm max-w-none">
+              <div className="text- text-[#0f1111] leading-[1.6]">
                 {product.description? (
-                  <div dangerouslySetInnerHTML={{ __html: product.description.slice(0, 400) }} />
+                  <div dangerouslySetInnerHTML={{ __html: product.description.slice(0, 600) }} />
                 ) : (
                   <ul className="list-disc pl-5 space-y-1">
                     <li>100% Genuine Product from Suma Automation</li>
                     <li>1 Year Warranty & Expert Support</li>
                     <li>Island-wide Delivery in 2-4 days</li>
-                    <li>Best for industrial automation projects</li>
                   </ul>
                 )}
               </div>
             </div>
           </div>
 
-          {/* RIGHT - Buy Box Amazon style */}
-          <div className="lg:sticky lg:top- h-fit">
-            <div className="border border-[#d5d9] rounded- p-4 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
+          {/* RIGHT - DESKTOP BUY BOX - ORIGINAL SUPIRI ONE */}
+          <div className="hidden lg:block lg:sticky lg:top- h-fit">
+            <div className="border border-[#d5d9d9] rounded- p-4 bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]">
               <div className="text- text-[#0f1111] leading-none">
                 <sup className="text-">Rs.</sup>{product.price.toLocaleString()}
               </div>
               <div className="text- text-[#565959] mt-1">Inclusive of all taxes</div>
-
               <div className="mt-3 text-">
                 <div className="flex items-center gap-2 text-[#067d62]"><span className="text-">✓</span> <span className="font-bold">prime</span> FREE delivery available</div>
-                <div className="text-[#0f1111] mt-1">Delivery to <span className="font-bold">{product.deliveryInfo || 'Sri Lanka'}</span></div>
-                {inStock? (
-                  <div className="text- text-[#067d62] mt-3 font-[400]">In Stock</div>
-                ) : (
-                  <div className="text- text-[#cc0c39] mt-3">Out of Stock</div>
-                )}
+                <div className="text-[#0f1111] mt-1">Delivery to <span className="font-bold">Sri Lanka</span></div>
+                {inStock? <div className="text- text-[#067d62] mt-3">In Stock</div> : <div className="text- text-[#cc0c39] mt-3">Out of Stock</div>}
                 {inStock && <div className="text- text-[#565959]">Sold by <span className="text-[#007185]">Suma Automation</span> and Fulfilled by Suma.</div>}
               </div>
-
-              {/* Quantity */}
               <div className="mt-4">
                 <label className="text- text-[#0f1111]">Quantity:</label>
-                <select className="mt-1 w-full bg-[#f0f2f2] border border-[#d5d9d9] rounded- px-2 py-1.5 text- shadow-[0_2px_5px_rgba(0,0,0,0.05)]">
+                <select className="mt-1 w-full bg-[#f0f2f2] border border-[#d5d9d9] rounded- px-2 py-1.5 text-">
                   <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
                 </select>
               </div>
-
-              {/* Buttons - Amazon Yellow / Orange */}
               <div className="mt-4 space-y-2">
-                <div className="[&>button]:w-full [&>button]:!bg-[#ffd814] [&>button]:!text-[#0f1111] [&>button]:!border-[#fcd200] [&>button]:hover:!bg-[#f7ca00] [&>button]:!rounded- [&>button]:!h- [&>button]:!text- [&>button]:!shadow-[0_2px_5px_rgba(213,217,217,0.5)]">
+                <div className="[&>button]:w-full [&>button]:!bg-[#ffd814] [&>button]:!text-[#0f1111] [&>button]:!border-[#fcd200] [&>button]:hover:!bg-[#f7ca00] [&>button]:!rounded- [&>button]:!h- [&>button]:!text-">
                   <AddToCartButton product={product} />
                 </div>
-                <div className="[&>button]:w-full [&>button]:!bg-[#ffa41c] [&>button]:!text-[#0f1111] [&>button]:!border-[#ff8f00] [&>button]:hover:!bg-[#fa8900] [&>button]:!rounded- [&>button]:!h- [&>button]:!text- [&>button]:!shadow-[0_2px_5px_rgba(213,217,217,0.5)]">
+                <div className="[&>button]:w-full [&>button]:!bg-[#ffa41c] [&>button]:!text-[#0f1111] [&>button]:!border-[#ff8f00] [&>button]:hover:!bg-[#fa8900] [&>button]:!rounded- [&>button]:!h- [&>button]:!text-">
                   <AddToQuoteButton product={product} />
                 </div>
                 <div className="text- text-[#067d62] flex items-center gap-1 mt-2"><span>🔒</span> Secure transaction</div>
               </div>
-
               <div className="mt-4 text- space-y-2 text-[#0f1111] border-t border-[#e7e7e7] pt-3">
                 <div className="flex justify-between"><span className="text-[#565959]">Ships from</span><span>Suma Automation</span></div>
                 <div className="flex justify-between"><span className="text-[#565959]">Sold by</span><span className="text-[#007185]">Suma Automation</span></div>
                 <div className="flex justify-between"><span className="text-[#565959]">Returns</span><span className="text-[#007185]">30-day refund</span></div>
               </div>
-
               <div className="mt-3 flex items-center gap-2">
                 <input type="checkbox" className="rounded" />
                 <span className="text-">Add gift options</span>
               </div>
             </div>
-
-            {/* Small warranty box */}
             <div className="mt-3 border border-[#d5d9d9] rounded- p-3 flex gap-3">
               <div className="text-">🛡️</div>
               <div className="text- leading-[1.4]">

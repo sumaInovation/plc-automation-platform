@@ -57,7 +57,7 @@ export default function ShareButtons({ url, title }) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-slate-500">Share:</span>
+      
 
       <a
         href={whatsappLink}
