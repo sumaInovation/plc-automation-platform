@@ -22,6 +22,7 @@ export default function Navbar() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [categories, setCategories] = useState([]);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const skipNextDebounce = useRef(false);
   const isFirstRun = useRef(true);
@@ -88,6 +89,7 @@ export default function Navbar() {
     const base = category ? `/shop/category/${category}` : '/shop';
     const qs = p.toString();
     router.push(`${base}${qs ? `?${qs}` : ''}`);
+    setIsSearchOpen(false);
   };
 
   const getGreeting = () => {
@@ -99,258 +101,199 @@ export default function Navbar() {
 
   return (
     <div className="sticky top-0 z-50 w-full font-sans">
-      {/* TOP BAR */}
-      <div className="bg-[#131921] min-h-[60px] flex items-center py-1">
-        <div className="w-full max-w-[1500px] mx-auto h-full flex items-center px-3 lg:px-4 gap-1 md:gap-2 lg:gap-3">
-          <Link
-            href="/"
-            className="shrink-0 flex items-center h-[50px] px-1 border border-transparent hover:border hover:border-white rounded-sm transition-all duration-200"
+      {/* TOP BAR - Amazon Mobile Style */}
+      <div className="bg-[#131921] min-h-[48px] flex items-center px-2">
+        <div className="w-full flex items-center gap-2">
+          
+          {/* Menu Button */}
+          <button 
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="text-white p-1.5 hover:bg-white/10 rounded"
+            aria-label="Menu"
           >
-            <div className="bg-white rounded-sm h-[36px] px-3 flex items-center shadow-sm">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+
+          {/* Logo */}
+          <Link href="/" className="shrink-0 flex items-center">
+            <div className="bg-white rounded-sm h-[30px] px-2 flex items-center">
               <Image 
                 src="/logo.png" 
                 alt="SUMA" 
-                width={120} 
-                height={36} 
-                className="h-[26px] w-auto object-contain" 
+                width={70} 
+                height={20} 
+                className="h-[18px] w-auto object-contain" 
                 priority 
               />
             </div>
           </Link>
 
-          <div className="hidden lg:flex items-center h-[50px] px-2 border border-transparent hover:border hover:border-white rounded-sm cursor-pointer shrink-0 transition-all duration-200">
-            <span className="text-white text-lg mt-[-8px]">📍</span>
-            <div className="ml-1 leading-tight text-white">
-              <div className="text-[11px] text-[#ccc] leading-none">Deliver to</div>
-              <div className="text-sm font-bold leading-tight">Sri Lanka</div>
+          {/* Search Bar */}
+          {isSearchOpen ? (
+            <div className="flex-1 flex h-[34px] rounded-md overflow-hidden bg-white">
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && submitSearch()}
+                placeholder="Search products..."
+                autoFocus
+                className="flex-1 px-3 text-sm text-black outline-none placeholder:text-gray-400"
+              />
+              <button
+                onClick={submitSearch}
+                className="w-[36px] bg-[#febd69] hover:bg-[#f3a847] flex items-center justify-center"
+              >
+                <svg className="w-4 h-4 text-[#333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
             </div>
-          </div>
-
-          <div className="flex flex-1 h-[40px] rounded-md overflow-hidden bg-white mx-1 md:mx-2 min-w-0 transition-all duration-200">
-            <select
-              value={category}
-              onChange={(e) => handleCat(e.target.value)}
-              aria-label="Search category"
-              className="bg-[#e6e6e6] hover:bg-[#d4d4d4] text-[#555] text-xs px-2 w-[44px] md:w-[120px] border-r border-[#cdcdcd] outline-none cursor-pointer shrink-0 transition-colors duration-200"
+          ) : (
+            /* Search Icon */
+            <button 
+              onClick={() => setIsSearchOpen(true)}
+              className="text-white p-1.5 hover:bg-white/10 rounded ml-auto"
+              aria-label="Search"
             >
-              <option value="">All</option>
-              {categories.map((c) => (
-                <option key={c.slug} value={c.slug}>{c.name}</option>
-              ))}
-            </select>
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              onKeyDown={(e) => e.key === 'Enter' && submitSearch()}
-              placeholder="Search Suma Automation"
-              aria-label="Search products"
-              className="flex-1 min-w-0 px-3 text-sm text-black outline-none placeholder:text-[#6f7377]"
-            />
-            <button
-              onClick={submitSearch}
-              aria-label="Submit search"
-              className="w-[45px] bg-[#febd69] hover:bg-[#f3a847] flex items-center justify-center shrink-0 transition-colors duration-200 border-l border-[#cdcdcd]"
-            >
-              <svg className="w-5 h-5 text-[#333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
-          </div>
+          )}
 
-          <div className="flex items-center shrink-0 gap-1 md:gap-2">
-            <div className="hidden lg:flex items-center h-[50px] px-2 border border-transparent hover:border hover:border-white rounded-sm cursor-pointer transition-all duration-200">
-              <span className="text-white text-sm font-bold">🇱🇰</span>
-              <span className="text-white text-sm ml-1">EN</span>
-            </div>
-
-            <div className="hidden lg:flex flex-col h-[50px] px-2 border border-transparent hover:border hover:border-white rounded-sm cursor-pointer transition-all duration-200">
-              <span className="text-[11px] text-[#ccc] leading-none">
-                {status === 'loading' ? 'Loading...' : getGreeting()}
-              </span>
-              <span className="text-sm font-bold text-white leading-tight">
-                {session ? 'Account & Lists' : 'Account'}
-              </span>
-            </div>
-
-            <Link
-              href="/orders"
-              className="hidden lg:flex flex-col h-[50px] px-2 border border-transparent hover:border hover:border-white rounded-sm transition-all duration-200"
-            >
-              <span className="text-[11px] text-[#ccc] leading-none">Returns</span>
-              <span className="text-sm font-bold text-white leading-tight">& Orders</span>
-            </Link>
-
-            <Link
-              href="/cart"
-              className="relative flex items-center h-[50px] px-2 border border-transparent hover:border hover:border-white rounded-sm transition-all duration-200 text-white"
-            >
-              <div className="relative">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                {hasHydrated && itemCount > 0 && (
-                  <span className="absolute -top-1 -right-2 bg-[#f08804] text-black text-xs font-bold min-w-[20px] h-[20px] px-1 rounded-full flex items-center justify-center border border-[#131921]">
-                    {itemCount}
-                  </span>
-                )}
-              </div>
-              <span className="hidden lg:block font-bold text-sm ml-1 self-end mb-1">Cart</span>
-            </Link>
-
-            <Link
-              href="/quote-cart"
-              className="relative flex items-center h-[50px] px-2 border border-transparent hover:border hover:border-white rounded-sm transition-all duration-200 text-white"
-            >
-              <div className="relative">
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                {hasHydrated && quoteCount > 0 && (
-                  <span className="absolute -top-1 -right-2 bg-[#f08804] text-black text-xs font-bold min-w-[20px] h-[20px] px-1 rounded-full flex items-center justify-center border border-[#131921]">
-                    {quoteCount}
-                  </span>
-                )}
-              </div>
-              <span className="hidden lg:block font-bold text-sm ml-1 self-end mb-1">Quote</span>
-            </Link>
-
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              aria-label="Open menu"
-              className="lg:hidden text-white p-2 text-2xl ml-1 hover:bg-white/10 rounded"
-            >
-              {menuOpen ? (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+          {/* Cart - Simple Icon with Badge */}
+          <Link href="/cart" className="relative flex items-center text-white px-1">
+            <div className="relative">
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              {hasHydrated && itemCount > 0 && (
+                <span className="absolute -top-1 -right-2 bg-[#f08804] text-black text-[10px] font-bold min-w-[16px] h-[16px] px-1 rounded-full flex items-center justify-center border-2 border-[#131921]">
+                  {itemCount}
+                </span>
               )}
-            </button>
-          </div>
+            </div>
+          </Link>
         </div>
       </div>
 
-      {/* SECOND BAR - Courses ekata mulata */}
-      <div className="bg-[#232f3e] min-h-[39px] flex items-center px-3 lg:px-4">
-        <div className="w-full max-w-[1500px] mx-auto flex items-center gap-3 text-white text-[13px] overflow-x-auto scrollbar-hide">
+      {/* SECOND BAR - Simple Amazon Style with All, Courses, Today's Deals */}
+      <div className="bg-[#232f3e] min-h-[36px] flex items-center px-2 overflow-x-auto scrollbar-hide">
+        <div className="flex items-center gap-3 text-white text-xs whitespace-nowrap">
           <button 
             onClick={() => setMenuOpen(!menuOpen)} 
-            className="flex items-center gap-1 font-bold shrink-0 h-[30px] px-1 border border-transparent hover:border hover:border-white rounded-sm transition-all duration-200"
+            className="flex items-center gap-1 font-bold hover:opacity-80"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
             All
           </button>
-
-          <Link
-            href="/courses"
-            className="bg-[#febd69] text-black h-[28px] px-3 rounded-sm font-bold text-[13px] flex items-center shrink-0 hover:bg-[#f3a847] transition-colors duration-200"
+          
+          <Link 
+            href="/courses" 
+            className="bg-[#febd69] text-black px-3 py-0.5 rounded-sm font-bold text-[11px] hover:bg-[#f3a847] transition-colors"
           >
             🎓 Courses
           </Link>
-
-          <Link
-            href="/shop"
-            className="border border-transparent hover:border hover:border-white px-2 h-[30px] flex items-center shrink-0 rounded-sm transition-all duration-200 font-medium"
+          
+          <Link 
+            href="/shop" 
+            className="hover:underline font-medium"
           >
             Today's Deals
           </Link>
 
-          {categories.slice(0, 6).map((c) => (
-            <Link
-              key={c.slug}
-              href={`/shop/category/${c.slug}`}
-              className="border border-transparent hover:border hover:border-white px-2 h-[30px] flex items-center shrink-0 rounded-sm transition-all duration-200 whitespace-nowrap"
+          {/* Additional items for larger screens */}
+          <Link href="/shop" className="hover:underline hidden sm:inline">Customer Service</Link>
+          <Link href="/shop" className="hover:underline hidden sm:inline">Gift Cards</Link>
+          
+          {categories.slice(0, 3).map((c) => (
+            <Link 
+              key={c.slug} 
+              href={`/shop/category/${c.slug}`} 
+              className="hover:underline hidden md:inline"
             >
               {c.name}
             </Link>
           ))}
-
-          {categories.length > 6 && (
-            <Link
-              href="/shop"
-              className="border border-transparent hover:border hover:border-white px-2 h-[30px] flex items-center shrink-0 rounded-sm transition-all duration-200"
-            >
-              More...
-            </Link>
-          )}
         </div>
       </div>
 
-      {/* MOBILE DRAWER */}
+      {/* MOBILE DRAWER - Clean Amazon Style */}
       {menuOpen && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-[200] backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
-          <div className="fixed left-0 top-0 h-full w-[320px] bg-white z-[201] flex flex-col shadow-2xl transform transition-transform duration-300 ease-in-out">
-            <div className="bg-[#131921] text-white p-4 flex items-center justify-between min-h-[60px]">
+          <div className="fixed inset-0 bg-black/50 z-[200]" onClick={() => setMenuOpen(false)} />
+          <div className="fixed left-0 top-0 h-full w-[280px] bg-white z-[201] flex flex-col shadow-2xl transition-transform duration-300">
+            {/* Drawer Header */}
+            <div className="bg-[#131921] text-white p-4 flex items-center gap-3 min-h-[50px]">
+              <div className="w-8 h-8 bg-[#febd69] rounded-full flex items-center justify-center text-black font-bold text-sm">
+                {session?.user?.name?.[0] || 'G'}
+              </div>
               <div>
-                <div className="text-xs text-[#ccc]">Hello</div>
-                <div className="font-bold text-lg">
-                  {session?.user?.name || 'Sign in'}
+                <div className="text-[10px] text-[#ccc]">Hello</div>
+                <div className="font-bold text-sm">
+                  {session?.user?.name || 'Guest'}
                 </div>
               </div>
-              <button 
-                onClick={() => setMenuOpen(false)} 
-                className="text-2xl hover:bg-white/10 p-2 rounded-full transition-colors duration-200"
-                aria-label="Close menu"
-              >
-                ✕
-              </button>
             </div>
 
+            {/* Drawer Menu Items */}
             <div className="flex-1 overflow-y-auto">
               {!session && (
-                <Link
-                  href="/login"
-                  onClick={() => setMenuOpen(false)}
-                  className="block px-4 py-3 border-b text-sm font-bold text-[#2b7fff] hover:bg-gray-50 transition-colors duration-200"
+                <Link 
+                  href="/login" 
+                  onClick={() => setMenuOpen(false)} 
+                  className="block px-4 py-3 border-b text-sm font-bold text-[#2b7fff]"
                 >
-                  <span className="mr-2">🔑</span>
-                  Sign In
+                  🔑 Sign In
                 </Link>
               )}
-              <Link
-                href="/courses"
-                onClick={() => setMenuOpen(false)}
-                className="block px-4 py-3 border-b text-sm font-bold text-black hover:bg-gray-50 transition-colors duration-200 bg-[#febd69]/10"
-              >
-                <span className="mr-2">🎓</span>
-                Online Courses
+              
+              <Link href="/" onClick={() => setMenuOpen(false)} className="block px-4 py-3 border-b text-sm text-black">
+                🏠 Home
               </Link>
-              <Link
-                href="/shop"
-                onClick={() => setMenuOpen(false)}
-                className="block px-4 py-3 border-b text-sm text-black hover:bg-gray-50 transition-colors duration-200"
+              
+              <Link 
+                href="/courses" 
+                onClick={() => setMenuOpen(false)} 
+                className="block px-4 py-3 border-b text-sm text-black bg-[#febd69]/10 font-bold"
               >
-                <span className="mr-2">🏷️</span>
-                Today's Deals
+                🎓 Online Courses
               </Link>
+              
+              <Link href="/shop" onClick={() => setMenuOpen(false)} className="block px-4 py-3 border-b text-sm text-black">
+                🛍️ Shop All
+              </Link>
+              
+              <Link href="/shop" onClick={() => setMenuOpen(false)} className="block px-4 py-3 border-b text-sm text-black">
+                🔥 Today's Deals
+              </Link>
+              
               <div className="py-2">
-                <div className="px-4 py-2 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                  Shop Categories
+                <div className="px-4 py-1 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
+                  Categories
                 </div>
                 {categories.map((c) => (
                   <Link
                     key={c.slug}
                     href={`/shop/category/${c.slug}`}
                     onClick={() => setMenuOpen(false)}
-                    className="block px-4 py-2.5 border-b text-sm text-black hover:bg-gray-50 hover:pl-6 transition-all duration-200"
+                    className="block px-4 py-2.5 border-b text-sm text-black hover:bg-gray-50 transition-colors"
                   >
                     {c.name}
                   </Link>
                 ))}
               </div>
+              
               {session && (
                 <button
                   onClick={() => { setMenuOpen(false); signOut({ callbackUrl: '/' }); }}
-                  className="block w-full text-left px-4 py-3 border-t text-sm text-red-600 hover:bg-red-50 transition-colors duration-200 font-medium mt-2"
+                  className="block w-full text-left px-4 py-3 border-t text-sm text-red-600 font-medium hover:bg-red-50 transition-colors"
                 >
-                  <span className="mr-2">🚪</span>
-                  Sign Out
+                  🚪 Sign Out
                 </button>
               )}
             </div>
