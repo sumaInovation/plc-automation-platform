@@ -1,7 +1,13 @@
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import AuthProvider from '@/components/layout/AuthProvider';
-import Navbar from '@/components/layout/Navbar';
+import dynamic from 'next/dynamic';
+
+// Navbar eka dynamic import karanna (SSR off kara)
+const Navbar = dynamic(
+  () => import('@/components/layout/Navbar'),
+  { ssr: false }
+);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,6 +36,7 @@ export const metadata = {
     type: "website",
   },
 };
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full`}>
