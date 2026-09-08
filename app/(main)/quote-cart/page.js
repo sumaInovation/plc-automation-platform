@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useQuoteStore } from '@/store/quoteStore';
@@ -75,8 +76,8 @@ export default function QuoteCartPage() {
       <div className="space-y-3 mb-6">
         {items.map((item) => (
           <div key={item._id} className="flex items-center gap-3 border rounded-lg p-3 bg-white">
-            <div className="w-14 h-14 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
-              {item.image ? <img src={item.image} alt={item.name} className="w-full h-full object-contain" /> : <span className="text-gray-400 text-xs">No image</span>}
+            <div className="relative w-14 h-14 bg-gray-100 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
+              {item.image ? <Image src={item.image} alt={item.name} fill sizes="56px" className="object-contain" /> : <span className="text-gray-400 text-xs">No image</span>}
             </div>
             <p className="flex-1 text-sm font-medium line-clamp-2">{item.name}</p>
             <div className="flex items-center gap-2">
