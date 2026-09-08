@@ -33,6 +33,10 @@ export const metadata = {
   },
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 // Server-side categories fetch
 async function getCategories() {
   try {

@@ -237,8 +237,8 @@ export default function Navbar({ categories = [] }) {
 
   return (
     <div className="sticky top-0 z-50 w-full font-sans bg-[#131921]">
-      {/* ===================== DESKTOP (md and up) ===================== */}
-      <div className="hidden md:block">
+      {/* ===================== DESKTOP (sm and up) ===================== */}
+      <div className="hidden sm:block">
         <div className="flex items-center gap-4 px-4 h-[64px]">
           {/* Logo */}
           <Link href="/" className="shrink-0 flex items-center hover:ring-1 hover:ring-white/40 rounded-sm p-1 -m-1">
@@ -248,7 +248,7 @@ export default function Navbar({ categories = [] }) {
           </Link>
 
           {/* Deliver to */}
-          <button className="hidden lg:flex flex-col justify-center text-white text-left px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0">
+          <button className="hidden md:flex flex-col justify-center text-white text-left px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0">
             <span className="flex items-center gap-1 text-[11px] text-gray-300 leading-none">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
@@ -304,7 +304,7 @@ export default function Navbar({ categories = [] }) {
           {/* Account & Lists */}
           <Link
             href={session ? '/account' : '/login'}
-            className="hidden lg:flex flex-col justify-center text-white px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0"
+            className="hidden md:flex flex-col justify-center text-white px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0"
           >
             <span className="text-[11px] text-gray-300 leading-none">Hello, {getGreeting()}</span>
             <span className="text-[13px] font-bold leading-tight">Account &amp; Lists</span>
@@ -313,7 +313,7 @@ export default function Navbar({ categories = [] }) {
           {/* Returns & Orders */}
           <Link
             href="/account/orders"
-            className="hidden xl:flex flex-col justify-center text-white px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0"
+            className="hidden lg:flex flex-col justify-center text-white px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0"
           >
             <span className="text-[11px] text-gray-300 leading-none">Returns</span>
             <span className="text-[13px] font-bold leading-tight">&amp; Orders</span>
@@ -329,7 +329,7 @@ export default function Navbar({ categories = [] }) {
                 {hasHydrated ? itemCount : 0}
               </span>
             </div>
-            <span className="text-[13px] font-bold hidden lg:inline">Cart</span>
+            <span className="text-[13px] font-bold hidden md:inline">Cart</span>
           </Link>
         </div>
 
@@ -360,8 +360,8 @@ export default function Navbar({ categories = [] }) {
         </div>
       </div>
 
-      {/* ===================== MOBILE (below md) ===================== */}
-      <div className="md:hidden">
+      {/* ===================== MOBILE (below sm) ===================== */}
+      <div className="sm:hidden">
         {/* Top bar */}
         <div className="min-h-[52px] flex items-center px-2 gap-1">
           <button
@@ -403,11 +403,11 @@ export default function Navbar({ categories = [] }) {
 
         {/* Search bar */}
         <div className="px-2 pb-2.5 relative">
-          <div className="flex h-[38px] rounded-md overflow-hidden bg-white ring-1 ring-black/5">
+          <div className="flex h-[42px] rounded-md overflow-hidden bg-white ring-1 ring-black/5">
             <select
               value={category}
               onChange={handleCategoryChange}
-              className="bg-[#e6e6e6] hover:bg-[#d4d4d4] text-[#555] text-[10px] px-1.5 w-[36px] sm:w-[70px] border-r border-[#cdcdcd] outline-none cursor-pointer shrink-0"
+              className="bg-[#e6e6e6] hover:bg-[#d4d4d4] text-[#555] text-base sm:text-[10px] px-1.5 w-[52px] sm:w-[70px] border-r border-[#cdcdcd] outline-none cursor-pointer shrink-0"
             >
               <option value="">All</option>
               {categories.map((c) => (
@@ -423,7 +423,7 @@ export default function Navbar({ categories = [] }) {
               onKeyDown={handleKeyDown}
               onFocus={() => setIsSearchFocused(true)}
               placeholder="Search products..."
-              className="flex-1 min-w-0 px-3 text-sm text-black outline-none placeholder:text-gray-400"
+              className="flex-1 min-w-0 px-3 text-base text-black outline-none placeholder:text-gray-400"
               autoComplete="off"
             />
 
