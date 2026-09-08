@@ -2,6 +2,8 @@ import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import AuthProvider from '@/components/layout/AuthProvider';
 import NavbarWrapper from './NavbarWrapper';
+import connectDB from '@/lib/db';
+import Category from '@/models/Category';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,12 +33,29 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+// Server-side categories fetch
+async function getCategories() {
+  try {
+    await connectDB();
+    const categories = await Category.find()
+      .sort({ name: 1 })
+      .select('name slug')
+      .lean();
+    return JSON.parse(JSON.stringify(categories));
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
+}
+
+export default async function RootLayout({ children }) {
+  const categories = await getCategories();
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full`}>
       <body className="min-h-full flex flex-col antialiased bg-[#F4F6F7] text-[#10161C]">
         <AuthProvider>
-          <NavbarWrapper />
+          <NavbarWrapper categories={categories} />
           {children}
         </AuthProvider>
       </body>

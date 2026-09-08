@@ -9,49 +9,49 @@ import { useHasHydrated } from '@/hooks/useHasHydrated';
 import { useSession, signOut } from 'next-auth/react';
 import { useQuoteStore } from '@/store/quoteStore';
 
-export default function Navbar() {
+export default function Navbar({ categories = [] }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const hasHydrated = useHasHydrated();
   const itemCount = useCartStore((s) => s.getItemCount());
-  const quoteCount = useQuoteStore((s) => s.getItemCount());
   const { data: session, status } = useSession();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
-  const [categories, setCategories] = useState([]);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  
-  // Auto-suggest states
   const [suggestions, setSuggestions] = useState([]);
-  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const suggestionsRef = useRef(null);
-  const searchInputRef = useRef(null);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const skipNextDebounce = useRef(false);
-  const isFirstRun = useRef(true);
   const debounceTimer = useRef(null);
+  const searchInputRef = useRef(null);
+  const suggestionsRef = useRef(null);
+  const isFirstRun = useRef(true);
+  const skipNextDebounce = useRef(false);
+  const lastPushedSearch = useRef(null); // tracks searches WE pushed to the URL
 
-  useEffect(() => {
-    fetch('/api/categories')
-      .then((r) => r.json())
-      .then((d) => setCategories(Array.isArray(d) ? d : d.categories || []))
-      .catch(() => {});
-  }, []);
-
+  // ===== Load search from URL =====
   useEffect(() => {
     const urlSearch = searchParams.get('search') || '';
     const pathMatch = pathname.match(/^\/shop\/category\/([^/]+)/);
     const urlCategory = pathMatch ? pathMatch[1] : searchParams.get('category') || '';
+
+    // If this URL change came from our own router.push while typing,
+    // don't overwrite whatever the user is currently typing.
+    if (lastPushedSearch.current !== null && urlSearch === lastPushedSearch.current) {
+      lastPushedSearch.current = null;
+      setCategory(urlCategory);
+      return;
+    }
 
     skipNextDebounce.current = true;
     setSearch(urlSearch);
     setCategory(urlCategory);
   }, [pathname, searchParams]);
 
+  // ===== Auto-search on type =====
   useEffect(() => {
     if (isFirstRun.current) {
       isFirstRun.current = false;
@@ -62,9 +62,10 @@ export default function Navbar() {
       return;
     }
 
-    const t = setTimeout(() => {
+    const timer = setTimeout(() => {
       const trimmed = search.trim();
       const currentSearch = searchParams.get('search') || '';
+
       if (trimmed === currentSearch) return;
       if (search.length > 0 && trimmed === '') return;
 
@@ -73,40 +74,42 @@ export default function Navbar() {
       if (trimmed.length > 0) p.set('search', trimmed);
       else p.delete('search');
 
+      lastPushedSearch.current = trimmed;
       const base = category ? `/shop/category/${category}` : '/shop';
       const qs = p.toString();
       router.push(`${base}${qs ? `?${qs}` : ''}`, { scroll: false });
     }, 600);
 
-    return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search]);
+    return () => clearTimeout(timer);
+  }, [search, category, searchParams, router]);
 
-  // Auto-suggest fetch
+  // ===== Auto-suggest =====
   useEffect(() => {
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }
 
-    if (search.trim().length < 2) {
+    const trimmed = search.trim();
+    if (trimmed.length < 2) {
       setSuggestions([]);
+      setIsLoading(false);
       return;
     }
 
-    setIsLoadingSuggestions(true);
+    setIsLoading(true);
     debounceTimer.current = setTimeout(async () => {
       try {
-        const res = await fetch(`/api/search/suggest?q=${encodeURIComponent(search.trim())}&category=${category}`);
+        const res = await fetch(`/api/search/suggest?q=${encodeURIComponent(trimmed)}&category=${category}`);
         const data = await res.json();
         setSuggestions(data.suggestions || []);
         setSelectedIndex(-1);
       } catch (error) {
-        console.error('Error fetching suggestions:', error);
+        console.error('Suggest error:', error);
         setSuggestions([]);
       } finally {
-        setIsLoadingSuggestions(false);
+        setIsLoading(false);
       }
-    }, 300);
+    }, 200);
 
     return () => {
       if (debounceTimer.current) {
@@ -115,42 +118,64 @@ export default function Navbar() {
     };
   }, [search, category]);
 
-  const handleCat = (v) => {
-    setCategory(v);
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (suggestionsRef.current && !suggestionsRef.current.contains(e.target) &&
+          searchInputRef.current && !searchInputRef.current.contains(e.target)) {
+        setSuggestions([]);
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleCategoryChange = (e) => {
+    const val = e.target.value;
+    setCategory(val);
     const p = new URLSearchParams(searchParams.toString());
     p.delete('category');
     const qs = p.toString();
-    const dest = v ? `/shop/category/${v}${qs ? `?${qs}` : ''}` : `/shop${qs ? `?${qs}` : ''}`;
+    const dest = val ? `/shop/category/${val}${qs ? `?${qs}` : ''}` : `/shop${qs ? `?${qs}` : ''}`;
     router.push(dest, { scroll: false });
   };
 
   const submitSearch = () => {
+    const trimmed = search.trim();
+    if (!trimmed) {
+      return;
+    }
     setSuggestions([]);
+    setIsSearchFocused(false);
     const p = new URLSearchParams();
-    if (search.trim()) p.set('search', search.trim());
+    p.set('search', trimmed);
     const base = category ? `/shop/category/${category}` : '/shop';
-    const qs = p.toString();
-    router.push(`${base}${qs ? `?${qs}` : ''}`);
-    setIsSearchOpen(false);
+    router.push(`${base}?${p.toString()}`);
   };
 
   const handleSuggestionClick = (suggestion) => {
     setSearch(suggestion.name);
     setSuggestions([]);
+    setIsSearchFocused(false);
     const p = new URLSearchParams();
     p.set('search', suggestion.name);
     const base = category ? `/shop/category/${category}` : '/shop';
     router.push(`${base}?${p.toString()}`);
-    setIsSearchOpen(false);
   };
 
   const handleKeyDown = (e) => {
-    if (suggestions.length === 0) {
-      if (e.key === 'Enter') {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (suggestions.length > 0 && selectedIndex >= 0 && selectedIndex < suggestions.length) {
+        handleSuggestionClick(suggestions[selectedIndex]);
+      } else {
         submitSearch();
       }
       return;
     }
+
+    if (suggestions.length === 0) return;
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
@@ -158,16 +183,10 @@ export default function Navbar() {
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       setSelectedIndex((prev) => (prev - 1 + suggestions.length) % suggestions.length);
-    } else if (e.key === 'Enter') {
-      e.preventDefault();
-      if (selectedIndex >= 0 && selectedIndex < suggestions.length) {
-        handleSuggestionClick(suggestions[selectedIndex]);
-      } else {
-        submitSearch();
-      }
     } else if (e.key === 'Escape') {
       setSuggestions([]);
       setSelectedIndex(-1);
+      setIsSearchFocused(false);
     }
   };
 
@@ -180,11 +199,9 @@ export default function Navbar() {
 
   return (
     <div className="sticky top-0 z-50 w-full font-sans bg-[#131921]">
-      {/* ===== TOP BAR ===== */}
+      {/* TOP BAR */}
       <div className="min-h-[48px] flex items-center px-2">
         <div className="w-full flex items-center gap-1.5">
-          
-          {/* Menu Button */}
           <button 
             onClick={() => setMenuOpen(!menuOpen)}
             className="text-white p-2 -ml-1 hover:bg-white/10 rounded-sm"
@@ -195,7 +212,6 @@ export default function Navbar() {
             </svg>
           </button>
 
-          {/* Logo */}
           <Link href="/" className="shrink-0 flex items-center">
             <div className="bg-white rounded-sm h-[30px] px-2 flex items-center">
               <Image 
@@ -209,7 +225,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Sign In */}
           <Link 
             href={session ? '/account' : '/login'} 
             className="hidden xs:flex flex-col leading-tight text-white px-1 hover:opacity-80"
@@ -218,10 +233,8 @@ export default function Navbar() {
             <span className="text-[11px] font-bold leading-tight">{getGreeting()}</span>
           </Link>
 
-          {/* Spacer */}
           <div className="flex-1 min-w-[20px]" />
 
-          {/* Cart Icon */}
           <Link href="/cart" className="relative flex items-center text-white px-1">
             <div className="relative">
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,13 +250,12 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ===== SEARCH BAR - With Auto-Suggest ===== */}
+      {/* SEARCH BAR */}
       <div className="px-2 pb-2 relative">
         <div className="flex h-[36px] rounded-md overflow-hidden bg-white">
-          {/* Category Dropdown */}
           <select
             value={category}
-            onChange={(e) => handleCat(e.target.value)}
+            onChange={handleCategoryChange}
             className="bg-[#e6e6e6] hover:bg-[#d4d4d4] text-[#555] text-[10px] px-1.5 w-[44px] sm:w-[70px] border-r border-[#cdcdcd] outline-none cursor-pointer shrink-0"
           >
             <option value="">All</option>
@@ -254,26 +266,19 @@ export default function Navbar() {
           
           <input
             ref={searchInputRef}
+            type="text"
             value={search}
-            onChange={(e) => {
-              setSearch(e.target.value);
-              setIsSearchOpen(true);
-            }}
+            onChange={(e) => setSearch(e.target.value)}
             onKeyDown={handleKeyDown}
-            onFocus={() => setIsSearchOpen(true)}
-            onBlur={() => {
-              setTimeout(() => {
-                setIsSearchOpen(false);
-                setSuggestions([]);
-              }, 200);
-            }}
+            onFocus={() => setIsSearchFocused(true)}
             placeholder="Search products..."
             className="flex-1 min-w-0 px-3 text-sm text-black outline-none placeholder:text-gray-400"
+            autoComplete="off"
           />
           
           <button
             onClick={submitSearch}
-            className="w-[40px] bg-[#febd69] hover:bg-[#f3a847] flex items-center justify-center shrink-0"
+            className="w-[40px] bg-[#febd69] hover:bg-[#f3a847] flex items-center justify-center shrink-0 transition-colors"
           >
             <svg className="w-4 h-4 text-[#333]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -281,57 +286,61 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* ===== AUTO-SUGGEST DROPDOWN ===== */}
-        {isSearchOpen && suggestions.length > 0 && (
+        {isSearchFocused && suggestions.length > 0 && (
           <div 
             ref={suggestionsRef}
-            className="absolute left-2 right-2 top-full mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-[300px] overflow-y-auto z-[100]"
+            className="absolute left-2 right-2 top-full mt-1 bg-white rounded-md shadow-lg border border-gray-200 max-h-[320px] overflow-y-auto z-[100]"
           >
-            {isLoadingSuggestions && suggestions.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-gray-500">Loading...</div>
-            ) : (
-              suggestions.map((suggestion, index) => (
-                <button
-                  key={suggestion._id || index}
-                  onClick={() => handleSuggestionClick(suggestion)}
-                  className={`w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-3 transition-colors ${
-                    selectedIndex === index ? 'bg-gray-100' : ''
-                  }`}
-                >
-                  {suggestion.image && (
-                    <img 
-                      src={suggestion.image} 
-                      alt={suggestion.name}
-                      className="w-10 h-10 object-contain rounded"
-                    />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm text-gray-800 font-medium truncate">
-                      {suggestion.name}
-                    </div>
+            {suggestions.map((suggestion, index) => (
+              <button
+                key={suggestion._id || index}
+                onClick={() => handleSuggestionClick(suggestion)}
+                className={`w-full text-left px-4 py-2.5 hover:bg-gray-50 flex items-center gap-3 transition-colors border-b border-gray-100 last:border-0 ${
+                  selectedIndex === index ? 'bg-gray-100' : ''
+                }`}
+              >
+                {suggestion.image && (
+                  <img 
+                    src={suggestion.image} 
+                    alt={suggestion.name}
+                    className="w-10 h-10 object-contain rounded bg-gray-50 shrink-0"
+                  />
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="text-sm text-gray-800 font-medium truncate">
+                    {suggestion.name}
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
                     {suggestion.category && (
-                      <div className="text-xs text-gray-500 truncate">
-                        {suggestion.category}
-                      </div>
+                      <span className="truncate">{suggestion.category}</span>
                     )}
                   </div>
-                  {suggestion.price && (
-                    <div className="text-sm font-bold text-[#B12704] shrink-0">
-                      LKR {suggestion.price.toLocaleString()}
-                    </div>
-                  )}
-                </button>
-              ))
-            )}
+                </div>
+                {suggestion.price && (
+                  <div className="text-sm font-bold text-[#B12704] shrink-0">
+                    LKR {suggestion.price.toLocaleString()}
+                  </div>
+                )}
+              </button>
+            ))}
           </div>
         )}
       </div>
 
-      {/* ===== SECOND BAR ===== */}
+      {/* SECOND BAR */}
       <div className="bg-[#232f3e] min-h-[40px] flex items-center px-2 overflow-x-auto scrollbar-hide border-t border-[#3a4553]">
         <div className="flex items-center gap-3 text-white text-xs whitespace-nowrap">
-          
-          <Link href="/courses" className="bg-[#febd69] text-black px-2 py-1 rounded text-[11px] font-bold shrink-0">
+          <button 
+            onClick={() => setMenuOpen(!menuOpen)}
+            className="flex items-center gap-1 font-bold hover:opacity-80 shrink-0"
+          >
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            All
+          </button>
+
+          <Link href="/courses" className="bg-[#febd69] text-black px-2 py-0.5 rounded text-[11px] font-bold shrink-0">
             🎓 Courses
           </Link>
 
@@ -367,7 +376,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* ===== MOBILE DRAWER ===== */}
+      {/* MOBILE DRAWER */}
       {menuOpen && (
         <>
           <div className="fixed inset-0 bg-black/50 z-[200]" onClick={() => setMenuOpen(false)} />

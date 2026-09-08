@@ -2,12 +2,12 @@
 
 import dynamic from 'next/dynamic';
 
-// Import Navbar with SSR disabled in a Client Component
+// Navbar ekak dynamic import karanna (SSR off)
 const Navbar = dynamic(
   () => import('@/components/layout/Navbar'),
   { ssr: false }
 );
 
-export default function NavbarWrapper() {
-  return <Navbar />;
+export default function NavbarWrapper({ categories }) {
+  return <Navbar categories={categories} />;
 }

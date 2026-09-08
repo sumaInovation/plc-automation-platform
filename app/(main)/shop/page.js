@@ -2,6 +2,7 @@ import connectDB from '@/lib/db';
 import Product from '@/models/Product';
 import Category from '@/models/Category';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const PAGE_SIZE = 24;
 
@@ -89,10 +90,7 @@ export default async function ShopPage({ searchParams }) {
 
         {/* Right - FIXED IMAGE SIZE */}
         <div className="flex-1">
-          <div className="p-4 border-b">
-            <h1 className="font-bold">Results</h1>
-            <p className="text- text-[#565959]">Check each product page for other buying options.</p>
-          </div>
+          
 
           {products.length===0? (
             <div className="p-10 text-center text-[#565959]">No products match "{params.search}"</div>
@@ -106,10 +104,12 @@ export default async function ShopPage({ searchParams }) {
                     className="bg-[#f7f7f7] rounded- flex items-center justify-center overflow-hidden shrink-0"
                     style={{ width: '210px', height: '210px', minWidth: '210px', minHeight: '210px', maxWidth: '210px', maxHeight: '210px' }}
                   >
-                    <img
+                    <Image
                       src={product.images?.[0] || '/no-image.png'}
                       alt={product.name}
-                      style={{ width: '190px', height: '190px', maxWidth: '190px', maxHeight: '190px', objectFit: 'contain', display: 'block' }}
+                      width={190}
+                      height={190}
+                      style={{ objectFit: 'contain', display: 'block' }}
                     />
                   </Link>
 
