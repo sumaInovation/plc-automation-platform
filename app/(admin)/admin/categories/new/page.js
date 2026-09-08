@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+export const dynamic = 'force-dynamic';
+
 export default function NewCategoryPage() {
   const router = useRouter();
   const [form, setForm] = useState({ name: '', description: '' });
