@@ -24,14 +24,21 @@ async function getData(slug, sp) {
     Product.countDocuments(filter),
     Category.find().sort({ name: 1 }).select('name slug').lean()
   ]);
-  return { category: JSON.parse(JSON.stringify(category)), products: JSON.parse(JSON.stringify(products)), allCats: JSON.parse(JSON.stringify(allCats)), totalCount, totalPages: Math.ceil(totalCount / PAGE_SIZE), currentPage };
+  return { 
+    category: JSON.parse(JSON.stringify(category)), 
+    products: JSON.parse(JSON.stringify(products)), 
+    allCats: JSON.parse(JSON.stringify(allCats)), 
+    totalCount, 
+    totalPages: Math.ceil(totalCount / PAGE_SIZE), 
+    currentPage 
+  };
 }
 
 export default async function Page({ params, searchParams }) {
   const { slug } = await params;
   const sp = await searchParams;
   const data = await getData(slug, sp);
-  if (!data) return <div className="p-10">Category not found</div>;
+  if (!data) return <div className="p-10 text-center">Category not found</div>;
   const { category, products, allCats, totalCount, totalPages, currentPage } = data;
 
   const linkWith = (p) => {
@@ -42,62 +49,155 @@ export default async function Page({ params, searchParams }) {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="border-y border-[#ddd] px-4 py-2 text- flex justify-between max-w- mx-auto">
-        <div>1-24 of {totalCount} results for <span className="text-[#c45500] font-bold">"{category.name}"</span></div>
-        <div className="flex gap-2 text-">
-          <Link href={linkWith({ sort: '', page: '' })} className={`px-3 py-1 border rounded ${!sp?.sort? 'bg-white shadow font-bold border-black' : 'bg-[#f0f2f2]'}`}>Featured</Link>
-          <Link href={linkWith({ sort: 'price_asc', page: '' })} className={`px-3 py-1 border rounded ${sp?.sort==='price_asc'? 'bg-white shadow font-bold border-black' : 'bg-[#f0f2f2]'}`}>Price: Low to High</Link>
-          <Link href={linkWith({ sort: 'price_desc', page: '' })} className={`px-3 py-1 border rounded ${sp?.sort==='price_desc'? 'bg-white shadow font-bold border-black' : 'bg-[#f0f2f2]'}`}>Price: High to Low</Link>
+      {/* ===== RESULTS HEADER - Responsive ===== */}
+      <div className="border-y border-[#ddd] px-3 sm:px-4 py-2 text-xs sm:text-sm flex flex-col sm:flex-row justify-between gap-2 max-w-[1500px] mx-auto">
+        <div className="font-medium text-[#555]">
+          1-{Math.min(PAGE_SIZE, totalCount)} of {totalCount} results for{" "}
+          <span className="text-[#c45500] font-bold">"{category.name}"</span>
+        </div>
+        
+        {/* Sort Filters - Horizontal Scroll on Mobile */}
+        <div className="flex gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide pb-1">
+          <Link 
+            href={linkWith({ sort: '', page: '' })} 
+            className={`px-2 sm:px-3 py-1 border rounded text-[11px] sm:text-xs whitespace-nowrap transition-all ${
+              !sp?.sort ? 'bg-white shadow-sm font-bold border-black' : 'bg-[#f0f2f2] hover:bg-[#e3e6e8]'
+            }`}
+          >
+            Featured
+          </Link>
+          <Link 
+            href={linkWith({ sort: 'price_asc', page: '' })} 
+            className={`px-2 sm:px-3 py-1 border rounded text-[11px] sm:text-xs whitespace-nowrap transition-all ${
+              sp?.sort === 'price_asc' ? 'bg-white shadow-sm font-bold border-black' : 'bg-[#f0f2f2] hover:bg-[#e3e6e8]'
+            }`}
+          >
+            Price: Low to High
+          </Link>
+          <Link 
+            href={linkWith({ sort: 'price_desc', page: '' })} 
+            className={`px-2 sm:px-3 py-1 border rounded text-[11px] sm:text-xs whitespace-nowrap transition-all ${
+              sp?.sort === 'price_desc' ? 'bg-white shadow-sm font-bold border-black' : 'bg-[#f0f2f2] hover:bg-[#e3e6e8]'
+            }`}
+          >
+            Price: High to Low
+          </Link>
         </div>
       </div>
 
-      <div className="max-w- mx-auto flex">
-        <div className="hidden lg:block w- p-4 border-r border-[#ddd] shrink-0">
-          <h3 className="font-bold text-">Department</h3>
-          <div className="text- mt-2 space-y-1">
-            <Link href="/shop" className="block hover:underline">All Departments</Link>
-            {allCats.map(c => (
-              <Link key={c.slug} href={`/shop/category/${c.slug}`} className={`block py-0.5 ${c.slug===slug? 'font-bold bg-[#f0f2f2] px-1 rounded' : 'pl-3 hover:text-[#c45500]'}`}>{c.name}</Link>
-            ))}
-          </div>
-        </div>
+      {/* ===== MAIN CONTENT - Responsive Layout ===== */}
+      <div className="max-w-[1500px] mx-auto flex flex-col lg:flex-row">
+        
+       
 
-        <div className="flex-1">
-          <div className="p-4 border-b">
-            <h1 className="font-bold">Results</h1>
-            <p className="text- text-[#565959]">Check each product page for other buying options.</p>
-            <p className="font-bold mt-2">{category.name} - {totalCount} products</p>
-          </div>
+        {/* ===== PRODUCT LIST ===== */}
+        <div className="flex-1 min-w-0">
+         
 
+          {/* ===== PRODUCT CARDS - Responsive Grid ===== */}
           <div className="divide-y divide-[#ddd]">
             {products.map(p => (
-              <div key={p._id} className="flex gap-4 p-4">
-                {/* FIXED IMAGE BOX */}
-                <Link href={`/shop/product/${p.slug}`} style={{ width: '200px', height: '200px', minWidth: '200px', minHeight: '200px', maxWidth: '200px', maxHeight: '200px', background: '#f7f7f7', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderRadius: '8px' }}>
+              <div key={p._id} className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 sm:p-4 hover:bg-[#fafafa] transition-colors">
+                
+                {/* Product Image - Responsive */}
+                <Link 
+                  href={`/shop/product/${p.slug}`} 
+                  className="w-full sm:w-[140px] md:w-[180px] lg:w-[200px] aspect-square bg-[#f7f7f7] flex items-center justify-center overflow-hidden rounded-lg shrink-0 mx-auto sm:mx-0"
+                >
                   <img
-                    src={p.images?.[0]}
+                    src={p.images?.[0] || '/placeholder.png'}
                     alt={p.name}
-                    style={{ width: '180px', height: '180px', maxWidth: '180px', maxHeight: '180px', objectFit: 'contain', display: 'block' }}
+                    className="w-[90%] h-[90%] object-contain"
                   />
                 </Link>
 
-                <div className="flex-1 min-w-0">
-                  <Link href={`/shop/product/${p.slug}`} className="text- hover:text-[#c45500] leading-[1.3] block line-clamp-2">{p.name}</Link>
-                  <div className="flex items-center gap-1 mt-1 text-"><span className="text-[#ffa41c]">★★★★★</span><span className="text-[#007185]">({p.reviewCount||4})</span></div>
-                  <div className="text- mt-2 font-light"><sup className="text-">LKR</sup>{p.price.toLocaleString()}</div>
-                  <div className="text- text-[#067d62] mt-1">{p.stock_qty>0? `In Stock - Only ${p.stock_qty} left` : 'Out of Stock'}</div>
-                  <div className="text- text-[#565959]">FREE delivery</div>
-                  <Link href={`/shop/product/${p.slug}`} className="mt-3 inline-block bg-[#ffd814] hover:bg-[#f7ca00] border border-[#fcd200] rounded- px-6 py-1.5 text-">Add to cart</Link>
+                {/* Product Details */}
+                <div className="flex-1 min-w-0 text-center sm:text-left">
+                  <Link 
+                    href={`/shop/product/${p.slug}`} 
+                    className="text-sm sm:text-base hover:text-[#c45500] leading-snug block line-clamp-2 font-medium"
+                  >
+                    {p.name}
+                  </Link>
+                  
+                  {/* Rating */}
+                  <div className="flex items-center justify-center sm:justify-start gap-1 mt-1 text-xs sm:text-sm">
+                    <span className="text-[#ffa41c]">★★★★★</span>
+                    <span className="text-[#007185]">({p.reviewCount || 4})</span>
+                  </div>
+                  
+                  {/* Price */}
+                  <div className="text-lg sm:text-xl font-bold mt-1 text-[#B12704]">
+                    LKR {p.price.toLocaleString()}
+                  </div>
+                  
+                  {/* Stock & Delivery */}
+                  <div className={`text-xs sm:text-sm mt-0.5 ${p.stock_qty > 0 ? 'text-[#067d62]' : 'text-red-500'}`}>
+                    {p.stock_qty > 0 ? `✅ In Stock - ${p.stock_qty} left` : '❌ Out of Stock'}
+                  </div>
+                  <div className="text-[10px] sm:text-xs text-[#565959]">FREE delivery on first order</div>
+                  
+                  {/* Add to Cart Button */}
+                  <Link 
+                    href={`/shop/product/${p.slug}`} 
+                    className="mt-2 inline-block bg-[#ffd814] hover:bg-[#f7ca00] border border-[#fcd200] rounded-full px-4 sm:px-6 py-1.5 text-xs sm:text-sm font-medium transition-colors"
+                  >
+                    🛒 Add to cart
+                  </Link>
                 </div>
               </div>
             ))}
           </div>
 
+          {/* ===== PAGINATION - Responsive ===== */}
           {totalPages > 1 && (
-            <div className="flex justify-center gap-2 p-4">
-              {currentPage>1 && <Link href={linkWith({ page: currentPage-1 })} className="border px-3 py-1 rounded text-">Prev</Link>}
-              <span className="text- py-1">Page {currentPage} of {totalPages}</span>
-              {currentPage<totalPages && <Link href={linkWith({ page: currentPage+1 })} className="border px-3 py-1 rounded text-">Next</Link>}
+            <div className="flex flex-wrap items-center justify-center gap-2 p-4 sm:p-6">
+              <Link 
+                href={linkWith({ page: currentPage - 1 })} 
+                className={`border px-3 py-1.5 rounded text-sm hover:bg-gray-50 transition-colors ${
+                  currentPage <= 1 ? 'opacity-50 pointer-events-none' : ''
+                }`}
+              >
+                ← Previous
+              </Link>
+              
+              <div className="flex items-center gap-1 text-sm">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNum;
+                  if (totalPages <= 5) {
+                    pageNum = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i;
+                  } else {
+                    pageNum = currentPage - 2 + i;
+                  }
+                  
+                  return (
+                    <Link
+                      key={pageNum}
+                      href={linkWith({ page: pageNum })}
+                      className={`w-8 h-8 flex items-center justify-center rounded border transition-colors ${
+                        pageNum === currentPage
+                          ? 'bg-[#ffd814] border-[#fcd200] font-bold'
+                          : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      {pageNum}
+                    </Link>
+                  );
+                })}
+              </div>
+              
+              <Link 
+                href={linkWith({ page: currentPage + 1 })} 
+                className={`border px-3 py-1.5 rounded text-sm hover:bg-gray-50 transition-colors ${
+                  currentPage >= totalPages ? 'opacity-50 pointer-events-none' : ''
+                }`}
+              >
+                Next →
+              </Link>
             </div>
           )}
         </div>
