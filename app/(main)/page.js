@@ -52,35 +52,35 @@ export default async function HomePage() {
     <div>
      {/* HERO */}
 <section className="relative overflow-hidden bg-[#131B22] text-white">
-  <div className="max-w-7xl mx-auto px-6 pt-10 pb-12 md:py-28 grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+  <div className="max-w-7xl mx-auto px-6 py-16 md:py-28 grid md:grid-cols-2 gap-12 items-center">
     <div>
-      <h1 className="font-[family-name:var(--font-display)] text- md:text-5xl font-semibold leading-tight mb-3 md:mb-4">
+      <h1 className="font-[family-name:var(--font-display)] text-4xl md:text-5xl font-semibold leading-tight mb-4">
         Build the automation
         <br />
         you were trained for.
       </h1>
-      <p className="font-[family-name:var(--font-geist-mono)] text- md:text-xs tracking-widest text-[#F5A623] uppercase mb-4 md:mb-6">
+      <p className="font-[family-name:var(--font-geist-mono)] text-xs tracking-widest text-[#F5A623] uppercase mb-6">
         Sri Lanka's PLC, Robotics & Automation Store
       </p>
-      <p className="text-slate-300 text- md:text-lg mb-6 md:mb-8 max-w-md leading-relaxed">
+      <p className="text-slate-300 text- md:text-lg mb-8 max-w-md leading-relaxed">
         PLCs, drives, sensors and passive components — plus hands-on PLC & Robotics
         courses for university students, school leavers and working engineers.
       </p>
-      <div className="flex flex-wrap gap-3 md:gap-4">
+      <div className="flex flex-wrap gap-4">
         <Link
           href="/shop"
-          className="bg-[#F5A623] text-[#131B22] font-semibold px-5 md:px-6 py-3 rounded-lg hover:bg-[#e0951a] transition-colors text-sm md:text-base"
+          className="bg-[#F5A623] text-[#131B22] font-semibold px-6 py-3 rounded-lg hover:bg-[#e0951a] transition-colors"
         >
           Shop Components
         </Link>
         <Link
           href="/courses"
-          className="border border-slate-500 text-white font-semibold px-5 md:px-6 py-3 rounded-lg hover:border-slate-300 transition-colors text-sm md:text-base"
+          className="border border-slate-500 text-white font-semibold px-6 py-3 rounded-lg hover:border-slate-300 transition-colors"
         >
           Explore Courses
         </Link>
       </div>
-      <p className="mt-3 md:mt-4 text-xs text-slate-400">✓ Island wide delivery • Bank transfer accepted</p>
+      <p className="mt-4 text-xs text-slate-400">✓ Island wide delivery • Bank transfer accepted</p>
     </div>
 
     {/* Signature — animated ladder logic diagram - desktop only */}
