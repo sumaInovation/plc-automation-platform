@@ -142,9 +142,11 @@ export default async function ShopPage({ searchParams }) {
       <div className="text- text-[#565959] mt-1">Island wide delivery available</div>
       <div className="text- text-[#067d62] mt-1">{product.stock_qty>0? 'In Stock' : 'Out of Stock'}</div>
         
-         <div className="[&>button]:w-1/8 [&>button]:!bg-[#ffd814] [&>button]:!text-[#0f1111] [&>button]:!border-[#fcd200] [&>button]:hover:!bg-[#f7ca00] [&>button]:!rounded- [&>button]:!h- [&>button]:!text-">
-                          <AddToCartButton product={product} />
-          </div>
+        <div className="w-full lg:w-1/8">
+  <div className="[&>button]:!w-full [&>button]:!bg-[#ffd814] [&>button]:!text-[#0f1111] [&>button]:!border [&>button]:!border-[#fcd200] [&>button]:hover:!bg-[#f7ca00] [&>button]:!rounded- [&>button]:!h-auto [&>button]:!min-h- [&>button]:!py-1.5 [&>button]:!text- [&>button]:!whitespace-nowrap">
+    <AddToCartButton product={product} />
+  </div>
+</div>
 
 
     </div>
