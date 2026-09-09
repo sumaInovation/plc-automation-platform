@@ -241,11 +241,17 @@ export default function Navbar({ categories = [] }) {
       <div className="hidden sm:block">
         <div className="flex items-center gap-4 px-4 h-[64px]">
           {/* Logo */}
-          <Link href="/" className="shrink-0 flex items-center hover:ring-1 hover:ring-white/40 rounded-sm p-1 -m-1">
-            <div className="bg-white rounded-sm h-[34px] px-2.5 flex items-center">
-              <Image src="/logo.png" alt="SUMA" width={90} height={24} className="h-[20px] w-auto object-contain" priority />
-            </div>
-          </Link>
+<Link href="/" className="shrink-0 flex items-center">
+  <Image
+    src="/6.svg"
+    alt="Suma"
+    width={100}
+    height={100}
+    priority
+    style={{ height: '200px', width: 'auto' }}
+    className="object-contain"
+  />
+</Link>
 
           {/* Deliver to */}
           <button className="hidden md:flex flex-col justify-center text-white text-left px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0">
