@@ -308,7 +308,7 @@ export default function Navbar({ categories = [] }) {
 
           {/* Account & Lists */}
           <Link
-            href={session ? '/account' : '/login'}
+            href={session ? '/dashboard' : '/login'}
             className="hidden md:flex flex-col justify-center text-white px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0"
           >
             <span className="text-[11px] text-gray-300 leading-none">Hello, {getGreeting()}</span>
@@ -317,7 +317,7 @@ export default function Navbar({ categories = [] }) {
 
           {/* Returns & Orders */}
           <Link
-            href="/account/orders"
+            href="/dashboard/orders"
             className="hidden lg:flex flex-col justify-center text-white px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0"
           >
             <span className="text-[11px] text-gray-300 leading-none">Returns</span>
@@ -349,6 +349,15 @@ export default function Navbar({ categories = [] }) {
             </svg>
             All
           </button>
+
+
+               {/* ADMIN LINK - admin ta witharai */}
+  {session?.user?.role === 'admin' && (
+    <Link href="/admin/products" className="bg-red-600 text-white px-2 py-0.5 rounded text-[12px] font-bold shrink-0">
+      🛠 Admin
+    </Link>
+  )}
+
 
           <Link href="/courses" className="bg-[#febd69] text-black px-2 py-0.5 rounded text-[12px] font-bold shrink-0">
             🎓 Courses
