@@ -50,67 +50,67 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-[#131B22] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 className="font-[family-name:var(--font-display)] text-4xl md:text-5xl font-semibold leading-tight mb-4">
-              Build the automation
-              <br />
-              you were trained for.
-            </h1>
-            <p className="font-[family-name:var(--font-geist-mono)] text-xs tracking-widest text-[#F5A623] uppercase mb-6">
-              Sri Lanka's PLC, Robotics & Automation Store
-            </p>
-            <p className="text-slate-300 text-lg mb-8 max-w-md">
-              PLCs, drives, sensors and passive components — plus hands-on PLC &amp; Robotics
-              courses for university students, school leavers and working engineers.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link
-                href="/shop"
-                className="bg-[#F5A623] text-[#131B22] font-semibold px-6 py-3 rounded-lg hover:bg-[#e0951a] transition-colors"
-              >
-                Shop Components
-              </Link>
-              <Link
-                href="/courses"
-                className="border border-slate-500 text-white font-semibold px-6 py-3 rounded-lg hover:border-slate-300 transition-colors"
-              >
-                Explore Courses
-              </Link>
-            </div>
-            <p className="mt-4 text-xs text-slate-400">✓ Island wide delivery • Bank transfer accepted</p>
-          </div>
+     {/* HERO */}
+<section className="relative overflow-hidden bg-[#131B22] text-white">
+  <div className="max-w-7xl mx-auto px-6 pt-10 pb-12 md:py-28 grid md:grid-cols-2 gap-8 md:gap-12 items-center">
+    <div>
+      <h1 className="font-[family-name:var(--font-display)] text- md:text-5xl font-semibold leading-tight mb-3 md:mb-4">
+        Build the automation
+        <br />
+        you were trained for.
+      </h1>
+      <p className="font-[family-name:var(--font-geist-mono)] text- md:text-xs tracking-widest text-[#F5A623] uppercase mb-4 md:mb-6">
+        Sri Lanka's PLC, Robotics & Automation Store
+      </p>
+      <p className="text-slate-300 text- md:text-lg mb-6 md:mb-8 max-w-md leading-relaxed">
+        PLCs, drives, sensors and passive components — plus hands-on PLC & Robotics
+        courses for university students, school leavers and working engineers.
+      </p>
+      <div className="flex flex-wrap gap-3 md:gap-4">
+        <Link
+          href="/shop"
+          className="bg-[#F5A623] text-[#131B22] font-semibold px-5 md:px-6 py-3 rounded-lg hover:bg-[#e0951a] transition-colors text-sm md:text-base"
+        >
+          Shop Components
+        </Link>
+        <Link
+          href="/courses"
+          className="border border-slate-500 text-white font-semibold px-5 md:px-6 py-3 rounded-lg hover:border-slate-300 transition-colors text-sm md:text-base"
+        >
+          Explore Courses
+        </Link>
+      </div>
+      <p className="mt-3 md:mt-4 text-xs text-slate-400">✓ Island wide delivery • Bank transfer accepted</p>
+    </div>
 
-          {/* Signature — animated ladder logic diagram */}
-          <div className="hidden md:flex justify-center opacity-90">
-            <svg width="320" height="220" viewBox="0 0 320 220">
-              <line x1="20" y1="10" x2="20" y2="210" stroke="#2C6E9E" strokeWidth="3" />
-              <line x1="300" y1="10" x2="300" y2="210" stroke="#2C6E9E" strokeWidth="3" />
-              <line x1="20" y1="50" x2="120" y2="50" stroke="#475569" strokeWidth="2" />
-              <line x1="112" y1="42" x2="112" y2="58" stroke="#F5A623" strokeWidth="2.5" />
-              <line x1="128" y1="42" x2="128" y2="58" stroke="#F5A623" strokeWidth="2.5">
-                <animate attributeName="stroke" values="#F5A623;#3F9142;#F5A623" dur="2.4s" repeatCount="indefinite" />
-              </line>
-              <line x1="120" y1="50" x2="300" y2="50" stroke="#475569" strokeWidth="2" />
-              <circle cx="260" cy="50" r="10" fill="none" stroke="#3F9142" strokeWidth="2.5">
-                <animate attributeName="stroke" values="#475569;#3F9142;#475569" dur="2.4s" repeatCount="indefinite" />
-              </circle>
-              <line x1="20" y1="110" x2="140" y2="110" stroke="#475569" strokeWidth="2" />
-              <line x1="132" y1="102" x2="132" y2="118" stroke="#64748B" strokeWidth="2.5" />
-              <line x1="148" y1="102" x2="148" y2="118" stroke="#64748B" strokeWidth="2.5" />
-              <line x1="140" y1="110" x2="300" y2="110" stroke="#475569" strokeWidth="2" />
-              <circle cx="260" cy="110" r="10" fill="none" stroke="#475569" strokeWidth="2.5" />
-              <line x1="20" y1="170" x2="100" y2="170" stroke="#475569" strokeWidth="2" />
-              <line x1="92" y1="162" x2="92" y2="178" stroke="#64748B" strokeWidth="2.5" />
-              <line x1="108" y1="162" x2="108" y2="178" stroke="#64748B" strokeWidth="2.5" />
-              <line x1="100" y1="170" x2="300" y2="170" stroke="#475569" strokeWidth="2" />
-              <circle cx="260" cy="170" r="10" fill="none" stroke="#475569" strokeWidth="2.5" />
-            </svg>
-          </div>
-        </div>
-      </section>
+    {/* Signature — animated ladder logic diagram - desktop only */}
+    <div className="hidden md:flex justify-center opacity-90">
+      <svg width="320" height="220" viewBox="0 0 320 220">
+        <line x1="20" y1="10" x2="20" y2="210" stroke="#2C6E9E" strokeWidth="3" />
+        <line x1="300" y1="10" x2="300" y2="210" stroke="#2C6E9E" strokeWidth="3" />
+        <line x1="20" y1="50" x2="120" y2="50" stroke="#475569" strokeWidth="2" />
+        <line x1="112" y1="42" x2="112" y2="58" stroke="#F5A623" strokeWidth="2.5" />
+        <line x1="128" y1="42" x2="128" y2="58" stroke="#F5A623" strokeWidth="2.5">
+          <animate attributeName="stroke" values="#F5A623;#3F9142;#F5A623" dur="2.4s" repeatCount="indefinite" />
+        </line>
+        <line x1="120" y1="50" x2="300" y2="50" stroke="#475569" strokeWidth="2" />
+        <circle cx="260" cy="50" r="10" fill="none" stroke="#3F9142" strokeWidth="2.5">
+          <animate attributeName="stroke" values="#475569;#3F9142;#475569" dur="2.4s" repeatCount="indefinite" />
+        </circle>
+        <line x1="20" y1="110" x2="140" y2="110" stroke="#475569" strokeWidth="2" />
+        <line x1="132" y1="102" x2="132" y2="118" stroke="#64748B" strokeWidth="2.5" />
+        <line x1="148" y1="102" x2="148" y2="118" stroke="#64748B" strokeWidth="2.5" />
+        <line x1="140" y1="110" x2="300" y2="110" stroke="#475569" strokeWidth="2" />
+        <circle cx="260" cy="110" r="10" fill="none" stroke="#475569" strokeWidth="2.5" />
+        <line x1="20" y1="170" x2="100" y2="170" stroke="#475569" strokeWidth="2" />
+        <line x1="92" y1="162" x2="92" y2="178" stroke="#64748B" strokeWidth="2.5" />
+        <line x1="108" y1="162" x2="108" y2="178" stroke="#64748B" strokeWidth="2.5" />
+        <line x1="100" y1="170" x2="300" y2="170" stroke="#475569" strokeWidth="2" />
+        <circle cx="260" cy="170" r="10" fill="none" stroke="#475569" strokeWidth="2.5" />
+      </svg>
+    </div>
+  </div>
+</section>
 
       {/* TRUST BAR - LOCAL */}
       <section className="bg-white border-b border-slate-200">
