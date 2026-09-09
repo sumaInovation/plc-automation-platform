@@ -10,14 +10,40 @@ import LadderDivider from '@/components/layout/LadderDivider';
 async function getHomeData() {
   await connectDB();
 
-  const [products, categories, courses] = await Promise.all([
-    Product.find({ isActive: true }).populate('category', 'name slug').sort({ createdAt: -1 }).limit(4).lean(),
-    Category.find().limit(6).lean(),
+  const prioritySlugs = ['dev-board','plc','sensor','module','robot-kits-chassis','motor-actuator','single-board-computer','display-led'];
+  const latestProductSlugs = ['dev-board', 'plc']; // Latest eke enna ona 2 witharak
+
+  const allCatsRaw = await Category.find({}).lean();
+  
+  const latestCatIds = allCatsRaw
+    .filter(c => latestProductSlugs.includes(c.slug))
+    .map(c => c._id);
+
+  const [products, courses] = await Promise.all([
+    Product.find({ 
+      isActive: true, 
+      stock_qty: { $gt: 0 },
+      category: { $in: latestCatIds }  // Dev Board + PLC witharak
+    })
+      .populate('category', 'name slug')
+      .sort({ createdAt: -1 })
+      .limit(8)
+      .lean(),
     Course.find({ isActive: true }).sort({ createdAt: -1 }).limit(3).lean(),
   ]);
 
-  return JSON.parse(JSON.stringify({ products, categories, courses }));
+  const sortedCategories = allCatsRaw.sort((a, b) => {
+    const aIdx = prioritySlugs.indexOf(a.slug);
+    const bIdx = prioritySlugs.indexOf(b.slug);
+    if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+    if (aIdx !== -1) return -1;
+    if (bIdx !== -1) return 1;
+    return a.name.localeCompare(b.name);
+  }).slice(0, 8);
+
+  return JSON.parse(JSON.stringify({ products, categories: sortedCategories, courses }));
 }
+
 
 export default async function HomePage() {
   const { products, categories, courses } = await getHomeData();
@@ -28,14 +54,14 @@ export default async function HomePage() {
       <section className="relative overflow-hidden bg-[#131B22] text-white">
         <div className="max-w-7xl mx-auto px-6 py-20 md:py-28 grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <p className="font-[family-name:var(--font-geist-mono)] text-xs tracking-widest text-[#F5A623] uppercase mb-4">
-              Sri Lanka · Components + Training
-            </p>
-            <h1 className="font-[family-name:var(--font-display)] text-4xl md:text-5xl font-semibold leading-tight mb-6">
+            <h1 className="font-[family-name:var(--font-display)] text-4xl md:text-5xl font-semibold leading-tight mb-4">
               Build the automation
               <br />
               you were trained for.
             </h1>
+            <p className="font-[family-name:var(--font-geist-mono)] text-xs tracking-widest text-[#F5A623] uppercase mb-6">
+              Sri Lanka's PLC, Robotics & Automation Store
+            </p>
             <p className="text-slate-300 text-lg mb-8 max-w-md">
               PLCs, drives, sensors and passive components — plus hands-on PLC &amp; Robotics
               courses for university students, school leavers and working engineers.
@@ -54,15 +80,14 @@ export default async function HomePage() {
                 Explore Courses
               </Link>
             </div>
+            <p className="mt-4 text-xs text-slate-400">✓ Island wide delivery • Bank transfer accepted</p>
           </div>
 
           {/* Signature — animated ladder logic diagram */}
-          <div className="hidden md:flex justify-center">
-            <svg width="320" height="220" viewBox="0 0 320 220" className="opacity-90">
+          <div className="hidden md:flex justify-center opacity-90">
+            <svg width="320" height="220" viewBox="0 0 320 220">
               <line x1="20" y1="10" x2="20" y2="210" stroke="#2C6E9E" strokeWidth="3" />
               <line x1="300" y1="10" x2="300" y2="210" stroke="#2C6E9E" strokeWidth="3" />
-
-              {/* Rung 1 */}
               <line x1="20" y1="50" x2="120" y2="50" stroke="#475569" strokeWidth="2" />
               <line x1="112" y1="42" x2="112" y2="58" stroke="#F5A623" strokeWidth="2.5" />
               <line x1="128" y1="42" x2="128" y2="58" stroke="#F5A623" strokeWidth="2.5">
@@ -72,15 +97,11 @@ export default async function HomePage() {
               <circle cx="260" cy="50" r="10" fill="none" stroke="#3F9142" strokeWidth="2.5">
                 <animate attributeName="stroke" values="#475569;#3F9142;#475569" dur="2.4s" repeatCount="indefinite" />
               </circle>
-
-              {/* Rung 2 */}
               <line x1="20" y1="110" x2="140" y2="110" stroke="#475569" strokeWidth="2" />
               <line x1="132" y1="102" x2="132" y2="118" stroke="#64748B" strokeWidth="2.5" />
               <line x1="148" y1="102" x2="148" y2="118" stroke="#64748B" strokeWidth="2.5" />
               <line x1="140" y1="110" x2="300" y2="110" stroke="#475569" strokeWidth="2" />
               <circle cx="260" cy="110" r="10" fill="none" stroke="#475569" strokeWidth="2.5" />
-
-              {/* Rung 3 */}
               <line x1="20" y1="170" x2="100" y2="170" stroke="#475569" strokeWidth="2" />
               <line x1="92" y1="162" x2="92" y2="178" stroke="#64748B" strokeWidth="2.5" />
               <line x1="108" y1="162" x2="108" y2="178" stroke="#64748B" strokeWidth="2.5" />
@@ -91,12 +112,30 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* TRUST BAR - LOCAL */}
+      <section className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-6 py-4 grid grid-cols-3 gap-4 text-center">
+          <div>
+            <p className="font-bold text-">✓ Island Wide Delivery</p>
+            <p className="text- text-slate-500">2-3 working days</p>
+          </div>
+          <div>
+            <p className="font-bold text-">✓ Real PLC Hardware</p>
+            <p className="text- text-slate-500">Siemens / Mitsubishi</p>
+          </div>
+          <div>
+            <p className="font-bold text-">✓ Bank Transfer</p>
+            <p className="text- text-slate-500">No card needed</p>
+          </div>
+        </div>
+      </section>
+
       {/* CATEGORIES */}
       <section className="max-w-7xl mx-auto px-6 py-16">
         <h2 className="font-[family-name:var(--font-display)] text-2xl font-semibold mb-8">
           Shop by category
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
           {categories.length === 0 ? (
             <p className="text-slate-500 col-span-full text-sm">Categories coming soon.</p>
           ) : (
@@ -104,9 +143,9 @@ export default async function HomePage() {
               <Link
                 key={cat._id}
                 href={`/shop?category=${cat.slug}`}
-                className="border border-slate-200 rounded-lg p-4 text-center hover:border-[#2C6E9E] hover:shadow-sm transition-all bg-white"
+                className="border border-slate-200 rounded-lg p-4 text-center hover:border-[#2C6E9E] hover:shadow-sm transition-all bg-white group"
               >
-                <p className="font-medium text-sm">{cat.name}</p>
+                <p className="font-medium text-sm group-hover:text-[#2C6E9E]">{cat.name}</p>
               </Link>
             ))
           )}
@@ -193,7 +232,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-6 py-14 flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
             <h3 className="font-[family-name:var(--font-display)] text-xl font-semibold mb-1">
-              Order today, pay by bank transfer.
+              Island wide delivery • Pay by bank transfer.
             </h3>
             <p className="text-slate-400 text-sm">Simple checkout — upload your slip, we confirm within one business day.</p>
           </div>

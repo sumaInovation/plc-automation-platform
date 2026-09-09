@@ -3,6 +3,7 @@ import Product from '@/models/Product';
 import Category from '@/models/Category';
 import Link from 'next/link';
 import Image from 'next/image';
+import AddToCartButton from '@/components/shop/AddToCartButton';
 
 const PAGE_SIZE = 24;
 
@@ -96,43 +97,59 @@ export default async function ShopPage({ searchParams }) {
             <div className="p-10 text-center text-[#565959]">No products match "{params.search}"</div>
           ) : (
             <div className="divide-y divide-[#ddd]">
-              {products.map(product => (
-                <div key={product._id} className="flex gap-5 p-5 hover:bg-[#fafafa] group">
-                  {/* IMAGE - 100% FIXED SIZE */}
-                  <Link
-                    href={`/shop/product/${product.slug}`}
-                    className="bg-[#f7f7f7] rounded- flex items-center justify-center overflow-hidden shrink-0"
-                    style={{ width: '210px', height: '210px', minWidth: '210px', minHeight: '210px', maxWidth: '210px', maxHeight: '210px' }}
-                  >
-                    <Image
-                      src={product.images?.[0] || '/no-image.png'}
-                      alt={product.name}
-                      width={190}
-                      height={190}
-                      style={{ objectFit: 'contain', display: 'block' }}
-                    />
-                  </Link>
+             {products.map(product => (
+  <div key={product._id} className="flex gap-5 p-5 hover:bg-[#fafafa] group">
+    <Link
+      href={`/shop/product/${product.slug}`}
+      className="bg-[#f7f7f7] rounded- flex items-center justify-center overflow-hidden shrink-0"
+      style={{ width: '210px', height: '210px', minWidth: '210px', minHeight: '210px', maxWidth: '210px', maxHeight: '210px' }}
+    >
+      <Image
+        src={product.images?.[0] || '/no-image.png'}
+        alt={product.name}
+        width={190}
+        height={190}
+        style={{ objectFit: 'contain', display: 'block' }}
+      />
+    </Link>
 
-                  <div className="flex-1 min-w-0">
-                    <Link href={`/shop/product/${product.slug}`} className="text- leading-[1.3] text-[#0f1111] group-hover:text-[#c45500] line-clamp-3">
-                      {product.name} {product.sku? `, ${product.sku}` : ''}
-                    </Link>
-                    <div className="flex items-center gap-1 mt-1.5 text-">
-                      <span>{product.avgRating?.toFixed(1) || '5.0'}</span>
-                      <span className="text-[#ffa41c] text-">★★★★★</span>
-                      <span className="text-[#007185]">({product.reviewCount||3})</span>
-                    </div>
-                    <div className="text- font-light mt-2 text-[#0f1111]">
-                      <sup className="text-">LKR</sup>{product.price.toLocaleString()}
-                    </div>
-                    <div className="text- text-[#565959] mt-1">FREE delivery <b className="text-[#0f1111]">Tomorrow</b> • Ships to Sri Lanka</div>
-                    <div className="text- text-[#067d62] mt-1">{product.stock_qty>0? 'In Stock' : 'Out of Stock'}</div>
-                    <Link href={`/shop/product/${product.slug}`} className="mt-3 inline-block bg-[#ffd814] hover:bg-[#f7ca00] border border-[#fcd200] rounded- px-6 py-1.5 text- shadow-sm">
-                      Add to cart
-                    </Link>
-                  </div>
-                </div>
-              ))}
+    <div className="flex-1 min-w-0">
+      <Link href={`/shop/product/${product.slug}`} className="text- leading-[1.3] text-[#0f1111] group-hover:text-[#c45500] line-clamp-3">
+        {product.name} {product.sku? `, ${product.sku}` : ''}
+      </Link>
+
+      {/* REAL REVIEWS HERE */}
+      <div className="flex items-center gap-1 mt-1.5 text-sm">
+        {product.reviewCount > 0? (
+          <>
+            <span className="font-bold">{product.avgRating?.toFixed(1)}</span>
+            <span className="text-[#ffa41c] text- leading-none">
+              {"★".repeat(Math.round(product.avgRating))}{"☆".repeat(5 - Math.round(product.avgRating))}
+            </span>
+            <Link href={`/shop/product/${product.slug}#reviews`} className="text-[#007185] hover:text-[#c45500] hover:underline">
+              ({product.reviewCount})
+            </Link>
+          </>
+        ) : (
+          <span className="text-[#565959] text-xs">No reviews yet - be first!</span>
+        )}
+      </div>
+<div className="mt-2 text-[#0f1111]">
+  <sup className="text- font-normal">LKR</sup>
+  <span className="text- font-bold ml-1">{product.price.toLocaleString()}</span>
+</div>
+     
+      <div className="text- text-[#565959] mt-1">Island wide delivery available</div>
+      <div className="text- text-[#067d62] mt-1">{product.stock_qty>0? 'In Stock' : 'Out of Stock'}</div>
+        
+         <div className="[&>button]:w-1/8 [&>button]:!bg-[#ffd814] [&>button]:!text-[#0f1111] [&>button]:!border-[#fcd200] [&>button]:hover:!bg-[#f7ca00] [&>button]:!rounded- [&>button]:!h- [&>button]:!text-">
+                          <AddToCartButton product={product} />
+          </div>
+
+
+    </div>
+  </div>
+))}
             </div>
           )}
 

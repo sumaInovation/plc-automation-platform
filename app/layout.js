@@ -4,7 +4,7 @@ import AuthProvider from '@/components/layout/AuthProvider';
 import NavbarWrapper from './NavbarWrapper';
 import connectDB from '@/lib/db';
 import Category from '@/models/Category';
-
+import Footer from '@/components/layout/Footer';
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -61,6 +61,7 @@ export default async function RootLayout({ children }) {
         <AuthProvider>
           <NavbarWrapper categories={categories} />
           {children}
+            <Footer />
         </AuthProvider>
       </body>
     </html>
