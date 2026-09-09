@@ -241,15 +241,14 @@ export default function Navbar({ categories = [] }) {
       <div className="hidden sm:block">
         <div className="flex items-center gap-4 px-4 h-[64px]">
           {/* Logo */}
-<Link href="/" className="shrink-0 flex items-center">
+<Link href="/" className="shrink-0 flex items-center max-w- overflow-hidden">
   <Image
-    src="/6.svg"
+    src="/logo-desktop.svg"
     alt="Suma"
-    width={100}
-    height={100}
+    width={160}
+    height={40}
     priority
-    style={{ height: '200px', width: 'auto' }}
-    className="object-contain"
+    className="h- w-auto max-w-full object-contain"
   />
 </Link>
 
@@ -380,11 +379,17 @@ export default function Navbar({ categories = [] }) {
             </svg>
           </button>
 
-          <Link href="/" className="shrink-0 flex items-center">
-            <div className="bg-white rounded-sm h-[30px] px-2 flex items-center">
-              <Image src="/logo.png" alt="SUMA" width={70} height={20} className="h-[18px] w-auto object-contain" priority />
-            </div>
-          </Link>
+  {/* MOBILE - eliyata panne na */}
+<Link href="/" className="shrink-0 flex items-center max-w- overflow-hidden">
+  <Image
+    src="/logo-mobile.svg"
+    alt="SUMA"
+    width={120}
+    height={28}
+    priority
+    className="h- w-auto max-w-full object-contain"
+  />
+</Link>
 
           <div className="flex-1 min-w-[8px]" />
 
