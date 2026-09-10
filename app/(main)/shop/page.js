@@ -53,6 +53,37 @@ async function getProducts(searchParams) {
   };
 }
 
+export async function generateMetadata({ searchParams }) {
+  const params = await searchParams;
+  await connectDB();
+
+  let title = 'Shop All Products';
+  let description = 'Browse PLC & Automation components, sensors, and controllers — island-wide delivery in Sri Lanka.';
+
+  if (params.category) {
+    const cat = await Category.findOne({ slug: params.category }).lean();
+    if (cat) {
+      title = cat.name;
+      description = `Shop ${cat.name} — PLC & Automation components from Suma Automation, Sri Lanka.`;
+    }
+  } else if (params.search) {
+    title = `Search results for "${params.search}"`;
+  }
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: params.category
+        ? `https://sumaautomation.lk/shop?category=${params.category}`
+        : 'https://sumaautomation.lk/shop',
+    },
+    robots: (params.search || params.page)
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
+  };
+}
+
 export default async function ShopPage({ searchParams }) {
   const params = await searchParams;
   const { products, allCategories, totalCount, totalPages, currentPage } = await getProducts(params);

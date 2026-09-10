@@ -22,7 +22,11 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata = {
-  title: "Suma Automation",
+  metadataBase: new URL("https://sumaautomation.lk"),
+  title: {
+    default: "Suma Automation",
+    template: "%s | Suma Automation",
+  },
   description: "PLC & Automation components, training for university students and professionals — Sri Lanka",
   openGraph: {
     title: "Suma Automation",
@@ -31,8 +35,16 @@ export const metadata = {
     siteName: "Suma Automation",
     type: "website",
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-image-preview': 'large',
+    },
+  },
 };
-
 export const viewport = {
   width: 'device-width',
   initialScale: 1,

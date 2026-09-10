@@ -24,14 +24,22 @@ async function getProduct(slug) {
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const product = await getProduct(slug);
-  if (!product) return { title: 'Product Not Found' };
+  if (!product) {
+    return {
+      title: 'Product Not Found',
+      robots: { index: false, follow: false },
+    };
+  }
   return {
-    title: `${product.name} | Suma Automation`,
+    title: product.name,
     description: product.description?.slice(0, 160),
+    alternates: {
+      canonical: `https://sumaautomation.lk/shop/product/${slug}`,
+    },
     openGraph: {
       title: product.name,
       description: product.description?.slice(0, 160),
-      images: product.images?.[0]? [{ url: ogImageUrl(product.images[0]), width: 1200, height: 630 }] : [],
+      images: product.images?.[0] ? [{ url: ogImageUrl(product.images[0]), width: 1200, height: 630 }] : [],
       url: `https://sumaautomation.lk/shop/product/${slug}`,
       type: 'website',
     },
@@ -39,7 +47,7 @@ export async function generateMetadata({ params }) {
       card: 'summary_large_image',
       title: product.name,
       description: product.description?.slice(0, 160),
-      images: product.images?.[0]? [product.images[0]] : [],
+      images: product.images?.[0] ? [product.images[0]] : [],
     },
   };
 }
@@ -54,8 +62,43 @@ export default async function ProductDetailPage({ params }) {
     : 0;
   const inStock = (product.stock_qty?? 0) > 0;
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: product.name,
+    image: product.images,
+    description: product.description?.replace(/<[^>]*>/g, '').slice(0, 500),
+    sku: product.sku,
+    brand: {
+      '@type': 'Brand',
+      name: product.brand || 'Suma Automation',
+    },
+    ...(product.reviewCount > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: product.avgRating,
+        reviewCount: product.reviewCount,
+      },
+    }),
+    offers: {
+      '@type': 'Offer',
+      url: `https://sumaautomation.lk/shop/product/${product.slug}`,
+      priceCurrency: 'LKR',
+      price: product.price,
+      availability: inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+    },
+  };
+
+
   return (
     <div className="min-h-screen bg-white">
+      
+
+         <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <div className="bg-[#f5f6f6] border-b border-[#ddd]">
         <div className="max-w- mx-auto px-4 py-2 flex items-center gap-2 text- text-[#565959] overflow-x-auto whitespace-nowrap">
           <Link href="/" className="hover:text-[#c45500] hover:underline">Home</Link><span>›</span>
