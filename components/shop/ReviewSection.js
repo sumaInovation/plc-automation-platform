@@ -30,7 +30,10 @@ function StarInput({ value, onChange }) {
 }
 
 export default function ReviewSection({ targetType, targetId }) {
-  const { data: authSession } = useSession();
+const { data: authSession, status } = useSession();
+console.log('REVIEW SECTION session:', status, authSession);
+
+
   const [reviews, setReviews] = useState([]);
   const [avgRating, setAvgRating] = useState(0);
   const [count, setCount] = useState(0);

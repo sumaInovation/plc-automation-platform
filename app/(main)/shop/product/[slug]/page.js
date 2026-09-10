@@ -167,6 +167,10 @@ export default async function ProductDetailPage({ params }) {
                 )}
               </div>
             </div>
+                 <div className="mt-6 border-t border-[#e7e7e7] pt-5">
+              <ReviewSection targetType="product" targetId={product._id} />
+            </div>
+             
           </div>
 
           {/* RIGHT - DESKTOP BUY BOX - ORIGINAL SUPIRI ONE */}
@@ -228,9 +232,7 @@ export default async function ProductDetailPage({ params }) {
           </div>
         )}
 
-        <div className="mt-8 border-t border-[#e7e7e7] pt-6">
-          <ReviewSection targetType="product" targetId={product._id} />
-        </div>
+      
       </div>
     </div>
   );
