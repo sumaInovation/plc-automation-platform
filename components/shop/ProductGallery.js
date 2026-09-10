@@ -9,14 +9,7 @@ export default function ProductGallery({ images, productName }) {
   const [lightbox, setLightbox] = useState(false);
   const imgRef = useRef(null);
 
-  if (!images || images.length === 0) {
-    return (
-      <div className="aspect-square bg-[#f7f8f8] rounded-[20px] flex flex-col items-center justify-center border border-dashed border-[#d5d9d9]">
-        <div className="w-14 h-14 rounded-full bg-[#f0f2f2] flex items-center justify-center text-xl">📷</div>
-        <span className="text-[#565959] text-sm mt-3 font-medium">No image available</span>
-      </div>
-    );
-  }
+   const displayImages = (!images || images.length === 0) ? ['/no-image.png'] : images;
 
   const handleMouseMove = (e) => {
     if (!imgRef.current) return;
@@ -26,7 +19,7 @@ export default function ProductGallery({ images, productName }) {
     setZoomPos({ x: Math.max(0, Math.min(100, x)), y: Math.max(0, Math.min(100, y)) });
   };
 
-  const activeImage = images[activeIndex];
+      const activeImage = displayImages[activeIndex];
 
   return (
     <>
