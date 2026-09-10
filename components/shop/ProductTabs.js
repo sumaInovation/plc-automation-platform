@@ -6,7 +6,7 @@ export default function ProductTabs({ product }) {
   const specifications = product.specifications || product.specs || {};
   const entries = Object.entries(specifications);
 
-  const tabs = ['Description', 'Specifications', 'Reviews', 'Shipping'];
+  const tabs = ['Description', 'Specifications', 'Shipping'];
 
   return (
     <div className="mt-6 bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden">
@@ -52,17 +52,7 @@ export default function ProductTabs({ product }) {
           </div>
         )}
 
-        {activeTab === 'Reviews' && (
-          <div className="text-[14px] text-slate-600">
-            <p>Scroll down to Customer Reviews section or click below</p>
-            <button 
-              onClick={() => document.getElementById('reviews-section')?.scrollIntoView({ behavior: 'smooth' })}
-              className="mt-3 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
-            >
-              Go to Reviews
-            </button>
-          </div>
-        )}
+       
 
         {activeTab === 'Shipping' && (
           <div className="space-y-3 text-[14px] text-slate-600">
