@@ -2,7 +2,7 @@ import connectDB from '@/lib/db';
 import Product from '@/models/Product';
 import Category from '@/models/Category';
 import Link from 'next/link';
-
+import AddToCartButton from '@/components/shop/AddToCartButton';
 const PAGE_SIZE = 24;
 
 async function getData(slug, sp) {
@@ -138,12 +138,9 @@ export default async function Page({ params, searchParams }) {
                   <div className="text-[10px] sm:text-xs text-[#565959]">FREE delivery on first order</div>
                   
                   {/* Add to Cart Button */}
-                  <Link 
-                    href={`/shop/product/${p.slug}`} 
-                    className="mt-2 inline-block bg-[#ffd814] hover:bg-[#f7ca00] border border-[#fcd200] rounded-full px-4 sm:px-6 py-1.5 text-xs sm:text-sm font-medium transition-colors"
-                  >
-                    🛒 Add to cart
-                  </Link>
+                    <div className="mt-2 [&>button]:!bg-[#ffd814] [&>button]:hover:!bg-[#f7ca00] [&>button]:!border [&>button]:!border-[#fcd200] [&>button]:!rounded-full [&>button]:!px-4 sm:[&>button]:!px-6 [&>button]:!py-1.5 [&>button]:!text-xs sm:[&>button]:!text-sm [&>button]:!font-medium [&>button]:!w-auto">
+  <AddToCartButton product={p} />
+</div>
                 </div>
               </div>
             ))}
