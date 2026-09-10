@@ -28,6 +28,9 @@ const CourseSchema = new mongoose.Schema(
         type: String, // e.g. "Module 1: Introduction to PLC", "Module 2: Ladder Logic"
       },
     ],
+    syllabusFile: {
+      type: String, // Full syllabus document link - PDF/DOC/HTML URL
+    },
     price: {
       type: Number,
       required: [true, 'Price is required'],

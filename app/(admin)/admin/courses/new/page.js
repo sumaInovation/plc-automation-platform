@@ -20,6 +20,7 @@ export default function NewCoursePage() {
     duration: '',
     level: 'beginner',
     targetAudience: 'general',
+    syllabusFile: '',
   });
 
   const [syllabus, setSyllabus] = useState(['']);
@@ -48,7 +49,8 @@ export default function NewCoursePage() {
       ...form,
       price: Number(form.price),
       syllabus: syllabus.filter((s) => s.trim() !== ''),
-       image: image || null, 
+      syllabusFile: form.syllabusFile.trim() || null,
+      image: image || null,
     };
 
     const res = await fetch('/api/admin/courses', {
@@ -155,11 +157,25 @@ export default function NewCoursePage() {
             <option value="employee">Employees</option>
           </select>
         </div>
-           
-           <SingleImageUpload image={image} setImage={setImage} label="Course Thumbnail" />
+
+        <SingleImageUpload image={image} setImage={setImage} label="Course Thumbnail" />
 
         <div>
-          <label className="block text-sm font-medium mb-2">Syllabus</label>
+          <label className="block text-sm font-medium mb-1">Syllabus Document Link (optional)</label>
+          <input
+            type="url"
+            placeholder="https://... (PDF, DOC, or HTML link - Cloudinary/Drive)"
+            value={form.syllabusFile}
+            onChange={(e) => setForm({ ...form, syllabusFile: e.target.value })}
+            className="w-full border p-2 rounded text-sm"
+          />
+          <p className="text-xs text-gray-500 mt-1">
+            Cloudinary/Google Drive ekකට syllabus document eka upload karala, link eka methana paste karanna.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium mb-2">Syllabus (text modules)</label>
           {syllabus.map((item, i) => (
             <div key={i} className="flex gap-2 mb-2">
               <input

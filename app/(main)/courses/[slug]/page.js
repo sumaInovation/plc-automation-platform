@@ -3,6 +3,7 @@ import Course from '@/models/Course';
 import Batch from '@/models/Batch';
 import { notFound } from 'next/navigation';
 import EnrollButton from '@/components/courses/EnrollButton';
+import SyllabusSection from '@/components/courses/SyllabusSection';
 import ReviewSection from '@/components/shop/ReviewSection';
 import ShareButtons from '@/components/shop/ShareButtons';
 import { ogImageUrl } from '@/lib/utils';
@@ -113,20 +114,8 @@ export default async function CourseDetailPage({ params }) {
           </span>
         </div>
 
-        {/* Syllabus */}
-        {course.syllabus?.length > 0 && (
-          <div className="border border-[#e7e7e7] rounded-lg p-5 mb-6">
-            <h2 className="font-bold text-[#0f1111] mb-3">Syllabus</h2>
-            <ul className="space-y-1.5 text-sm text-[#0f1111]">
-              {course.syllabus.map((item, i) => (
-                <li key={i} className="flex gap-2">
-                  <span className="text-[#067d62] shrink-0">✓</span>
-                  <span className="whitespace-pre-line">{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {/* Syllabus - file download card + text accordion */}
+        <SyllabusSection syllabus={course.syllabus} syllabusFile={course.syllabusFile} />
 
         {/* Share */}
         <div className="mb-6">

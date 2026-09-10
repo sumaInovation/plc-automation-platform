@@ -10,6 +10,15 @@ export default function EnrollButton({ course, batch }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  // Safety - batch nathnam crash wenne na
+  if (!course ||!batch) {
+    return (
+      <div className="w-full bg-gray-200 text-gray-500 px-4 py-3 rounded-lg text-sm text-center">
+        No active batch
+      </div>
+    );
+  }
+
   const handleEnroll = async () => {
     if (!authSession) {
       router.push('/login');
@@ -23,7 +32,10 @@ export default function EnrollButton({ course, batch }) {
       const res = await fetch('/api/enrollments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ courseId: course._id, batchId: batch._id }),
+        body: JSON.stringify({
+          courseId: course._id,
+          batchId: batch._id
+        }),
       });
       const data = await res.json();
 
@@ -44,12 +56,12 @@ export default function EnrollButton({ course, batch }) {
     <div>
       <button
         onClick={handleEnroll}
-        disabled={batch.seatsAvailable === 0 || loading}
-        className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        disabled={batch?.seatsAvailable === 0 || loading}
+        className="w-full bg-[#febd69] hover:bg-[#f3a847] text-[#0f1111] px-4 py-3 rounded-full text-sm font-bold disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
       >
-        {loading ? 'Enrolling...' : 'Enroll Now'}
+        {loading? 'Enrolling...' : batch?.seatsAvailable === 0? 'Full' : 'Enroll Now'}
       </button>
-      {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+      {error && <p className="text-red-500 text-xs mt-2">{error}</p>}
     </div>
   );
 }
