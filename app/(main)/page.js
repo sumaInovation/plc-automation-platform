@@ -6,7 +6,7 @@ import Link from 'next/link';
 import ProductCard from '@/components/shop/ProductCard';
 import CourseCard from '@/components/courses/CourseCard';
 import LadderDivider from '@/components/layout/LadderDivider';
-
+export const revalidate = 60;
 async function getHomeData() {
   await connectDB();
 
