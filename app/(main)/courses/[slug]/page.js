@@ -72,7 +72,7 @@ export default async function CourseDetailPage({ params }) {
             <img
               src={course.image}
               alt={course.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain bg-black"
             />
           ) : (
             <div className="w-full h-full bg-[#f7f8f8] flex flex-col items-center justify-center">
