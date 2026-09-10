@@ -105,7 +105,7 @@ export default async function Page({ params, searchParams }) {
                   className="w-full sm:w-[140px] md:w-[180px] lg:w-[200px] aspect-square bg-[#f7f7f7] flex items-center justify-center overflow-hidden rounded-lg shrink-0 mx-auto sm:mx-0"
                 >
                   <img
-                    src={p.images?.[0] || '/placeholder.png'}
+                    src={p.images?.[0] || '/no-image.png'}
                     alt={p.name}
                     className="w-[90%] h-[90%] object-contain"
                   />
