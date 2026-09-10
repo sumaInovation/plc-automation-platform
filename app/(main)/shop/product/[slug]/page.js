@@ -66,7 +66,10 @@ export default async function ProductDetailPage({ params }) {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
-    image: product.images,
+     image: product.images?.length > 0
+    ? product.images
+    : ['https://sumaautomation.lk/no-image.png'],
+    
     description: product.description?.replace(/<[^>]*>/g, '').slice(0, 500),
     sku: product.sku,
     brand: {

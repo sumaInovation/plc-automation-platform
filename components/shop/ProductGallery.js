@@ -11,9 +11,9 @@ export default function ProductGallery({ images, productName }) {
 
   if (!images || images.length === 0) {
     return (
-      <div className="aspect-square bg-[#f6f7f9] rounded-[20px] flex flex-col items-center justify-center border border-dashed border-slate-200">
-        <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center text-xl">📷</div>
-        <span className="text-slate-400 text-sm mt-3 font-medium">No image available</span>
+      <div className="aspect-square bg-[#f7f8f8] rounded-[20px] flex flex-col items-center justify-center border border-dashed border-[#d5d9d9]">
+        <div className="w-14 h-14 rounded-full bg-[#f0f2f2] flex items-center justify-center text-xl">📷</div>
+        <span className="text-[#565959] text-sm mt-3 font-medium">No image available</span>
       </div>
     );
   }
@@ -41,13 +41,13 @@ export default function ProductGallery({ images, productName }) {
                 onClick={() => setActiveIndex(i)}
                 className={`relative shrink-0 w-[72px] h-[72px] lg:w-[76px] lg:h-[76px] rounded-xl overflow-hidden border-2 transition-all ${
                   i === activeIndex
-                    ? 'border-blue-600 shadow-[0_0_0_3px_rgba(37,99,235,0.15)]'
-                    : 'border-slate-100 hover:border-slate-200 bg-white'
+                    ? 'border-[#e77600] shadow-[0_0_0_3px_rgba(228,121,17,0.3)]'
+                    : 'border-[#e7e7e7] hover:border-[#d5d9d9] bg-white'
                 }`}
               >
                 <img src={img} alt={`${productName} ${i + 1}`} className="w-full h-full object-cover" />
                 {i === activeIndex && (
-                  <div className="absolute inset-0 bg-blue-600/10" />
+                  <div className="absolute inset-0 bg-[#ffa41c]/10" />
                 )}
               </button>
             ))}
@@ -62,7 +62,7 @@ export default function ProductGallery({ images, productName }) {
             onMouseEnter={() => setIsZoomed(true)}
             onMouseLeave={() => setIsZoomed(false)}
             onClick={() => setLightbox(true)}
-            className="group relative aspect-square bg-[#fbfbfc] rounded-[20px] overflow-hidden border border-slate-100 cursor-zoom-in"
+            className="group relative aspect-square bg-white rounded-[20px] overflow-hidden border border-[#e7e7e7] cursor-zoom-in"
           >
             <img
               src={activeImage}
@@ -73,13 +73,13 @@ export default function ProductGallery({ images, productName }) {
 
             {/* Top badges */}
             <div className="absolute top-3 left-3 flex gap-2">
-              <span className="px-2.5 py-1 rounded-full bg-white/90 backdrop-blur text-[11px] font-bold shadow-sm border border-slate-100">
+              <span className="px-2.5 py-1 rounded-full bg-white/90 backdrop-blur text-[11px] font-bold shadow-sm border border-[#e7e7e7] text-[#0f1111]">
                 {activeIndex + 1} / {images.length}
               </span>
             </div>
 
             {/* Zoom hint */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-slate-900/80 backdrop-blur text-white text-[11px] font-medium opacity-0 group-hover:opacity-100 transition flex items-center gap-1.5">
+            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full bg-[#0f1111]/80 backdrop-blur text-white text-[11px] font-medium opacity-0 group-hover:opacity-100 transition flex items-center gap-1.5">
               <span>🔍</span> Click to expand • Hover to zoom
             </div>
 
@@ -88,13 +88,13 @@ export default function ProductGallery({ images, productName }) {
               <>
                 <button
                   onClick={(e) => { e.stopPropagation(); setActiveIndex((p) => (p - 1 + images.length) % images.length); }}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-lg border border-slate-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-slate-50"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-lg border border-[#e7e7e7] flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-[#f0f2f2] text-[#0f1111]"
                 >
                   ‹
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); setActiveIndex((p) => (p + 1) % images.length); }}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-lg border border-slate-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-slate-50"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white shadow-lg border border-[#e7e7e7] flex items-center justify-center opacity-0 group-hover:opacity-100 transition hover:bg-[#f0f2f2] text-[#0f1111]"
                 >
                   ›
                 </button>
@@ -108,7 +108,7 @@ export default function ProductGallery({ images, productName }) {
               <button
                 key={i}
                 onClick={() => setActiveIndex(i)}
-                className={`h-1.5 rounded-full transition-all ${i === activeIndex ? 'w-6 bg-blue-600' : 'w-1.5 bg-slate-200'}`}
+                className={`h-1.5 rounded-full transition-all ${i === activeIndex ? 'w-6 bg-[#e77600]' : 'w-1.5 bg-[#d5d9d9]'}`}
               />
             ))}
           </div>
