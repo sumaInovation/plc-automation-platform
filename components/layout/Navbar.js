@@ -466,12 +466,12 @@ export default function Navbar({ categories = [] }) {
         {/* Category links row */}
         <div className="bg-[#232f3e] min-h-[42px] flex items-center px-3 overflow-x-auto scrollbar-hide">
           <div className="flex items-center gap-4 text-white text-[13px] whitespace-nowrap">
-            <button onClick={() => setMenuOpen(!menuOpen)} className="flex items-center gap-1.5 font-bold hover:opacity-80 shrink-0">
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-              All
-            </button>
+            <button onClick={() => setMenuOpen(!menuOpen)} className="hidden sm:flex items-center gap-1.5 font-bold hover:opacity-80 shrink-0">
+  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+  </svg>
+  All
+</button>
 
             <Link href="/courses" className="bg-[#febd69] text-black px-2 py-0.5 rounded text-[12px] font-bold shrink-0">
               🎓 Courses
