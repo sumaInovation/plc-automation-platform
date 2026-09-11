@@ -29,7 +29,7 @@ async function getHomeData() {
       .sort({ createdAt: -1 })
       .limit(8)
       .lean(),
-    Course.find({ isActive: true }).sort({ createdAt: -1 }).limit(3).lean(),
+    Course.find({ isActive: true }).sort({ createdAt: -1 }).limit(6).lean(),
   ]);
 
   const sortedCategories = allCatsRaw.sort((a, b) => {
