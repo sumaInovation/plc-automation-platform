@@ -66,33 +66,21 @@ export default async function CourseDetailPage({ params }) {
     <div className="bg-white min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-8">
 
-        {/* Course hero image */}
-        <div className="relative w-full aspect-[16/9] sm:aspect-[21/9] rounded-2xl overflow-hidden mb-6 border border-[#e7e7e7]">
-          {course.image ? (
-            <img
-              src={course.image}
-              alt={course.title}
-              className="w-full h-full object-contain bg-black"
-            />
-          ) : (
-            <div className="w-full h-full bg-[#f7f8f8] flex flex-col items-center justify-center">
-              <div className="w-14 h-14 rounded-full bg-[#f0f2f2] flex items-center justify-center text-xl">📷</div>
-              <span className="text-[#565959] text-sm mt-3 font-medium">No image available</span>
-            </div>
-          )}
-
-          {/* Badges overlaid on image */}
-          <div className="absolute top-4 left-4 flex gap-2">
-            <span className={`text-xs font-bold px-2.5 py-1 rounded-full backdrop-blur bg-white/90 ${
-              course.type === 'online' ? 'text-[#007185]' : 'text-[#c45500]'
-            }`}>
-              {course.type === 'online' ? 'Online' : 'Physical'}
-            </span>
-            <span className="text-xs font-bold px-2.5 py-1 rounded-full backdrop-blur bg-white/90 text-[#565959] capitalize">
-              {course.level}
-            </span>
-          </div>
-        </div>
+           {/* Course hero image */}
+<div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 border border-[#e7e7e7]">
+  {course.image ? (
+    <img
+      src={course.image}
+      alt={course.title}
+      className="w-full h-full object-contain"
+    />
+  ) : (
+    <div className="w-full h-full bg-[#f7f8f8] flex flex-col items-center justify-center">
+      <div className="w-14 h-14 rounded-full bg-[#f0f2f2] flex items-center justify-center text-xl">📷</div>
+      <span className="text-[#565959] text-sm mt-3 font-medium">No image available</span>
+    </div>
+  )}
+  </div>
 
         {/* Title & description */}
         <h1 className="text-2xl sm:text-3xl font-medium text-[#0f1111] mb-2 leading-tight">

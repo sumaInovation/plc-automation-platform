@@ -8,7 +8,7 @@ export default function CourseCard({ course }) {
     >
       <div className="aspect-video bg-gray-100 flex items-center justify-center">
         {course.image ? (
-          <img src={course.image} alt={course.title} className="w-full h-full object-cover" />
+        <img src={course.image} alt={course.title} className="w-full h-full object-contain bg-white" />
         ) : (
           <span className="text-gray-400 text-sm">No image</span>
         )}
