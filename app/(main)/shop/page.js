@@ -136,12 +136,12 @@ export default async function ShopPage({ searchParams }) {
       style={{ width: '210px', height: '210px', minWidth: '210px', minHeight: '210px', maxWidth: '210px', maxHeight: '210px' }}
     >
       <Image
-        src={product.images?.[0] || '/no-image.png'}
-        alt={product.name}
-        width={190}
-        height={190}
-        style={{ objectFit: 'contain', display: 'block' }}
-      />
+  src={product.images?.[0] || '/no-image.png'}
+  alt={product.name}
+  width={190}
+  height={190}
+  style={{ width: '190px', height: '190px', objectFit: 'contain', display: 'block' }}
+/>
     </Link>
 
     <div className="flex-1 min-w-0">

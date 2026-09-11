@@ -242,14 +242,14 @@ export default function Navbar({ categories = [] }) {
         <div className="flex items-center gap-4 px-4 h-[64px]">
           {/* Logo */}
 <Link href="/" className="shrink-0 flex items-center max-w- overflow-hidden">
-  <Image
-    src="/logo-desktop.svg"
-    alt="Suma"
-    width={160}
-    height={40}
-    priority
-    className="h- w-auto max-w-full object-contain"
-  />
+<Image
+  src="/logo-desktop.svg"
+  alt="Suma"
+  width={200}
+  height={40}
+  priority
+  className="h-auto w-auto max-w-full object-contain"
+/>
 </Link>
 
           {/* Deliver to */}
@@ -394,9 +394,9 @@ export default function Navbar({ categories = [] }) {
     src="/logo-mobile.svg"
     alt="SUMA"
     width={120}
-    height={28}
+    height={32}
     priority
-    className="h- w-auto max-w-full object-contain"
+   className="h-auto w-auto max-w-full object-contain"
   />
 </Link>
 
