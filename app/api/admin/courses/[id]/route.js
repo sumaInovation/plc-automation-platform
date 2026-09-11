@@ -1,6 +1,7 @@
 import connectDB from '@/lib/db';
 import Course from '@/models/Course';
 import { auth } from '@/auth';
+import { generateInvoicePdf } from '@/lib/generateInvoicePdf';
 
 export async function GET(request, { params }) {
   const session = await auth();

@@ -5,6 +5,7 @@ import Product from '@/models/Product';
 import { auth } from '@/auth';
 import { sendEmail } from '@/lib/email';
 import { orderConfirmedEmail, deliveryChargeSetEmail } from '@/lib/emailTemplates';
+import { generateInvoicePdf } from '@/lib/generateInvoicePdf'; 
 
 export async function GET(request, { params }) {
   const session = await auth();
@@ -33,7 +34,7 @@ export async function PATCH(request, { params }) {
     const order = await Order.findById(id).populate('user', 'email name');
     if (!order) return Response.json({ success: false, error: 'Order not found' }, { status: 404 });
 
-    if (action === 'set_delivery_charge') {
+      if (action === 'set_delivery_charge') {
       const charge = Number(deliveryCharge);
       if (isNaN(charge) || charge < 0) {
         return Response.json({ success: false, error: 'Invalid charge' }, { status: 400 });
@@ -50,7 +51,18 @@ export async function PATCH(request, { params }) {
 
       try {
         const { subject, html } = deliveryChargeSetEmail(order);
-        await sendEmail({ to: order.user.email, subject, html });
+        const quotationPdf = await generateInvoicePdf(order, 'quotation');
+        await sendEmail({
+          to: order.user.email,
+          subject,
+          html,
+          attachments: [
+            {
+              filename: `quotation-${order.orderNumber || order._id}.pdf`,
+              content: quotationPdf.toString('base64'),
+            },
+          ],
+        });
       } catch (emailErr) {
         console.error('Email failed but order saved:', emailErr);
       }
@@ -58,16 +70,26 @@ export async function PATCH(request, { params }) {
       return Response.json({ success: true, order });
     }
 
-    if (action === 'confirm') {
-      order.status = 'confirmed';
-      await order.save();
-      try {
-        const { subject, html } = orderConfirmedEmail(order);
-        await sendEmail({ to: order.user.email, subject, html });
-      } catch (e) { console.error(e); }
-      return Response.json({ success: true, order });
-    }
-
+  if (action === 'confirm') {
+  order.status = 'confirmed';
+  await order.save();
+  try {
+    const { subject, html } = orderConfirmedEmail(order);
+    const invoicePdf = await generateInvoicePdf(order, 'invoice');
+    await sendEmail({
+      to: order.user.email,
+      subject,
+      html,
+      attachments: [
+        {
+          filename: `invoice-${order.orderNumber || order._id}.pdf`,
+          content: invoicePdf.toString('base64'),
+        },
+      ],
+    });
+  } catch (e) { console.error(e); }
+  return Response.json({ success: true, order });
+}
     if (action === 'reject') {
       const dbSession = await mongoose.startSession();
       try {
