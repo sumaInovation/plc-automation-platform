@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suma Automation - PLC Syllabus</title>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #f8fafc; margin: 0; padding: 20px; color: #1e293b; }
+  .container { max-width: 900px; margin: 0 auto; }
+  .week { background: white; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 16px; overflow: hidden; }
+  .week-header { background: #fff; padding: 16px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; }
+  .week-header:hover { background: #fff7ed; }
+  .week-title { font-weight: 700; font-size: 16px; }
+  .week-title span { color: #ff6a00; }
+  .badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+  .physical { background: #dcfce7; color: #166534; }
+  .online { background: #dbeafe; color: #1e40af; }
+  .week-content { padding: 20px; display: none; }
+  .week.open .week-content { display: block; }
+  .week.open .arrow { transform: rotate(180deg); }
+  .arrow { transition: 0.2s; }
+  ul { margin: 0; padding-left: 18px; line-height: 1.8; }
+  .lab { margin-top: 14px; padding: 12px; background: #fff7ed; border-left: 4px solid #ff6a00; border-radius: 6px; font-size: 14px; }
+  .lab strong { color: #c2410c; }
+  .projects { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-top: 30px; }
+  .projects h3 { margin-top: 0; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media(max-width: 700px){ .grid{ grid-template-columns: 1fr; } }
+  .proj-item { padding: 10px 12px; background: #f8fafc; border-radius: 8px; font-size: 14px; border: 1px solid #f1f5f9; }
+  .proj-item b { color: #ff6a00; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- WEEK 1 -->
+<div class="week open">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 01:</span> Fundamentals of Automation & Electrical Control</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>Understanding Digital vs Analog signals in industry</li>
+      <li>Binary number system and arithmetic operations</li>
+      <li>Logic gates, truth tables and minterm concepts</li>
+      <li>Designing gate systems from functions and truth tables</li>
+      <li>Introduction to contactors and control wiring</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Basic contactor wiring, NO/NC device switching, Contactor based conveyor control</div>
+  </div>
+</div>
+
+<!-- WEEK 2 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 02:</span> PLC Hardware & Input Systems</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>What is a PLC? Architecture and working principle</li>
+      <li>PLC programming languages and compilation</li>
+      <li>Siemens S7-200 series overview and I/O mapping</li>
+      <li>Functional Block Diagram (FBD) programming basics</li>
+      <li>Memory bit area and addressing concepts</li>
+      <li>Industrial sensors - Inductive, Capacitive, Photoelectric, Fiber optic, Level sensors</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> S7-200 wiring, Pushbutton & sensor interfacing</div>
+  </div>
+</div>
+
+<!-- WEEK 3 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 03:</span> Ladder Logic & Bit Operations</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>Ladder logic fundamentals and FBD to Ladder conversion</li>
+      <li>PLC scan cycle explanation</li>
+      <li>Bit logic - NO, NC contacts, Output coils, NOT operations</li>
+      <li>Self-latching circuits and Set/Reset coils</li>
+      <li>Transition contacts and immediate I/O</li>
+      <li>Relay logic and seven segment display with BCD driver</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Relay based DC motor control, Seven segment wiring, Weighted vote display project</div>
+  </div>
+</div>
+
+<!-- WEEK 4 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 04:</span> Counters & Pneumatics</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>Timing diagrams and counter concepts</li>
+      <li>Up counters, self-reset counters, Up-Down counters</li>
+      <li>Counter based programming techniques</li>
+      <li>Introduction to pneumatics in automation</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Customer waiting room system, Pneumatic pick and place robot arm</div>
+  </div>
+</div>
+
+<!-- WEEK 5 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 05:</span> Timers & Conveyor Automation</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>ON-delay timers and self-reset timers</li>
+      <li>Timer based timing diagram analysis</li>
+      <li>Conveyor control techniques</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Light pattern using timers, Conveyor belt wiring & complete conveyor project</div>
+  </div>
+</div>
+
+<!-- WEEK 6 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 06:</span> Flowchart Based Design</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>Flowchart based automation design method</li>
+      <li>Process flow analysis techniques</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Automated liquid filling logic design, Tank level based pump control project</div>
+  </div>
+</div>
+
+<!-- WEEK 7 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 07:</span> Decision Making & Sorting</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>If conditions and nested If logic in PLC</li>
+      <li>AND/OR logical operations in automation</li>
+      <li>Compare instructions and applications</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Customer waiting room with compare, Light control with compare, Product sorting system</div>
+  </div>
+</div>
+
+<!-- WEEK 8 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 08:</span> Advanced Control Projects</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>If-Else to Ladder conversion techniques</li>
+      <li>Complex sequencing with decision making</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Elevator control system (flowchart based), Advanced traffic light control system</div>
+  </div>
+</div>
+
+<!-- WEEK 9 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 09:</span> Memory & Data Handling</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>PLC RAM and memory map structure</li>
+      <li>Accessing bit, byte, word, double word (I, Q, M areas)</li>
+      <li>Variable memory area (V-area)</li>
+      <li>Move operations - Byte, Word, DWord, Real</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Light system with move operations, Modular Production System (MPS)</div>
+  </div>
+</div>
+
+<!-- WEEK 10 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 10:</span> Math Operations & HMI</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>Block move instructions</li>
+      <li>Integer math - Add, Sub, Mul, Div, Inc, Dec</li>
+      <li>Floating point math and subroutines</li>
+      <li>Human Machine Interface (HMI) basics - OP320A operator panel</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Light system using math, OP320A practicals, Elevator with move operations</div>
+  </div>
+</div>
+
+<!-- WEEK 11 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 11:</span> PWM, PTO & Servo Control</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>Special memory area (SM) and SMB0</li>
+      <li>Pulse Width Modulation (PWM) for DC motor speed</li>
+      <li>Pulse Train Output (PTO) for stepper motors</li>
+      <li>AC servo motor - Position, direction, speed control</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> DC motor speed via PWM, Stepper control via PTO, AC servo control & linear guide demo</div>
+  </div>
+</div>
+
+<!-- WEEK 12 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 12:</span> Encoders & High Speed Counters</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>Interrupts and external interrupts concept</li>
+      <li>Encoders - working and RPM calculation program</li>
+      <li>High Speed Counters (HSC) settings and comparison with normal counters</li>
+      <li>Mitsubishi FX series PLC - bit logic, timers, counters</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Encoder feedback & Phase A/B observation, Water treatment project with Mitsubishi PLC</div>
+  </div>
+</div>
+
+<!-- WEEK 13 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 13:</span> Communication & PC Integration</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>PLC data types, character and string data</li>
+      <li>Digital communication - Serial vs Parallel, Protocols</li>
+      <li>RS-232 communication - PLC to PC and PC to PLC</li>
+      <li>Visual Basic basics for automation - Buttons, textboxes, variables, If-Else, creating exe</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Control PLC via PC desktop, VB interface connected with PLC via RS-232</div>
+  </div>
+</div>
+
+<!-- WEEK 14 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 14:</span> Arduino Integration & Remote I/O</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>Arduino as remote I/O - Digital & Analog signal exchange with S7-200</li>
+      <li>Modbus RTU communication between Arduino and PLC</li>
+      <li>Using Arduino for sensor expansion and low-cost I/O</li>
+      <li>Serial communication troubleshooting and data mapping</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> Arduino ↔ S7-200 communication via digital & Modbus RTU, Arduino as smart I/O expansion for conveyor system</div>
+  </div>
+</div>
+
+<!-- WEEK 15 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 15:</span> SCADA, Analog & VFD</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge physical">Physical Lab</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>WINCC SCADA and Siemens touch panels</li>
+      <li>Tags, buttons, bargraphs, DateTime, real-time simulation</li>
+      <li>Shift/Rotate instructions, ADC and DAC concepts</li>
+      <li>PT100, Thermocouple interfacing, VFD control for induction motor</li>
+      <li><b>NEW:</b> Servo open-loop control - Position and speed control without feedback</li>
+      <li><b>NEW:</b> Servo closed-loop control - Interfacing servo encoder for precise position & speed control</li>
+    </ul>
+    <div class="lab"><strong>Lab:</strong> SCADA dashboard for process monitoring, Servo open-loop position/speed control, Servo closed-loop position & speed control with encoder feedback, Induction motor speed control via VFD</div>
+  </div>
+</div>
+
+<!-- WEEK 16 -->
+<div class="week">
+  <div class="week-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="week-title"><span>Week 16:</span> Xinje PLC, Ethernet Web Interface & Industry 4.0</div>
+    <div style="display:flex; gap:10px; align-items:center;"><span class="badge online">Online Theory + Physical</span><span class="arrow">▼</span></div>
+  </div>
+  <div class="week-content">
+    <ul>
+      <li>Xinje PLC - Memory map, counters/timers, PLSR instruction, servo control</li>
+      <li>Xinje HMI touch panel and home automation design</li>
+      <li>Control systems - P, PI, PD, PID controllers</li>
+      <li><b>NEW:</b> S7-200 PLC Ethernet communication - HTML interface for monitoring & control</li>
+      <li><b>NEW:</b> Designing simple UI - Start/Stop, status display via web browser</li>
+      <li><b>NEW:</b> Arduino ↔ PLC integration - Analog/Digital data exchange, Modbus communication</li>
+      <li>Industry 4.0, IoT in automation, web templates</li>
+    </ul>
+    <div class="lab"><strong>Final Projects:</strong> 
+      1) Web based PLC control panel using HTML + Ethernet, 2) Arduino-PLC smart conveyor system</div>
+  </div>
+</div>
+
+<div class="projects">
+  <h3>Updated 30 Industrial Projects (S7-200 + Xinje Focus)</h3>
+  <div class="grid">
+    <div class="proj-item"><b>01.</b> Contactors / Relays / Timers Logic System</div>
+    <div class="proj-item"><b>02.</b> S7-200 PLC Wiring (Sensors / Push buttons / Loads)</div>
+    <div class="proj-item"><b>03.</b> DC Motor Control Logic using Relays</div>
+    <div class="proj-item"><b>04.</b> Weighted Voting System (Seven Segments)</div>
+    <div class="proj-item"><b>05.</b> Customer Waiting Room (Counter)</div>
+    <div class="proj-item"><b>06.</b> Motor Control using Contactors and Relays</div>
+    <div class="proj-item"><b>07.</b> Light System (Timer Practical)</div>
+    <div class="proj-item"><b>08.</b> Conveyor Belt Practical + Wiring (S7-200)</div>
+    <div class="proj-item"><b>09.</b> Advanced Traffic Light Control (S7-200)</div>
+    <div class="proj-item"><b>10.</b> Liquid Filling & Tank Control System (simulation)</div>
+    <div class="proj-item"><b>11.</b> Modular Production System (MPS) - Xinje</div>
+    <div class="proj-item"><b>12.</b> Product Sorting System - Xinje</div>
+    <div class="proj-item"><b>13.</b> Elevator Control (Flowchart Based)</div>
+    <div class="proj-item"><b>14.</b> Customer Waiting Room (Decision Making)</div>
+    <div class="proj-item"><b>15.</b> Light System (Move Operation)</div>
+    <div class="proj-item"><b>16.</b> Elevator Control (Decision Making Algo)</div>
+    <div class="proj-item"><b>17.</b> PWM - DC Motor Speed Control (S7-200)</div>
+    <div class="proj-item"><b>18.</b> PTO - Stepper Motor Control (S7-200 / Xinje)</div>
+    <div class="proj-item"><b>19.</b> AC Servo Open Loop - Position & Speed Control</div>
+    <div class="proj-item"><b>20.</b> AC Servo Closed Loop - Position & Speed Control with Encoder</div>
+    <div class="proj-item"><b>21.</b> HMI for Servo Speed/Pos/Acc Control (Xinje HMI)</div>
+    <div class="proj-item"><b>22.</b> Encoder Interfacing (HSC Practical) - S7-200</div>
+    <div class="proj-item"><b>23.</b> Control S7-200 via PC (RS232) + VB Interface</div>
+    <div class="proj-item"><b>24.</b> Arduino ↔ S7-200 Communication via Modbus RTU</div>
+    <div class="proj-item"><b>25.</b> Arduino as Remote I/O - Smart I/O Expansion</div>
+    <div class="proj-item"><b>26.</b> S7-200 PLC with HTML Interface via Ethernet (Simple Web UI)</div>
+    <div class="proj-item"><b>27.</b> Web Based PLC Control Panel (Start/Stop via Browser)</div>
+    <div class="proj-item"><b>28.</b> Thermocouple & PT100 Interfacing (Analog Input)</div>
+    <div class="proj-item"><b>29.</b> Induction Motor Control via VFD (Analog Output)</div>
+    <div class="proj-item"><b>30.</b> Final Project - Arduino + S7-200 + Xinje Smart Conveyor with Web Monitoring</div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
