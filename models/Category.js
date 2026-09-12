@@ -22,13 +22,36 @@ const CategorySchema = new mongoose.Schema(
     parent: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
-      default: null, // sub-category නම් parent category එකට reference, top-level නම් null
+      default: null,
     },
     image: {
-      type: String, // Cloudinary URL
+      type: String,
+    },
+    // ✅ NEW: Hide/show categories
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    // ✅ NEW: Custom ordering
+    order: {
+      type: Number,
+      default: 0,
+    },
+    // ✅ NEW: SEO meta fields
+    metaTitle: {
+      type: String,
+      trim: true,
+    },
+    metaDescription: {
+      type: String,
+      trim: true,
     },
   },
   { timestamps: true }
 );
+
+// ✅ NEW: Indexes for faster queries
+CategorySchema.index({ slug: 1, isActive: 1 });
+CategorySchema.index({ parent: 1, order: 1 });
 
 export default mongoose.models.Category || mongoose.model('Category', CategorySchema);
