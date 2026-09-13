@@ -6,6 +6,7 @@ import connectDB from '@/lib/db';
 import Category from '@/models/Category';
 import Footer from '@/components/layout/Footer';
 import { Suspense } from 'react';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -46,10 +47,12 @@ export const metadata = {
     },
   },
 };
+
 export const viewport = {
   width: 'device-width',
   initialScale: 1,
 };
+
 // Server-side categories fetch
 async function getCategories() {
   try {
@@ -72,14 +75,13 @@ export default async function RootLayout({ children }) {
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full`}>
       <body className="min-h-full flex flex-col antialiased bg-[#F4F6F7] text-[#10161C]">
         <AuthProvider>
-          <NavbarWrapper categories={categories} />
+          <Suspense fallback={<div className="h-[64px] sm:h-[102px] bg-[#131921]" />}>
+            <NavbarWrapper categories={categories} />
+          </Suspense>
           {children}
-            <Footer />
+          <Footer />
         </AuthProvider>
       </body>
     </html>
   );
 }
-<Suspense fallback={<div className="h-[64px] sm:h-[102px] bg-[#131921]" />}>
-  <NavbarWrapper categories={categories} />
-</Suspense>
