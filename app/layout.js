@@ -5,6 +5,7 @@ import NavbarWrapper from './NavbarWrapper';
 import connectDB from '@/lib/db';
 import Category from '@/models/Category';
 import Footer from '@/components/layout/Footer';
+import { Suspense } from 'react';
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -79,3 +80,6 @@ export default async function RootLayout({ children }) {
     </html>
   );
 }
+<Suspense fallback={<div className="h-[64px] sm:h-[102px] bg-[#131921]" />}>
+  <NavbarWrapper categories={categories} />
+</Suspense>
