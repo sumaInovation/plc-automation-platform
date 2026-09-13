@@ -2,33 +2,69 @@ import connectDB from '@/lib/db';
 import Course from '@/models/Course';
 import Batch from '@/models/Batch';
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import EnrollButton from '@/components/courses/EnrollButton';
 import SyllabusSection from '@/components/courses/SyllabusSection';
 import ReviewSection from '@/components/shop/ReviewSection';
 import ShareButtons from '@/components/shop/ShareButtons';
 import { ogImageUrl } from '@/lib/utils';
 
+const SITE_URL = 'https://sumaautomation.lk';
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const data = await getCourseData(slug);
 
-  if (!data) return { title: 'Course Not Found' };
+  if (!data) {
+    return {
+      title: 'Course Not Found | Suma Automation',
+      description: 'The course you are looking for could not be found.',
+    };
+  }
+
   const { course } = data;
 
+  const title = `${course.title} | PLC & Robotics Training - Suma Automation`;
+  const rawDescription = course.description || '';
+  const description =
+    rawDescription.length > 155
+      ? `${rawDescription.slice(0, 155).trim()}...`
+      : rawDescription;
+
+  const keywords = [
+    course.title,
+    'PLC course Sri Lanka',
+    'Robotics course Sri Lanka',
+    'automation training Sri Lanka',
+    course.level,
+    course.targetAudience,
+    course.type === 'online' ? 'online PLC course' : 'hands-on PLC training',
+  ].filter(Boolean);
+
+  const ogImage = course.image
+    ? [{ url: ogImageUrl(course.image), width: 1200, height: 630, alt: course.title }]
+    : [];
+
   return {
-    title: course.title,
-    description: course.description?.slice(0, 160),
+    title,
+    description,
+    keywords,
     alternates: {
-      canonical: `https://sumaautomation.lk/courses/${slug}`,
+      canonical: `${SITE_URL}/courses/${slug}`,
     },
     openGraph: {
-      title: course.title,
-      description: course.description?.slice(0, 160),
-      images: course.image
-        ? [{ url: ogImageUrl(course.image), width: 1200, height: 630 }]
-        : [],
-      url: `https://sumaautomation.lk/courses/${slug}`,
+      title,
+      description,
+      images: ogImage,
+      url: `${SITE_URL}/courses/${slug}`,
       type: 'website',
+      siteName: 'Suma Automation',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: course.image ? [ogImageUrl(course.image)] : [],
     },
   };
 }
@@ -62,25 +98,85 @@ export default async function CourseDetailPage({ params }) {
   if (!data) notFound();
   const { course, batches } = data;
 
+  // ✅ Structured Data (Schema.org) - Google search rich results ekata
+  const courseSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Course',
+    name: course.title,
+    description: course.description,
+    provider: {
+      '@type': 'Organization',
+      name: 'Suma Automation',
+      sameAs: SITE_URL,
+    },
+    ...(course.image && { image: course.image }),
+    offers: {
+      '@type': 'Offer',
+      price: course.price,
+      priceCurrency: 'LKR',
+      availability: 'https://schema.org/InStock',
+      url: `${SITE_URL}/courses/${course.slug}`,
+    },
+    ...(batches.length > 0 && {
+      hasCourseInstance: batches.map((b) => ({
+        '@type': 'CourseInstance',
+        courseMode: course.type === 'online' ? 'online' : 'onsite',
+        courseWorkload: course.duration || undefined,
+        startDate: b.startDate,
+        ...(b.endDate && { endDate: b.endDate }),
+        ...(b.location && {
+          location: {
+            '@type': 'Place',
+            name: b.location,
+          },
+        }),
+      })),
+    }),
+  };
+
+  // ✅ Breadcrumb schema - navigation context Google ekata
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name: 'Courses', item: `${SITE_URL}/courses` },
+      { '@type': 'ListItem', position: 3, name: course.title, item: `${SITE_URL}/courses/${course.slug}` },
+    ],
+  };
+
   return (
     <div className="bg-white min-h-screen">
+      {/* ✅ JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+
       <div className="max-w-4xl mx-auto px-4 py-8">
 
-           {/* Course hero image */}
-<div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 border border-[#e7e7e7]">
-  {course.image ? (
-    <img
-      src={course.image}
-      alt={course.title}
-      className="w-full h-full object-contain"
-    />
-  ) : (
-    <div className="w-full h-full bg-[#f7f8f8] flex flex-col items-center justify-center">
-      <div className="w-14 h-14 rounded-full bg-[#f0f2f2] flex items-center justify-center text-xl">📷</div>
-      <span className="text-[#565959] text-sm mt-3 font-medium">No image available</span>
-    </div>
-  )}
-  </div>
+        {/* Course hero image - next/image use kala (performance + SEO) */}
+        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden mb-6 border border-[#e7e7e7]">
+          {course.image ? (
+            <Image
+              src={course.image}
+              alt={`${course.title} - PLC and Robotics course by Suma Automation`}
+              fill
+              sizes="(max-width: 768px) 100vw, 768px"
+              className="object-contain"
+              priority
+            />
+          ) : (
+            <div className="w-full h-full bg-[#f7f8f8] flex flex-col items-center justify-center">
+              <div className="w-14 h-14 rounded-full bg-[#f0f2f2] flex items-center justify-center text-xl">📷</div>
+              <span className="text-[#565959] text-sm mt-3 font-medium">No image available</span>
+            </div>
+          )}
+        </div>
 
         {/* Title & description */}
         <h1 className="text-2xl sm:text-3xl font-medium text-[#0f1111] mb-2 leading-tight">
@@ -108,7 +204,7 @@ export default async function CourseDetailPage({ params }) {
         {/* Share */}
         <div className="mb-6">
           <ShareButtons
-            url={`https://sumaautomation.lk/courses/${course.slug}`}
+            url={`${SITE_URL}/courses/${course.slug}`}
             title={course.title}
           />
         </div>
