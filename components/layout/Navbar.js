@@ -34,11 +34,6 @@ export default function Navbar({ categories = [] }) {
   const skipNextDebounce = useRef(false);
   const lastPushedSearch = useRef(null);
 
-  // ===== Is current page a shop/category listing page? =====
-  // Used so the category dropdown doesn't silently show "All" as
-  // pre-selected while sitting on pages like /shop/product/[slug].
-  const isShopRoute = pathname === '/shop' || pathname.startsWith('/shop/category/');
-
   // ===== Load search from URL =====
   useEffect(() => {
     const urlSearch = searchParams.get('search') || '';
@@ -202,6 +197,16 @@ export default function Navbar({ categories = [] }) {
     }
   };
 
+  // The select's real value is ALWAYS this placeholder — never a real
+  // category value. That's what forces onChange to fire every single
+  // time the user picks an option, even if it's the option that's
+  // already active (e.g. clicking "All" while already unfiltered, or
+  // re-clicking the current category). Only the placeholder's visible
+  // label changes, to always reflect the true current category.
+  const currentCategoryLabel = category
+    ? categories.find((c) => c.slug === category)?.name || 'All'
+    : 'All';
+
   const getGreeting = () => {
     if (session?.user?.name) return session.user.name.split(' ')[0];
     return 'Sign in';
@@ -276,11 +281,11 @@ export default function Navbar({ categories = [] }) {
           <div className="flex-1 relative">
             <div className="flex h-[40px] rounded-md overflow-hidden ring-1 ring-transparent focus-within:ring-2 focus-within:ring-[#febd69]">
               <select
-                value={isShopRoute ? category : '__placeholder__'}
+                value="__placeholder__"
                 onChange={handleCategoryChange}
                 className="bg-[#e6e6e6] hover:bg-[#d4d4d4] text-[#555] text-[13px] px-2 w-[90px] border-r border-[#cdcdcd] outline-none cursor-pointer shrink-0"
               >
-                <option value="__placeholder__" hidden>All</option>
+                <option value="__placeholder__" hidden>{currentCategoryLabel}</option>
                 <option value="">All</option>
                 {categories.map((c) => (
                   <option key={c.slug} value={c.slug}>{c.name}</option>
@@ -434,11 +439,11 @@ export default function Navbar({ categories = [] }) {
         <div className="px-2 pb-2.5 relative">
           <div className="flex h-[42px] rounded-md overflow-hidden bg-white ring-1 ring-black/5">
             <select
-              value={isShopRoute ? category : '__placeholder__'}
+              value="__placeholder__"
               onChange={handleCategoryChange}
               className="bg-[#e6e6e6] hover:bg-[#d4d4d4] text-[#555] text-base sm:text-[10px] px-1.5 w-[52px] sm:w-[70px] border-r border-[#cdcdcd] outline-none cursor-pointer shrink-0"
             >
-              <option value="__placeholder__" hidden>All</option>
+              <option value="__placeholder__" hidden>{currentCategoryLabel}</option>
               <option value="">All</option>
               {categories.map((c) => (
                 <option key={c.slug} value={c.slug}>{c.name}</option>
