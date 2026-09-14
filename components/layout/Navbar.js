@@ -362,11 +362,11 @@ export default function Navbar({ categories = [] }) {
           <Link href="/courses" className="bg-[#febd69] text-black px-2 py-0.5 rounded text-[12px] font-bold shrink-0">
             🎓 Courses
           </Link>
-          <Link href="/shop" className="hover:opacity-80 shrink-0">Today's Deals</Link>
+        
           <Link href="/shop" className="hover:opacity-80 shrink-0">Products</Link>
-          <Link href="/shop" className="hover:opacity-80 shrink-0">Livestreams</Link>
-          <Link href="/shop" className="hover:opacity-80 shrink-0">Books</Link>
-          {categories.slice(0, 6).map((c) => (
+          
+          
+{categories.slice(0, 6).map((c) => (
             <Link key={c.slug} href={`/shop/category/${c.slug}`} className="hover:opacity-80 shrink-0">
               {c.name}
             </Link>
