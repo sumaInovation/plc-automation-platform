@@ -36,6 +36,15 @@ openGraph: {
     url: "https://www.sumaautomation.lk",
     siteName: "Suma Automation",
     type: "website",
+    images: [
+      {
+        url: "/og-default.jpg", // meka public eke thiyena eka
+        width: 1200,
+        height: 630,
+        alt: "Suma Automation"
+      }
+    ]
+
   },
   robots: {
     index: true,

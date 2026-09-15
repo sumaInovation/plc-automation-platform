@@ -17,52 +17,41 @@ export async function generateMetadata({ params }) {
 
   if (!data) {
     return {
-      title: 'Course Not Found | Suma Automation',
-      description: 'The course you are looking for could not be found.',
+      title: 'Course Not Found',
     };
   }
 
   const { course } = data;
-
-  const title = `${course.title} | PLC & Robotics Training - Suma Automation`;
-  const rawDescription = course.description || '';
-  const description =
-    rawDescription.length > 155
-     ? `${rawDescription.slice(0, 155).trim()}...`
-      : rawDescription;
-
-  // ======== MEKA THAMA MAIN FIX EKA ========
-  // kalin thibbe: course.image? [...] : [] kiyala
-  // dan hamawelama image ekak thiyenawa (fallback ekka)
-  const ogImage = [
-    {
-      url: ogImageUrl(course.image), // dan null enne na, fallback eka enawa
-      width: 1200,
-      height: 630,
-      alt: course.title
-    }
-  ];
-  // ==========================================
+  const title = `${course.title} | Suma Automation`;
+  const description = (course.description || '').slice(0, 155);
+  const finalImage = ogImageUrl(course.image);
 
   return {
     title,
     description,
     alternates: {
-      canonical: `${SITE_URL}/courses/${slug}`,
+      canonical: `/courses/${slug}`,
     },
     openGraph: {
       title,
       description,
-      images: ogImage, // meka yata danna
-      url: `${SITE_URL}/courses/${slug}`,
-      type: 'website',
+      url: `/courses/${slug}`,
       siteName: 'Suma Automation',
+      type: 'website',
+      images: [
+        {
+          url: finalImage,
+          width: 1200,
+          height: 630,
+          alt: course.title,
+        },
+      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [ogImage[0].url],
+      images: [finalImage],
     },
   };
 }
