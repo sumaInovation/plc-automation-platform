@@ -30,10 +30,10 @@ export const metadata = {
     template: "%s | Suma Automation",
   },
   description: "PLC & Automation components, training for university students and professionals — Sri Lanka",
-  openGraph: {
+openGraph: {
     title: "Suma Automation",
     description: "PLC & Automation components, training for university students and professionals — Sri Lanka",
-    url: "https://sumaautomation.lk",
+    url: "https://www.sumaautomation.lk",
     siteName: "Suma Automation",
     type: "website",
   },
