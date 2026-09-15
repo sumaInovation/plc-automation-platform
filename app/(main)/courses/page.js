@@ -1,8 +1,9 @@
 import connectDB from '@/lib/db';
 import Course from '@/models/Course';
 import CoursesClient from './CoursesClient';
-
-const SITE_URL = 'https://sumaautomation.lk';
+// courses/page.jsx - top එකේ දාන්න
+export const dynamic = 'force-dynamic';
+const SITE_URL = 'https://www.sumaautomation.lk';
 
 export const metadata = {
   title: 'PLC & Robotics Courses in Sri Lanka | Suma Automation',
