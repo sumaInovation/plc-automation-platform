@@ -11,48 +11,58 @@ import { ogImageUrl } from '@/lib/utils';
 
 const SITE_URL = 'https://www.sumaautomation.lk';
 
-function ogImageUrl(path) {
-  if (!path) return `${SITE_URL}/og-default.jpg`;
-  if (path.startsWith('http')) return path;
-  // ensure absolute
-  return `${SITE_URL}${path.startsWith('/')? '' : '/'}${path}`;
-}
-
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const data = await getCourseData(slug);
-  if (!data) return { title: 'Course Not Found | Suma Automation' };
+
+  if (!data) {
+    return {
+      title: 'Course Not Found | Suma Automation',
+      description: 'The course you are looking for could not be found.',
+    };
+  }
 
   const { course } = data;
-  const title = `${course.title} | Suma Automation`;
-  const description = (course.description || '').slice(0, 155);
 
-  const imageUrl = ogImageUrl(course.image);
+  const title = `${course.title} | PLC & Robotics Training - Suma Automation`;
+  const rawDescription = course.description || '';
+  const description =
+    rawDescription.length > 155
+     ? `${rawDescription.slice(0, 155).trim()}...`
+      : rawDescription;
+
+  // ======== MEKA THAMA MAIN FIX EKA ========
+  // kalin thibbe: course.image? [...] : [] kiyala
+  // dan hamawelama image ekak thiyenawa (fallback ekka)
+  const ogImage = [
+    {
+      url: ogImageUrl(course.image), // dan null enne na, fallback eka enawa
+      width: 1200,
+      height: 630,
+      alt: course.title
+    }
+  ];
+  // ==========================================
 
   return {
     title,
     description,
-    alternates: { canonical: `${SITE_URL}/courses/${slug}` },
+    alternates: {
+      canonical: `${SITE_URL}/courses/${slug}`,
+    },
     openGraph: {
       title,
       description,
+      images: ogImage, // meka yata danna
       url: `${SITE_URL}/courses/${slug}`,
-      siteName: 'Suma Automation',
       type: 'website',
-      images: [
-        {
-          url: imageUrl, // https://www.sumaautomation.lk/... <-- mehema enna ona
-          width: 1200,
-          height: 630,
-          alt: course.title,
-        },
-      ],
+      siteName: 'Suma Automation',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [imageUrl],
+      images: [ogImage[0].url],
     },
   };
 }
