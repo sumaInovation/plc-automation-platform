@@ -11,46 +11,36 @@ import { ogImageUrl } from '@/lib/utils';
 
 const SITE_URL = 'https://www.sumaautomation.lk';
 
+// app/courses/[slug]/page.js
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const data = await getCourseData(slug);
+  const course = data?.course;
+  if (!course) return { title: 'Course Not Found' };
 
-  if (!data) {
-    return {
-      title: 'Course Not Found',
-    };
-  }
+  // oya DB doc eke image field eka direct enawa
+  const finalImage = course.image
+   ? course.image.replace('/upload/', '/upload/w_1200,h_630,c_fill,f_jpg,q_auto/')
+    : 'https://www.sumaautomation.lk/og-default.png';
 
-  const { course } = data;
-  const title = `${course.title} | Suma Automation`;
-  const description = (course.description || '').slice(0, 155);
-  const finalImage = ogImageUrl(course.image);
+  const desc = course.description?.replace(/<[^>]*>/g, '').slice(0,160) || '';
 
   return {
-    title,
-    description,
-    alternates: {
-      canonical: `/courses/${slug}`,
-    },
+    title: course.title,
+    description: desc,
+    alternates: { canonical: `/courses/${slug}` },
     openGraph: {
-      title,
-      description,
+      title: course.title,
+      description: desc,
       url: `/courses/${slug}`,
       siteName: 'Suma Automation',
       type: 'website',
-      images: [
-        {
-          url: finalImage,
-          width: 1200,
-          height: 630,
-          alt: course.title,
-        },
-      ],
+      images: [{ url: finalImage, width: 1200, height: 630, alt: course.title }],
     },
     twitter: {
       card: 'summary_large_image',
-      title,
-      description,
+      title: course.title,
+      description: desc,
       images: [finalImage],
     },
   };
