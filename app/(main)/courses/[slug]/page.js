@@ -9,8 +9,7 @@ import ReviewSection from '@/components/shop/ReviewSection';
 import ShareButtons from '@/components/shop/ShareButtons';
 import { ogImageUrl } from '@/lib/utils';
 
-const SITE_URL = 'https://sumaautomation.lk';
-
+const SITE_URL = 'https://www.sumaautomation.lk';
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const data = await getCourseData(slug);

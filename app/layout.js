@@ -24,7 +24,7 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://sumaautomation.lk"),
+  metadataBase: new URL('https://www.sumaautomation.lk'),
   title: {
     default: "Suma Automation",
     template: "%s | Suma Automation",
