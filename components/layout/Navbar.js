@@ -18,6 +18,7 @@ export default function Navbar({ categories = [] }) {
   const { data: session, status } = useSession();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -33,6 +34,11 @@ export default function Navbar({ categories = [] }) {
   const isFirstRun = useRef(true);
   const skipNextDebounce = useRef(false);
   const lastPushedSearch = useRef(null);
+
+  // ===== Mark as mounted (client-side only) to avoid hydration mismatch =====
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // ===== Load search from URL =====
   useEffect(() => {
@@ -207,8 +213,12 @@ export default function Navbar({ categories = [] }) {
     ? categories.find((c) => c.slug === category)?.name || 'All'
     : 'All';
 
+  // ===== Only trust the real session AFTER mount, so the server render
+  // (which never has a session) matches the client's first render. =====
+  const displaySession = mounted ? session : null;
+
   const getGreeting = () => {
-    if (session?.user?.name) return session.user.name.split(' ')[0];
+    if (displaySession?.user?.name) return displaySession.user.name.split(' ')[0];
     return 'Sign in';
   };
 
@@ -322,7 +332,7 @@ export default function Navbar({ categories = [] }) {
 
           {/* Account & Lists */}
           <Link
-            href={session ? '/dashboard' : '/login'}
+            href={displaySession ? '/dashboard' : '/login'}
             className="hidden md:flex flex-col justify-center text-white px-2 py-1 rounded-sm hover:ring-1 hover:ring-white/40 shrink-0"
           >
             <span className="text-[11px] text-gray-300 leading-none">Hello, {getGreeting()}</span>
@@ -366,7 +376,7 @@ export default function Navbar({ categories = [] }) {
 
 
                {/* ADMIN LINK - admin ta witharai */}
-  {session?.user?.role === 'admin' && (
+  {displaySession?.user?.role === 'admin' && (
     <Link href="/admin/products" className="bg-red-600 text-white px-2 py-0.5 rounded text-[12px] font-bold shrink-0">
       🛠 Admin
     </Link>
@@ -416,7 +426,7 @@ export default function Navbar({ categories = [] }) {
 
           <div className="flex-1 min-w-[8px]" />
 
-          <Link href={session ? '/account' : '/login'} className="flex items-center gap-1.5 text-white px-1.5 py-1 hover:opacity-80 shrink-0">
+          <Link href={displaySession ? '/account' : '/login'} className="flex items-center gap-1.5 text-white px-1.5 py-1 hover:opacity-80 shrink-0">
             <span className="hidden xs:inline text-[13px] font-medium">{getGreeting()}</span>
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14c-4.418 0-8 2.239-8 5v1h16v-1c0-2.761-3.582-5-8-5z" />
@@ -519,16 +529,16 @@ export default function Navbar({ categories = [] }) {
           <div className="fixed left-0 top-0 h-full w-[280px] bg-white z-[201] flex flex-col shadow-2xl transition-transform duration-300">
             <div className="bg-[#131921] text-white p-4 flex items-center gap-3 min-h-[50px]">
               <div className="w-8 h-8 bg-[#febd69] rounded-full flex items-center justify-center text-black font-bold text-sm">
-                {session?.user?.name?.[0] || 'G'}
+                {displaySession?.user?.name?.[0] || 'G'}
               </div>
               <div>
                 <div className="text-[10px] text-[#ccc]">Hello</div>
-                <div className="font-bold text-sm">{session?.user?.name || 'Guest'}</div>
+                <div className="font-bold text-sm">{displaySession?.user?.name || 'Guest'}</div>
               </div>
             </div>
 
             <div className="flex-1 overflow-y-auto">
-              {!session && (
+              {!displaySession && (
                 <Link href="/login" onClick={() => setMenuOpen(false)} className="block px-4 py-3 border-b text-sm font-bold text-[#2b7fff]">
                   🔑 Sign In
                 </Link>
@@ -564,7 +574,7 @@ export default function Navbar({ categories = [] }) {
                 ))}
               </div>
 
-              {session && (
+              {displaySession && (
                 <button
                   onClick={() => { setMenuOpen(false); signOut({ callbackUrl: '/' }); }}
                   className="block w-full text-left px-4 py-3 border-t text-sm text-red-600 font-medium hover:bg-red-50 transition-colors"
