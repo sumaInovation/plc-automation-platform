@@ -11,7 +11,6 @@ import { ogImageUrl } from '@/lib/utils';
 
 const SITE_URL = 'https://www.sumaautomation.lk';
 
-// app/courses/[slug]/page.js
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const data = await getCourseData(slug);
@@ -35,7 +34,13 @@ export async function generateMetadata({ params }) {
       url: `/courses/${slug}`,
       siteName: 'Suma Automation',
       type: 'website',
-      images: [{ url: finalImage, width: 1200, height: 630, alt: course.title }],
+      images: [{ 
+        url: finalImage, 
+        width: 1200, 
+        height: 630, 
+        alt: course.title,
+        type: 'image/jpeg',
+      }],
     },
     twitter: {
       card: 'summary_large_image',
