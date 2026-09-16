@@ -29,7 +29,7 @@ const uploadOptions = {
 
 if (folderName === 'courses') {
   uploadOptions.eager = [
-    { width: 1200, height: 630, crop: 'fill', format: 'jpg', quality: 'auto' }
+    { width: 1200, height: 630, crop: 'fill', format: 'jpg', quality: 80 }
   ];
   uploadOptions.eager_async = true;
 }

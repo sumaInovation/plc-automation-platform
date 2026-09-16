@@ -17,10 +17,9 @@ export async function generateMetadata({ params }) {
   const course = data?.course;
   if (!course) return { title: 'Course Not Found' };
 
-  // oya DB doc eke image field eka direct enawa
-  const finalImage = course.image
-   ? course.image.replace('/upload/', '/upload/w_1200,h_630,c_fill,f_jpg,q_auto/')
-    : 'https://www.sumaautomation.lk/og-default.png';
+   const finalImage = course.image
+ ? course.image.replace('/upload/', '/upload/w_1200,h_630,c_fill,f_jpg,q_80/')
+  : 'https://www.sumaautomation.lk/og-default.png';
 
   const desc = course.description?.replace(/<[^>]*>/g, '').slice(0,160) || '';
 
