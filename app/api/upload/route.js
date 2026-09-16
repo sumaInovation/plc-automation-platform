@@ -22,18 +22,29 @@ export async function POST(request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const result = await new Promise((resolve, reject) => {
-      const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: `plc-automation/${folderName}`,
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-      uploadStream.end(buffer);
-    });
+   // Course images walata witharak OG image eka pre-generate karanna
+const uploadOptions = {
+  folder: `plc-automation/${folderName}`,
+};
+
+if (folderName === 'courses') {
+  uploadOptions.eager = [
+    { width: 1200, height: 630, crop: 'fill', format: 'jpg', quality: 'auto' }
+  ];
+  uploadOptions.eager_async = true;
+}
+
+const result = await new Promise((resolve, reject) => {
+  const uploadStream = cloudinary.uploader.upload_stream(
+    uploadOptions,
+    (error, result) => {
+      if (error) reject(error);
+      else resolve(result);
+    }
+  );
+  uploadStream.end(buffer);
+});
+
 
     return Response.json({ 
       success: true, 
