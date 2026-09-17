@@ -1,10 +1,19 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
     <footer className="w-full font-sans mt-0">
+
+      {/* BACK TO TOP - Amazon style dark strip */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="w-full bg-[#37475A] hover:bg-[#485769] text-white text-sm py-4 transition-colors"
+      >
+        Back to top
+      </button>
 
       {/* MAIN LINKS - bg-[#232f3e] */}
       <div className="bg-[#232f3e] text-[#DDDDDD]">
@@ -73,8 +82,28 @@ export default function Footer() {
 
         <div className="border-t border-[#3a4553] mt-2"></div>
 
-        <div className="max-w-7xl mx-auto px-6 py-7 flex justify-center items-center gap-4">
-          <Link href="/" className="text-white font-bold text-lg tracking-wide">SUMA AUTOMATION</Link>
+        {/* LOGO ROW - Amazon style, centered */}
+        <div className="max-w-7xl mx-auto px-6 py-7 flex justify-center items-center">
+          <Link href="/" className="flex items-center">
+            {/* Desktop logo - hidden on small screens */}
+            <Image
+              src="/logo-desktop.svg"
+              alt="Suma Automation"
+              width={160}
+              height={40}
+              className="hidden sm:block h-8 w-auto"
+              priority={false}
+            />
+            {/* Mobile logo - hidden on larger screens */}
+            <Image
+              src="/logo-mobile.svg"
+              alt="Suma Automation"
+              width={120}
+              height={32}
+              className="block sm:hidden h-7 w-auto "
+              priority={false}
+            />
+          </Link>
         </div>
       </div>
 

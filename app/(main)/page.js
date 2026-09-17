@@ -227,23 +227,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* CTA / TRUST BAND */}
-      <section className="bg-[#131B22] text-white">
-        <div className="max-w-7xl mx-auto px-6 py-14 flex flex-col md:flex-row justify-between items-center gap-6">
-          <div>
-            <h3 className="font-[family-name:var(--font-display)] text-xl font-semibold mb-1">
-              Island wide delivery • Pay by bank transfer.
-            </h3>
-            <p className="text-slate-400 text-sm">Simple checkout — upload your slip, we confirm within one business day.</p>
-          </div>
-          <Link
-            href="/shop"
-            className="bg-[#F5A623] text-[#131B22] font-semibold px-6 py-3 rounded-lg hover:bg-[#e0951a] transition-colors whitespace-nowrap"
-          >
-            Start Shopping
-          </Link>
-        </div>
-      </section>
+    
     </div>
   );
 }
