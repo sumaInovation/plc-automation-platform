@@ -31,7 +31,7 @@ if (folderName === 'courses') {
   uploadOptions.eager = [
     { width: 1200, height: 630, crop: 'fill', format: 'jpg', quality: 80 }
   ];
-  uploadOptions.eager_async = true;
+  uploadOptions.eager_async = false;
 }
 
 const result = await new Promise((resolve, reject) => {

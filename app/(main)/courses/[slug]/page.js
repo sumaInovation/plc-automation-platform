@@ -4,6 +4,7 @@ import Batch from '@/models/Batch';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import EnrollButton from '@/components/courses/EnrollButton';
+
 import SyllabusSection from '@/components/courses/SyllabusSection';
 import ReviewSection from '@/components/shop/ReviewSection';
 import ShareButtons from '@/components/shop/ShareButtons';
