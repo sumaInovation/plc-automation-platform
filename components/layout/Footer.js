@@ -31,12 +31,12 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-white font-bold text- mb-3">Training</h4>
+            <h4 className="text-white font-bold text- mb-3">Our Courses</h4>
             <ul className="space-y-2 text-">
-              <li><Link href="/courses" className="hover:underline">PLC Courses</Link></li>
-              <li><Link href="/courses" className="hover:underline">Robotics Training</Link></li>
-              <li><Link href="/about" className="hover:underline">For University Students</Link></li>
-              <li><Link href="/about" className="hover:underline">For Working Engineers</Link></li>
+              <li><Link href="/courses/plc-programming-course-advanced" className="hover:underline">Advance PLC Programming</Link></li>
+              <li><Link href="/courses/advance-robotic-course" className="hover:underline">Advance Robotics Course</Link></li>
+              <li><Link href="/courses/kids-robotic-course-i" className="hover:underline">Kids Robotics Course-I</Link></li>
+              
             </ul>
           </div>
 
