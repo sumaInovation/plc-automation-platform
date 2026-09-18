@@ -30,21 +30,13 @@ export async function generateMetadata({ params }) {
 
   const rawDesc = product.description?.replace(/<[^>]*>/g, '').trim().slice(0, 140) || '';
   const priceFormatted = Number(product.price || 0).toLocaleString();
-
-  // Diga name eka 50 chars walata kapala price issarahata danawa
-  // LKR 1,250 - ATmega32U4 USB Board wage
   const shortName = product.name.length > 50? product.name.slice(0, 50).trim() + '...' : product.name;
+
   const titleWithPrice = `LKR ${priceFormatted} - ${shortName}`;
   const descWithPrice = `${shortName} - LKR ${priceFormatted} - ${rawDesc} - Island wide delivery`;
 
-  // Image eka kisi welawaka crop wenne na - c_pad use karanawa
-  let mainImage = product.images?.[0]? ogImageUrl(product.images[0]) : `${SITE_URL}/og-default.jpg`;
-  let finalImage = mainImage;
-
-  if (mainImage.includes('res.cloudinary.com')) {
-    // purana transform okkoma ain karala aluth clean transform ekak
-    finalImage = mainImage.replace(/\/upload\/[^\/]*\//, '/upload/w_1200,h_630,c_pad,b_white,f_auto,q_auto,g_auto/');
-  }
+  // Image eka original eka witharai - transform karanne na, glitch enna epa
+  const finalImage = product.images?.[0] || `${SITE_URL}/og-default.jpg`;
 
   return {
     title: titleWithPrice,
@@ -56,7 +48,13 @@ export async function generateMetadata({ params }) {
       siteName: 'Suma Automation',
       url: `${SITE_URL}/shop/product/${slug}`,
       type: 'website',
-      images: [{ url: finalImage, secureUrl: finalImage, width: 1200, height: 630, alt: shortName }],
+      images: [{
+        url: finalImage,
+        secureUrl: finalImage,
+        width: 1200,
+        height: 630,
+        alt: shortName
+      }],
     },
     twitter: {
       card: 'summary_large_image',
