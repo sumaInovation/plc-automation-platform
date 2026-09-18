@@ -10,6 +10,7 @@ import ReviewSection from '@/components/shop/ReviewSection';
 import ShareButtons from '@/components/shop/ShareButtons';
 import { ogImageUrl } from '@/lib/utils';
 
+
 const SITE_URL = 'https://www.sumaautomation.lk';
 
 export async function generateMetadata({ params }) {
@@ -18,29 +19,41 @@ export async function generateMetadata({ params }) {
   const course = data?.course;
   if (!course) return { title: 'Course Not Found' };
 
-   const finalImage = course.image
- ? course.image.replace('/upload/', '/upload/w_1200,h_630,c_fill,f_jpg,q_80/')
-  : 'https://www.sumaautomation.lk/og-default.png';
+  // Cloudinary image eka 100% absolute + WhatsApp walata optimize
+  let finalImage;
+  if (course.image && course.image.startsWith('http')) {
+    // Cloudinary nam transform karanawa
+    if (course.image.includes('/upload/') &&!course.image.includes('w_1200')) {
+       finalImage = course.image.replace('/upload/', '/upload/w_1200,h_630,c_fill,f_auto,q_auto/')
+    } else {
+       finalImage = course.image;
+    }
+  } else {
+    // DB eke relative path ekak thiyenawa nam
+    finalImage = `${SITE_URL}/og-default.jpg`;
+  }
 
-  const desc = course.description?.replace(/<[^>]*>/g, '').slice(0,160) || '';
+  const desc = course.description?.replace(/<[^>]*>/g, '').trim().slice(0, 160) || 'PLC & Automation training - Suma Automation';
 
   return {
     title: course.title,
     description: desc,
-    alternates: { canonical: `/courses/${slug}` },
+    alternates: { canonical: `${SITE_URL}/courses/${slug}` },
     openGraph: {
       title: course.title,
       description: desc,
-      url: `/courses/${slug}`,
+      url: `${SITE_URL}/courses/${slug}`, // Layout eke thibunata meka absolute danna
       siteName: 'Suma Automation',
       type: 'website',
-      images: [{ 
-        url: finalImage, 
-        width: 1200, 
-        height: 630, 
-        alt: course.title,
-        type: 'image/jpeg',
-      }],
+      images: [
+        {
+          url: finalImage,
+          secureUrl: finalImage,
+          width: 1200,
+          height: 630,
+          alt: course.title
+        }
+      ],
     },
     twitter: {
       card: 'summary_large_image',
@@ -50,6 +63,7 @@ export async function generateMetadata({ params }) {
     },
   };
 }
+
 async function getCourseData(slug) {
   await connectDB();
   const course = await Course.findOne({ slug, isActive: true }).lean();
