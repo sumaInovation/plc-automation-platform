@@ -63,12 +63,13 @@ export const viewport = {
 };
 
 // Server-side categories fetch
+// Server-side categories fetch
 async function getCategories() {
   try {
     await connectDB();
     const categories = await Category.find()
-      .sort({ name: 1 })
-      .select('name slug')
+      .sort({ priority: 1, order: 1 })
+      .select('name slug priority order')
       .lean();
     return JSON.parse(JSON.stringify(categories));
   } catch (error) {

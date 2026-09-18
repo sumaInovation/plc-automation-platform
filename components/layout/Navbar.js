@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
@@ -34,15 +34,6 @@ export default function Navbar({ categories = [] }) {
   const isFirstRun = useRef(true);
   const skipNextDebounce = useRef(false);
   const lastPushedSearch = useRef(null);
-
-  // ===== Categories sorted by priority (ascending, 0 = top), falling back to order =====
-  const sortedCategories = useMemo(() => {
-    return [...categories].sort((a, b) => {
-      const aPriority = a.priority ?? a.order ?? 0;
-      const bPriority = b.priority ?? b.order ?? 0;
-      return aPriority - bPriority;
-    });
-  }, [categories]);
 
   // ===== Mark as mounted (client-side only) to avoid hydration mismatch =====
   useEffect(() => {
@@ -219,7 +210,7 @@ export default function Navbar({ categories = [] }) {
   // re-clicking the current category). Only the placeholder's visible
   // label changes, to always reflect the true current category.
   const currentCategoryLabel = category
-    ? sortedCategories.find((c) => c.slug === category)?.name || 'All'
+    ? categories.find((c) => c.slug === category)?.name || 'All'
     : 'All';
 
   // ===== Only trust the real session AFTER mount, so the server render
@@ -306,7 +297,7 @@ export default function Navbar({ categories = [] }) {
               >
                 <option value="__placeholder__" hidden>{currentCategoryLabel}</option>
                 <option value="">All</option>
-                {sortedCategories.map((c) => (
+                {categories.map((c) => (
                   <option key={c.slug} value={c.slug}>{c.name}</option>
                 ))}
               </select>
@@ -399,7 +390,7 @@ export default function Navbar({ categories = [] }) {
           <Link href="/shop" className="hover:opacity-80 shrink-0">Products</Link>
           
           
-{sortedCategories.slice(0, 6).map((c) => (
+{categories.slice(0, 6).map((c) => (
             <Link key={c.slug} href={`/shop/category/${c.slug}`} className="hover:opacity-80 shrink-0">
               {c.name}
             </Link>
@@ -464,7 +455,7 @@ export default function Navbar({ categories = [] }) {
             >
               <option value="__placeholder__" hidden>{currentCategoryLabel}</option>
               <option value="">All</option>
-              {sortedCategories.map((c) => (
+              {categories.map((c) => (
                 <option key={c.slug} value={c.slug}>{c.name}</option>
               ))}
             </select>
@@ -571,7 +562,7 @@ export default function Navbar({ categories = [] }) {
 
               <div className="py-2">
                 <div className="px-4 py-1 text-[10px] font-bold text-gray-500 uppercase tracking-wider">Categories</div>
-                {sortedCategories.map((c) => (
+                {categories.map((c) => (
                   <Link
                     key={c.slug}
                     href={`/shop/category/${c.slug}`}
