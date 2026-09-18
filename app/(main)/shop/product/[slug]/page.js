@@ -28,23 +28,16 @@ export async function generateMetadata({ params }) {
   const product = await getProduct(slug);
   if (!product) return { title: 'Product Not Found', robots: { index: false } };
 
-  const rawDesc = product.description?.replace(/<[^>]*>/g, '').trim().slice(0, 160) || '';
+  const rawDesc = product.description?.replace(/<[^>]*>/g, '').trim().slice(0, 150) || '';
   const priceFormatted = Number(product.price || 0).toLocaleString();
   const mainImage = product.images?.[0]? ogImageUrl(product.images[0]) : `${SITE_URL}/og-default.jpg`;
 
-  // Cloudinary image ekata price eka overlay karanawa - meken image eke athulama price penawa
-  let finalImage = mainImage;
-  if (mainImage.includes('res.cloudinary.com')) {
-    // clean w_1200 transform
-    const baseImage = mainImage.includes('w_1200')? mainImage : mainImage.replace('/upload/', '/upload/w_1200,h_630,c_fill,f_auto,q_auto/');
-    // Price overlay
-    const priceText = `LKR ${priceFormatted}`;
-    // Cloudinary text overlay - LKR price image eke yata
-    finalImage = baseImage.replace('/upload/', `/upload/w_1200,h_630,c_fill,f_auto,q_auto,l_text:Arial_80_bold:${encodeURIComponent(priceText)},co_rgb:FEBD69,g_south_west,x_40,y_40/`);
-  }
+  const finalImage = mainImage.includes('res.cloudinary.com') &&!mainImage.includes('w_1200')
+  ? mainImage.replace('/upload/', '/upload/w_1200,h_630,c_fill,f_auto,q_auto/')
+   : mainImage;
 
   const titleWithPrice = `${product.name} - LKR ${priceFormatted}`;
-  const descWithPrice = `LKR ${priceFormatted} - ${rawDesc || product.name} - Island wide delivery`;
+  const descWithPrice = `LKR ${priceFormatted} - ${rawDesc} - Island Wide Delivery | Suma Automation`;
 
   return {
     title: titleWithPrice,
