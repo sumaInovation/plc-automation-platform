@@ -1,0 +1,612 @@
+[
+  {
+    "_id": {
+      "$oid": "6a9a89fbf34e8ba7905e8725"
+    },
+    "name": "Shield",
+    "slug": "shield",
+    "description": "Shield products",
+    "order": 0,
+    "priority": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89faf34e8ba7905e871a"
+    },
+    "name": "Communication Module",
+    "slug": "communication-module",
+    "description": "Communication Module products",
+    "order": 0,
+    "priority": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fef34e8ba7905e8738"
+    },
+    "name": "PLC",
+    "slug": "plc",
+    "description": "PLC products",
+    "order": 0,
+    "priority": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fcf34e8ba7905e872a"
+    },
+    "name": "Single Board Computer",
+    "slug": "single-board-computer",
+    "description": "Single Board Computer products",
+    "order": 0,
+    "priority": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f9f34e8ba7905e8716"
+    },
+    "name": "Dev Board",
+    "slug": "dev-board",
+    "description": "Dev Board products",
+    "order": 0,
+    "priority": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f9f34e8ba7905e8715"
+    },
+    "name": "Module",
+    "slug": "module",
+    "description": "Module products",
+    "order": 0,
+    "priority": 0
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89faf34e8ba7905e871e"
+    },
+    "name": "Programmer & Debugger",
+    "slug": "programmer-debugger",
+    "description": "Programmer & Debugger products",
+    "order": 1,
+    "priority": 1
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fbf34e8ba7905e8723"
+    },
+    "name": "Robot Kits & Chassis",
+    "slug": "robot-kits-chassis",
+    "description": "Robot Kits & Chassis products",
+    "order": 1,
+    "priority": 1
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fbf34e8ba7905e8729"
+    },
+    "name": "Display & LED",
+    "slug": "display-led",
+    "description": "Display & LED products",
+    "order": 1,
+    "priority": 1
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f8f34e8ba7905e8713"
+    },
+    "name": "Sensor",
+    "slug": "sensor",
+    "description": "Sensor products",
+    "order": 1,
+    "priority": 1
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f8f34e8ba7905e8710"
+    },
+    "name": "Motor Driver & Chassis Misc",
+    "slug": "motor-driver-chassis-misc",
+    "description": "Motor Driver & Chassis Misc products",
+    "order": 1,
+    "priority": 1
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fef34e8ba7905e8739"
+    },
+    "name": "Motor & Actuator",
+    "slug": "motor-actuator",
+    "description": "Motor & Actuator products",
+    "order": 1,
+    "priority": 1
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fef34e8ba7905e873d"
+    },
+    "name": "Relay & Contactor",
+    "slug": "relay-contactor",
+    "description": "Relay & Contactor products",
+    "order": 1,
+    "priority": 1
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fcf34e8ba7905e872e"
+    },
+    "name": "Triac & Protection",
+    "slug": "triac-protection",
+    "description": "Triac & Protection products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fdf34e8ba7905e8731"
+    },
+    "name": "Logic IC Remaining",
+    "slug": "logic-ic-remaining",
+    "description": "Logic IC Remaining products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fcf34e8ba7905e872c"
+    },
+    "name": "Transistor",
+    "slug": "transistor",
+    "description": "Transistor products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fef34e8ba7905e8737"
+    },
+    "name": "IC & Audio Video IC",
+    "slug": "ic-audio-video-ic",
+    "description": "IC & Audio Video IC products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fbf34e8ba7905e8724"
+    },
+    "name": "Optocouplers",
+    "slug": "optocouplers",
+    "description": "Optocouplers products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fff34e8ba7905e8740"
+    },
+    "name": "Comparator & OpAmp IC",
+    "slug": "comparator-opamp-ic",
+    "description": "Comparator & OpAmp IC products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fff34e8ba7905e8747"
+    },
+    "name": "IC",
+    "slug": "ic",
+    "description": "IC products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f8f34e8ba7905e8711"
+    },
+    "name": "Timer IC",
+    "slug": "timer-ic",
+    "description": "Timer IC products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f8f34e8ba7905e8712"
+    },
+    "name": "RF Encoder Decoder",
+    "slug": "rf-encoder-decoder",
+    "description": "RF Encoder Decoder products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f9f34e8ba7905e8717"
+    },
+    "name": "Driver IC & Interface",
+    "slug": "driver-ic-interface",
+    "description": "Driver IC & Interface products",
+    "order": 2,
+    "priority": 2
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fff34e8ba7905e8744"
+    },
+    "name": "Fuses & Protection",
+    "slug": "fuses-protection",
+    "description": "Fuses & Protection products",
+    "order": 3,
+    "priority": 3
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fef34e8ba7905e873e"
+    },
+    "name": "Battery & Charger",
+    "slug": "battery-charger",
+    "description": "Battery & Charger products",
+    "order": 3,
+    "priority": 3
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fbf34e8ba7905e8722"
+    },
+    "name": "Inductors & Transformers",
+    "slug": "inductors-transformers",
+    "description": "Inductors & Transformers products",
+    "order": 3,
+    "priority": 3
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fdf34e8ba7905e8732"
+    },
+    "name": "Power Supply & Converter",
+    "slug": "power-supply-converter",
+    "description": "Power Supply & Converter products",
+    "order": 3,
+    "priority": 3
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fcf34e8ba7905e872b"
+    },
+    "name": "Voltage Regulators",
+    "slug": "voltage-regulators",
+    "description": "Voltage Regulators products",
+    "order": 3,
+    "priority": 3
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fdf34e8ba7905e8736"
+    },
+    "name": "Crystals & Oscillators",
+    "slug": "crystals-oscillators",
+    "description": "Crystals & Oscillators products",
+    "order": 4,
+    "priority": 4
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fdf34e8ba7905e8735"
+    },
+    "name": "Capacitor",
+    "slug": "capacitor",
+    "description": "Capacitor products",
+    "order": 4,
+    "priority": 4
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fdf34e8ba7905e8733"
+    },
+    "name": "Resistor",
+    "slug": "resistor",
+    "description": "Resistor products",
+    "order": 4,
+    "priority": 4
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fcf34e8ba7905e872f"
+    },
+    "name": "Diodes",
+    "slug": "diodes",
+    "description": "Diodes products",
+    "order": 4,
+    "priority": 4
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f7f34e8ba7905e870b"
+    },
+    "name": "Connector & Terminal",
+    "slug": "connector-terminal",
+    "description": "Connector & Terminal products",
+    "order": 5,
+    "priority": 5
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fef34e8ba7905e873b"
+    },
+    "name": "Volume Control & Knob",
+    "slug": "volume-control-knob",
+    "description": "Volume Control & Knob products",
+    "order": 5,
+    "priority": 5
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f8f34e8ba7905e870f"
+    },
+    "name": "Cable & Wire",
+    "slug": "cable-wire",
+    "description": "Cable & Wire products",
+    "order": 5,
+    "priority": 5
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89faf34e8ba7905e871d"
+    },
+    "name": "Switch & Button",
+    "slug": "switch-button",
+    "description": "Switch & Button products",
+    "order": 5,
+    "priority": 5
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89faf34e8ba7905e871b"
+    },
+    "name": "PCB & Prototyping",
+    "slug": "pcb-prototyping",
+    "description": "PCB & Prototyping products",
+    "order": 5,
+    "priority": 5
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89faf34e8ba7905e871f"
+    },
+    "name": "Hardware & Fasteners",
+    "slug": "hardware-fasteners",
+    "description": "Hardware & Fasteners products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fff34e8ba7905e8745"
+    },
+    "name": "Mechanical & Accessories Misc",
+    "slug": "mechanical-accessories-misc",
+    "description": "Mechanical & Accessories Misc products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89faf34e8ba7905e8720"
+    },
+    "name": "Cooling Fan & Heatsink",
+    "slug": "cooling-fan-heatsink",
+    "description": "Cooling Fan & Heatsink products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f7f34e8ba7905e870c"
+    },
+    "name": "AV & Cable Accessories",
+    "slug": "av-cable-accessories",
+    "description": "AV & Cable Accessories products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89faf34e8ba7905e8721"
+    },
+    "name": "Meter & Test Equipment",
+    "slug": "meter-test-equipment",
+    "description": "Meter & Test Equipment products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f8f34e8ba7905e870d"
+    },
+    "name": "Enclosure & Box",
+    "slug": "enclosure-box",
+    "description": "Enclosure & Box products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fef34e8ba7905e873a"
+    },
+    "name": "Soldering & Consumables",
+    "slug": "soldering-consumables",
+    "description": "Soldering & Consumables products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89faf34e8ba7905e871c"
+    },
+    "name": "Peltier Cooler",
+    "slug": "peltier-cooler",
+    "description": "Peltier Cooler products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fbf34e8ba7905e8726"
+    },
+    "name": "Bearing & Mechanical",
+    "slug": "bearing-mechanical",
+    "description": "Bearing & Mechanical products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fbf34e8ba7905e8727"
+    },
+    "name": "Antenna",
+    "slug": "antenna",
+    "description": "Antenna products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fbf34e8ba7905e8728"
+    },
+    "name": "Acrylic & Mechanical Hardware",
+    "slug": "acrylic-mechanical-hardware",
+    "description": "Acrylic & Mechanical Hardware products",
+    "order": 6,
+    "priority": 6
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fff34e8ba7905e8742"
+    },
+    "name": "Tools & Equipment",
+    "slug": "tools-equipment",
+    "description": "Tools & Equipment products",
+    "order": 7,
+    "priority": 7
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fcf34e8ba7905e8730"
+    },
+    "name": "General Power & Tools",
+    "slug": "general-power-tools",
+    "description": "General Power & Tools products",
+    "order": 7,
+    "priority": 7
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fff34e8ba7905e8746"
+    },
+    "name": "3D Printer & Parts",
+    "slug": "3d-printer-parts",
+    "description": "3D Printer & Parts products",
+    "order": 7,
+    "priority": 7
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f9f34e8ba7905e8719"
+    },
+    "name": "Audio & Amplifier",
+    "slug": "audio-amplifier",
+    "description": "Audio & Amplifier products",
+    "order": 8,
+    "priority": 8
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f9f34e8ba7905e8714"
+    },
+    "name": "Charger & Phone Accessories",
+    "slug": "charger-phone-accessories",
+    "description": "Charger & Phone Accessories products",
+    "order": 8,
+    "priority": 8
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fef34e8ba7905e873c"
+    },
+    "name": "Books & DIY Kits",
+    "slug": "books-diy-kits",
+    "description": "Books & DIY Kits products",
+    "order": 9,
+    "priority": 9
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fcf34e8ba7905e872d"
+    },
+    "name": "Pen Drive & Storage",
+    "slug": "pen-drive-storage",
+    "description": "Pen Drive & Storage products",
+    "order": 9,
+    "priority": 9
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f8f34e8ba7905e870e"
+    },
+    "name": "General Electronics & Mechanical",
+    "slug": "general-electronics-mechanical",
+    "description": "General Electronics & Mechanical products",
+    "order": 10,
+    "priority": 10
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fdf34e8ba7905e8734"
+    },
+    "name": "Final Components & Tools",
+    "slug": "final-components-tools",
+    "description": "Final Components & Tools products",
+    "order": 10,
+    "priority": 10
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fef34e8ba7905e873f"
+    },
+    "name": "Misc Accessories",
+    "slug": "misc-accessories",
+    "description": "Misc Accessories products",
+    "order": 10,
+    "priority": 10
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89f9f34e8ba7905e8718"
+    },
+    "name": "Final Misc Electronics",
+    "slug": "final-misc-electronics",
+    "description": "Final Misc Electronics products",
+    "order": 10,
+    "priority": 10
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fff34e8ba7905e8741"
+    },
+    "name": "PCB Proto Misc",
+    "slug": "pcb-proto-misc",
+    "description": "PCB Proto Misc products",
+    "order": 10,
+    "priority": 10
+  },
+  {
+    "_id": {
+      "$oid": "6a9a89fff34e8ba7905e8743"
+    },
+    "name": "Remote Kit & IR",
+    "slug": "remote-kit-ir",
+    "description": "Remote Kit & IR products",
+    "order": 10,
+    "priority": 10
+  }
+]

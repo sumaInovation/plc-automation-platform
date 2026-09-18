@@ -54,3 +54,6 @@ products.csv
 import_products.py
 apply_json.py
 test.py
+get_categories.py
+update_priority.py
+
