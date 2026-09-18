@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F4F6F7;
+  --foreground: #10161C;
+  color-scheme: light; /* Windows dark mode thibunath light ma thiyanna force karanawa */
 }
 
 @theme inline {
@@ -10,17 +11,35 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Dark mode ain kala - ubage site eka light site ekak nisa */
+ /* @media (prefers-color-scheme: dark) { ... }  --> Meka ain karapan */
+
+/* Base fix for Windows vs Linux */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Button blur fix - Windows wala godak common */
+button, a, [role="button"] {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Tailwind v4 oklch color issue fix - colors same in Win/Linux */
+@supports not (color: oklch(0% 0 0)) {
+  :root {
+    --background: #F4F6F7;
+  }
 }
