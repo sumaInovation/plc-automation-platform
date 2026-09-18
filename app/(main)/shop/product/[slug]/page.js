@@ -11,6 +11,8 @@ import ProductCard from '@/components/shop/ProductCard';
 import ProductTabs from '@/components/shop/ProductTabs';
 import Link from 'next/link';
 
+const SITE_URL = 'https://www.sumaautomation.lk';
+
 async function getProduct(slug) {
   await connectDB();
   const product = await Product.findOne({ slug, isActive: true })
@@ -21,33 +23,40 @@ async function getProduct(slug) {
   return JSON.parse(JSON.stringify(product));
 }
 
+
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const product = await getProduct(slug);
-  if (!product) {
-    return {
-      title: 'Product Not Found',
-      robots: { index: false, follow: false },
-    };
-  }
+  if (!product) return { title: 'Product Not Found', robots: { index: false } };
+
+  const rawDesc = product.description?.replace(/<[^>]*>/g, '').trim().slice(0, 160) || '';
+  const mainImage = product.images?.[0]? ogImageUrl(product.images[0]) : `${SITE_URL}/og-default.jpg`;
+
+  // WhatsApp size eka
+  const finalImage = mainImage.includes('res.cloudinary.com') &&!mainImage.includes('w_1200')
+   ? mainImage.replace('/upload/', '/upload/w_1200,h_630,c_fill,f_auto,q_auto/')
+    : mainImage;
+
   return {
     title: product.name,
-    description: product.description?.slice(0, 160),
+    description: rawDesc,
     alternates: {
-      canonical: `https://sumaautomation.lk/shop/product/${slug}`,
+      canonical: `${SITE_URL}/shop/product/${slug}`, // www dala
     },
     openGraph: {
       title: product.name,
-      description: product.description?.slice(0, 160),
-      images: product.images?.[0] ? [{ url: ogImageUrl(product.images[0]), width: 1200, height: 630 }] : [],
-      url: `https://sumaautomation.lk/shop/product/${slug}`,
+      description: rawDesc,
+      siteName: 'Suma Automation',
+      url: `${SITE_URL}/shop/product/${slug}`, // www dala
       type: 'website',
+      images: [{ url: finalImage, secureUrl: finalImage, width: 1200, height: 630, alt: product.name }],
     },
     twitter: {
       card: 'summary_large_image',
       title: product.name,
-      description: product.description?.slice(0, 160),
-      images: product.images?.[0] ? [product.images[0]] : [],
+      description: rawDesc,
+      images: [finalImage], // ogImageUrl eka ma danna
     },
   };
 }
