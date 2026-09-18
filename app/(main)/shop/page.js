@@ -33,14 +33,44 @@ async function getProducts(searchParams) {
     if (maxPrice) filter.price.$lte = Number(maxPrice);
   }
 
-  let sortOption = { createdAt: -1 };
-  if (sort === 'price_asc') sortOption = { price: 1 };
-  if (sort === 'price_desc') sortOption = { price: -1 };
-  if (sort === 'featured') sortOption = { avgRating: -1 };
+  // Products priority anuwa sort - side list eka neme
+  let sortOption = { catPriority: 1, createdAt: -1 };
+  if (sort === 'price_asc') sortOption = { catPriority: 1, price: 1 };
+  if (sort === 'price_desc') sortOption = { catPriority: 1, price: -1 };
+  if (sort === 'featured') sortOption = { catPriority: 1, avgRating: -1 };
+
+  const productPipeline = [
+    { $match: filter },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'category',
+        foreignField: '_id',
+        as: 'catInfo'
+      }
+    },
+    { $unwind: { path: '$catInfo', preserveNullAndEmptyArrays: true } },
+    {
+      $addFields: {
+        catPriority: { $ifNull: ['$catInfo.priority', { $ifNull: ['$catInfo.order', 100] }] }
+      }
+    },
+    { $sort: sortOption },
+    { $skip: (currentPage - 1) * PAGE_SIZE },
+    { $limit: PAGE_SIZE },
+    {
+      $project: {
+        name: 1, slug: 1, sku: 1, price: 1, images: 1, stock_qty: 1, avgRating: 1, reviewCount: 1, createdAt: 1,
+        category: { _id: '$catInfo._id', name: '$catInfo.name', slug: '$catInfo.slug' },
+        catPriority: 1
+      }
+    }
+  ];
 
   const [products, totalCount, allCategories] = await Promise.all([
-    Product.find(filter).populate('category', 'name slug').sort(sortOption).skip((currentPage - 1) * PAGE_SIZE).limit(PAGE_SIZE).lean(),
+    Product.aggregate(productPipeline),
     Product.countDocuments(filter),
+    // SIDE LIST EKA KALIN WIDIYATAMA A-Z
     Category.find().sort({ name: 1 }).select('name slug').lean()
   ]);
 
@@ -75,11 +105,11 @@ export async function generateMetadata({ searchParams }) {
     description,
     alternates: {
       canonical: params.category
-        ? `https://sumaautomation.lk/shop?category=${params.category}`
+       ? `https://sumaautomation.lk/shop?category=${params.category}`
         : 'https://sumaautomation.lk/shop',
     },
     robots: (params.search || params.page)
-      ? { index: false, follow: true }
+     ? { index: false, follow: true }
       : { index: true, follow: true },
   };
 }
@@ -122,8 +152,6 @@ export default async function ShopPage({ searchParams }) {
 
         {/* Right - FIXED IMAGE SIZE */}
         <div className="flex-1">
-          
-
           {products.length===0? (
             <div className="p-10 text-center text-[#565959]">No products match "{params.search}"</div>
           ) : (
@@ -169,17 +197,15 @@ export default async function ShopPage({ searchParams }) {
   <sup className="text- font-normal">LKR</sup>
   <span className="text- font-bold ml-1">{product.price.toLocaleString()}</span>
 </div>
-     
+
       <div className="text- text-[#565959] mt-1">Island wide delivery available</div>
       <div className="text- text-[#067d62] mt-1">{product.stock_qty>0? 'In Stock' : 'Out of Stock'}</div>
-        
+
         <div className="w-full lg:w-1/8">
   <div className="[&>button]:!w-full [&>button]:!bg-[#ffd814] [&>button]:!text-[#0f1111] [&>button]:!border [&>button]:!border-[#fcd200] [&>button]:hover:!bg-[#f7ca00] [&>button]:!rounded- [&>button]:!h-auto [&>button]:!min-h- [&>button]:!py-1.5 [&>button]:!text- [&>button]:!whitespace-nowrap">
     <AddToCartButton product={product} />
   </div>
 </div>
-
-
     </div>
   </div>
 ))}
