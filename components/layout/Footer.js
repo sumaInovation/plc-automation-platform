@@ -52,11 +52,21 @@ export default function Footer() {
 
           <div>
             <h4 className="text-white font-bold text- mb-3">Contact</h4>
-            <ul className="space-y-2 text-">
-              <li>WhatsApp: +94 78 755 6865</li>
-              <li>info@sumaautomation.lk</li>
-              <li>Mon - Sat: 9AM - 6PM</li>
-            </ul>
+  <ul className="space-y-2 text-">
+    <li>WhatsApp: +94 78 755 6865</li>
+    <li>info@sumaautomation.lk</li>
+    <li>Mon - Sat: 9AM - 6PM</li>
+    <li>
+      <a
+        href="https://g.page/r/CQMC7gNyNB2GEBM/review"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1 text-[#FFD814] hover:underline mt-1"
+      >
+        ⭐ Leave us a Google Review
+      </a>
+    </li>
+  </ul>
 
             <div className="flex items-center gap-4 mt-4">
               <a href="https://web.facebook.com/profile.php?id=61584817932640" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="text-[#DDDDDD] hover:text-white transition-colors">

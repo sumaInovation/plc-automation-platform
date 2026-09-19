@@ -81,9 +81,44 @@ async function getCategories() {
 export default async function RootLayout({ children }) {
   const categories = await getCategories();
 
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "ElectronicsStore",
+    "name": "Suma Automation",
+    "image": "https://www.sumaautomation.lk/logo-desktop.svg",
+    "url": "https://www.sumaautomation.lk",
+    "telephone": "+94787556865",
+    "email": "info@sumaautomation.lk",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Ganemulla",
+      "addressRegion": "Western Province",
+      "addressCountry": "LK"
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday", "Tuesday", "Wednesday",
+        "Thursday", "Friday", "Saturday"
+      ],
+      "opens": "09:00",
+      "closes": "18:00"
+    },
+    "sameAs": [
+      "https://web.facebook.com/profile.php?id=61584817932640",
+      "https://www.youtube.com/@sumaautomationlk",
+      "https://wa.me/94787556865"
+    ]
+  };
+
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} h-full`}>
       <body className="min-h-full flex flex-col antialiased bg-[#F4F6F7] text-[#10161C]">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+        />
         <AuthProvider>
           <Suspense fallback={<div className="h-[64px] sm:h-[102px] bg-[#131921]" />}>
             <NavbarWrapper categories={categories} />
