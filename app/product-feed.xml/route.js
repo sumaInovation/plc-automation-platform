@@ -28,16 +28,18 @@ function escapeXml(value = "") {
     .replace(/'/g, "&apos;");
 }
 
-// Adjust these field names to match your actual MongoDB "products" collection schema
+// Matches the Suma Automation Product mongoose schema
 function buildItem(p) {
   const id = escapeXml(p.sku || p._id?.toString());
-  const title = escapeXml(p.title || p.name || "");
+  const title = escapeXml(p.name || "");
   const description = escapeXml(p.description || "");
   const link = `${SITE_URL}/products/${p.slug || p._id}`;
-  const imageLink = escapeXml(p.imageUrl || (Array.isArray(p.images) && p.images[0]) || "");
+  const imageLink = escapeXml(
+    (Array.isArray(p.images) && p.images.length > 0 && p.images[0]) || ""
+  );
   const priceValue = Number(p.price || 0).toFixed(2);
   const price = `${priceValue} LKR`;
-  const inStock = p.stock === undefined ? true : Number(p.stock) > 0;
+  const inStock = Number(p.stock_qty || 0) > 0;
   const availability = inStock ? "in stock" : "out of stock";
   const brand = escapeXml(p.brand || "Suma Automation");
   const hasIdentifier = Boolean(p.gtin || p.mpn);
@@ -63,11 +65,14 @@ export async function GET() {
   try {
     const db = await getDb();
 
-    // Only feed products that should actually be shown — adjust the filter
-    // to match your schema (e.g. published: true, hidden: { $ne: true })
+    // Only feed active products that have a real description —
+    // products without one are skipped from the feed entirely
     const products = await db
       .collection("products")
-      .find({})
+      .find({
+        isActive: true,
+        description: { $exists: true, $ne: "" },
+      })
       .toArray();
 
     const items = products.map(buildItem).join("");
