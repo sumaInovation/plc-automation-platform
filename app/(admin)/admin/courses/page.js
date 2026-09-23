@@ -1,7 +1,7 @@
 import connectDB from '@/lib/db';
 import Course from '@/models/Course';
 import Link from 'next/link';
-
+export const dynamic = 'force-dynamic';
 async function getCourses() {
   await connectDB();
   const courses = await Course.find().sort({ createdAt: -1 }).lean();
