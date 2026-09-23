@@ -9,43 +9,77 @@ function viewableUrl(url) {
   return url;
 }
 
-// Shadow DOM + Script execution
 function IsolatedHtmlPreview({ html }) {
   const containerRef = useRef(null);
 
   useEffect(() => {
-    if (!containerRef.current || !html) return;
+    if (!containerRef.current ||!html) return;
     const el = containerRef.current;
     const shadow = el.shadowRoot || el.attachShadow({ mode: 'open' });
 
-    // HTML + CSS එක set කරන්න
-    shadow.innerHTML = `
-      <style>
-        :host { display: block; }
-        /* Shadow DOM එකේ default styles */
-      </style>
-      ${html}
-    `;
+    try {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
 
-    // ✅ Shadow DOM එකේ තියෙන <script> tags execute කරන්න
-    const scripts = shadow.querySelectorAll('script');
-    scripts.forEach((oldScript) => {
-      const newScript = document.createElement('script');
-      
-      // Attributes copy කරන්න (type, src, etc.)
-      Array.from(oldScript.attributes).forEach((attr) => {
-        newScript.setAttribute(attr.name, attr.value);
+      // 1. Styles tika aran :root -> :host, body -> #root kiyala convert karanawa
+      let allStyles = '';
+      doc.querySelectorAll('style').forEach(styleTag => {
+        let css = styleTag.innerHTML;
+        css = css
+         .replace(/:root/g, ':host')
+         .replace(/\bhtml\b/g, ':host')
+         .replace(/\bbody\b/g, '#syllabus-root')
+         .replace(/\.wrap/g, '#syllabus-root');
+        allStyles += css + '\n';
       });
-      
-      // Inline content එක copy කරන්න
-      newScript.textContent = oldScript.textContent;
-      
-      // Replace කරන්න - browser execute කරයි
-      oldScript.parentNode.replaceChild(newScript, oldScript);
-    });
+
+      // 2. Body content eka gannawa - #course-syllabus-content thiyanawanam eka, nathnam body
+      const contentEl = doc.getElementById('course-syllabus-content') || doc.body;
+      let bodyHtml = contentEl? contentEl.innerHTML : html;
+
+      // Cloudinary eke thibba topbar, hero wage ewath ain karala syllabus witharak gannawa nam
+      // hero eka thiyenawanam ain karanna epa nam me line eka comment karapan
+      // bodyHtml = bodyHtml.replace(/<header[\s\S]*?<\/header>/gi, '');
+
+     shadow.innerHTML = `
+  <style>
+    :host { display: block; background: #fff; }
+    #syllabus-root {
+      max-width: 100%;
+      margin: 0;
+      padding: 28px 24px 30px 28px; /* left padding 28px kala */
+      background: #fff;
+      color: #0f1111;
+      font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    }
+    ${allStyles}
+    /* wrap eke padding ain karapu eka ain kala */
+    #syllabus-root.wrap { max-width: 100%!important; }
+    /* card eke left eka wadi karala */
+    .card-body { padding-left: 68px!important; }
+    @media(max-width:600px){
+      #syllabus-root { padding: 20px 16px 24px 18px!important; }
+      .card-body { padding-left: 16px!important; }
+    }
+  </style>
+  <div id="syllabus-root">${bodyHtml}</div>
+`;
+
+      // details toggle eka Shadow DOM eke wada karanna
+      shadow.querySelectorAll('details').forEach(d => {
+        d.querySelector('summary')?.addEventListener('click', (e) => {
+          // default behavior eka thiyenawa
+        });
+      });
+
+    } catch (err) {
+      shadow.innerHTML = `<div style="padding:20px;color:red">Failed to parse syllabus</div>`;
+    }
+
+    return () => { shadow.innerHTML = ''; };
   }, [html]);
 
-  return <div ref={containerRef} />;
+  return <div ref={containerRef} className="w-full bg-white" />;
 }
 
 export default function SyllabusSection({ syllabus, syllabusFile }) {
@@ -53,20 +87,19 @@ export default function SyllabusSection({ syllabus, syllabusFile }) {
   const [htmlContent, setHtmlContent] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const isHtml = syllabusFile?.toLowerCase().includes('.html') || syllabusFile?.toLowerCase().includes('.htm');
   const hasSyllabusText = syllabus && syllabus.length > 0;
 
   useEffect(() => {
-    if (!isHtml || !showFull || !syllabusFile || htmlContent) return;
+    if (!showFull ||!syllabusFile || htmlContent) return;
     setLoading(true);
     fetch(viewableUrl(syllabusFile))
-      .then(r => r.text())
-      .then(setHtmlContent)
-      .catch(() => setHtmlContent('<p>Failed to load</p>'))
-      .finally(() => setLoading(false));
-  }, [showFull, isHtml, syllabusFile, htmlContent]);
+     .then(r => r.text())
+     .then(setHtmlContent)
+     .catch(() => setHtmlContent('<p>Failed to load</p>'))
+     .finally(() => setLoading(false));
+  }, [showFull, syllabusFile, htmlContent]);
 
-  if (!hasSyllabusText && !syllabusFile) return null;
+  if (!hasSyllabusText &&!syllabusFile) return null;
 
   return (
     <div className="border border-[#e7e7e7] rounded-lg overflow-hidden mb-6 bg-white">
@@ -80,35 +113,29 @@ export default function SyllabusSection({ syllabus, syllabusFile }) {
             onClick={() => setShowFull(!showFull)}
             className="text-xs font-bold px-4 py-1.5 rounded-full bg-[#0f1111] text-white hover:bg-black transition"
           >
-            {showFull ? 'Hide' : 'View'}
+            {showFull? 'Hide Syllabus' : 'View Full Syllabus'}
           </button>
         )}
       </div>
 
-      <div className="p-0">
-        {hasSyllabusText && !showFull && (
+      <div>
+        {hasSyllabusText &&!showFull && (
           <ul className="p-5 space-y-2">
             {syllabus.map((item, i) => (
               <li key={i} className="flex gap-2 text-sm text-[#0f1111]">
                 <span className="text-[#067d62]">✓</span>
-                <span>{typeof item === 'string' ? item : item?.title || ''}</span>
+                <span>{typeof item === 'string'? item : item?.title || ''}</span>
               </li>
             ))}
           </ul>
         )}
 
-        {showFull && syllabusFile && (
-          <div className="bg-white">
-            {loading ? (
+        {showFull && (
+          <div className="bg-white max-h- min-h- overflow-y-auto custom-scrollbar">
+            {loading? (
               <div className="p-10 text-center text-sm text-[#565959]">Loading syllabus...</div>
             ) : (
-              <div className="max-h-[800px] overflow-y-auto custom-scrollbar p-0">
-                {isHtml ? (
-                  <IsolatedHtmlPreview html={htmlContent} />
-                ) : (
-                  <iframe src={viewableUrl(syllabusFile)} className="w-full h-[800px] border-0" />
-                )}
-              </div>
+              <IsolatedHtmlPreview html={htmlContent} />
             )}
           </div>
         )}
