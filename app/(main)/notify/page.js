@@ -29,7 +29,7 @@ export async function generateMetadata({ searchParams }) {
   const lang = getLang(params);
   const c = CONTENT[lang];
 
-  const image = lang === 'si' ? '/og-notify-si.jpg' : '/og-notify-en.jpg';
+  const image = lang === 'si' ? '/og-notify-si.png' : '/og-notify-en.png';
 
   return {
     title: c.title,
