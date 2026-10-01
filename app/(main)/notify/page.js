@@ -4,6 +4,14 @@ import NotifySubscribeForm from '@/components/courses/NotifySubscribeForm';
 
 const sinhalaFont = Noto_Sans_Sinhala({ subsets: ['sinhala'], weight: ['400', '500', '600'] });
 
+const SITE_URL = 'https://www.sumaautomation.lk';
+const CLOUD_BASE = 'https://res.cloudinary.com/dei7i7oli/image/upload';
+
+const OG_IMAGES = {
+  en: `${CLOUD_BASE}/w_1200,h_630,c_fill,f_jpg,q_auto/v1790864989/og-notify-en.png`,
+  si: `${CLOUD_BASE}/w_1200,h_630,c_fill,f_jpg,q_auto/v1790864988/og-notify-si.png`,
+};
+
 const CONTENT = {
   en: {
     title: 'Get notified about new PLC & Robotics batches',
@@ -24,20 +32,24 @@ function getLang(params) {
   return params?.lang === 'si' ? 'si' : 'en';
 }
 
+
 export async function generateMetadata({ searchParams }) {
   const params = await searchParams;
   const lang = getLang(params);
   const c = CONTENT[lang];
-
-  const image = lang === 'si' ? '/og-notify-si.png' : '/og-notify-en.png';
+  const image = OG_IMAGES[lang];
 
   return {
     title: c.title,
     description: c.description,
+    alternates: { canonical: `${SITE_URL}/notify` },
     openGraph: {
       title: c.title,
       description: c.description,
-      images: [{ url: image, width: 1200, height: 630, alt: c.title }],
+      url: `${SITE_URL}/notify`,
+      siteName: 'Suma Automation',
+      type: 'website',
+      images: [{ url: image, secureUrl: image, width: 1200, height: 630, alt: c.title }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -47,6 +59,8 @@ export async function generateMetadata({ searchParams }) {
     },
   };
 }
+
+
 
 export default async function NotifyPage({ searchParams }) {
   const params = await searchParams;
