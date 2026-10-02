@@ -1,6 +1,6 @@
 import connectDB from '@/lib/db';
 import Product from '@/models/Product';
-import Category from '@/models/Category';
+import Category from '@/models/Category'; // populate('category') walata model eka register wenna one
 import { auth } from '@/auth';
 
 export async function POST(request) {
@@ -12,9 +12,54 @@ export async function POST(request) {
   try {
     await connectDB();
     const body = await request.json();
-    const product = await Product.create(body);
+
+    // Allowed fields witharak pick karanawa (avgRating, reviewCount wage ewa client eken set karanna බෑ)
+    const {
+      name,
+      slug,
+      sku,
+      category,
+      description,
+      price,
+      compareAtPrice,
+      stock_qty,
+      brand,
+      images,
+      specs,
+      relatedProducts,
+      isActive,
+    } = body;
+
+    const product = await Product.create({
+      name,
+      slug,
+      sku,
+      category,
+      description,
+      price,
+      compareAtPrice,
+      stock_qty,
+      brand,
+      images,
+      specs,
+      relatedProducts,
+      isActive,
+    });
+
     return Response.json({ success: true, product }, { status: 201 });
   } catch (error) {
+    // Duplicate slug / sku
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern || {})[0] || 'field';
+      return Response.json(
+        { success: false, error: `A product with this ${field} already exists` },
+        { status: 409 }
+      );
+    }
+    // Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      return Response.json({ success: false, error: error.message }, { status: 400 });
+    }
     return Response.json({ success: false, error: error.message }, { status: 500 });
   }
 }
