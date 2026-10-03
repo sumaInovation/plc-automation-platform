@@ -26,6 +26,8 @@ export async function POST(request) {
       brand,
       images,
       specs,
+       features,        
+      applications,
       relatedProducts,
       isActive,
     } = body;
@@ -42,6 +44,8 @@ export async function POST(request) {
       brand,
       images,
       specs,
+       features,        
+  applications,
       relatedProducts,
       isActive,
     });

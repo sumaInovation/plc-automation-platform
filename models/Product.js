@@ -61,6 +61,21 @@ const ProductSchema = new mongoose.Schema(
       type: Map,
       of: String,
     },
+      // ✅ Features: product eke main features (bullet points)
+    features: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    // ✅ Applications: product eka use karana thanawal / industries
+    applications: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
     brand: {
       type: String,
       trim: true,

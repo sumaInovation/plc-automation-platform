@@ -21,6 +21,8 @@ export default function NewProductPage() {
     compareAtPrice: '',
     stock_qty: '',
     brand: '',
+    features: [''],
+    applications: [''],
   });
 
   const [specs, setSpecs] = useState([{ key: '', value: '' }]);
@@ -103,6 +105,9 @@ export default function NewProductPage() {
   const removeRelated = (id) =>
     setRelatedItems(relatedItems.filter((p) => p._id !== id));
 
+  const toArray = (text) =>
+    text.split('\n').map((s) => s.trim()).filter(Boolean);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -121,6 +126,8 @@ export default function NewProductPage() {
         stock_qty: Number(form.stock_qty),
         images,
         specs: specsObject,
+        features: toArray(form.features),
+        applications: toArray(form.applications),
         relatedProducts: relatedItems.map((p) => p._id),
       };
 
@@ -305,6 +312,32 @@ export default function NewProductPage() {
             + Add Spec
           </button>
         </div>
+
+        {/* Features */}
+<div>
+  <label className="block text-sm font-medium mb-1">Features</label>
+  <textarea
+    rows={4}
+    placeholder={'One feature per line\ne.g. Integrated PROFINET port'}
+    value={form.features}
+    onChange={(e) => setForm({ ...form, features: e.target.value })}
+    className="w-full border p-2 rounded text-sm"
+  />
+  <p className="text-xs text-slate-400 mt-1">Line ekak = bullet ekak</p>
+</div>
+
+{/* Applications */}
+<div>
+  <label className="block text-sm font-medium mb-1">Applications</label>
+  <textarea
+    rows={4}
+    placeholder={'One application per line\ne.g. Packaging lines'}
+    value={form.applications}
+    onChange={(e) => setForm({ ...form, applications: e.target.value })}
+    className="w-full border p-2 rounded text-sm"
+  />
+  <p className="text-xs text-slate-400 mt-1">Line ekak = bullet ekak</p>
+</div>
 
         {/* Related Products */}
         <div>

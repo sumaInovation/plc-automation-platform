@@ -68,6 +68,8 @@ export async function PUT(request, { params }) {
       'brand',
       'images',
       'specs',
+       'features',
+  'applications',
       'isActive',
     ];
 

@@ -6,7 +6,17 @@ export default function ProductTabs({ product }) {
   const specifications = product.specifications || product.specs || {};
   const entries = Object.entries(specifications);
 
-  const tabs = ['Description', 'Specifications', 'Shipping'];
+  const features = product.features || [];
+  const applications = product.applications || [];
+
+  // Data thiyena tabs witharak penwanawa
+  const tabs = [
+    'Description',
+    ...(features.length > 0 ? ['Features'] : []),
+    'Specifications',
+    ...(applications.length > 0 ? ['Applications'] : []),
+    'Shipping',
+  ];
 
   return (
     <div className="mt-6 bg-white rounded-[20px] border border-slate-100 shadow-[0_4px_24px_rgba(0,0,0,0.04)] overflow-hidden">
@@ -32,6 +42,20 @@ export default function ProductTabs({ product }) {
           </div>
         )}
 
+        {activeTab === 'Features' && (
+          <div>
+            <h3 className="text-[13px] font-semibold text-slate-800 mb-3">Key Features</h3>
+            <ul className="space-y-2">
+              {features.map((feature, i) => (
+                <li key={i} className="flex gap-3 text-[14px] text-slate-600">
+                  <span className="text-blue-600 mt-0.5">✓</span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {activeTab === 'Specifications' && (
           <div>
             {entries.length > 0 ? (
@@ -52,7 +76,21 @@ export default function ProductTabs({ product }) {
           </div>
         )}
 
-       
+        {activeTab === 'Applications' && (
+          <div>
+            <h3 className="text-[13px] font-semibold text-slate-800 mb-3">Typical Applications</h3>
+            <div className="flex flex-wrap gap-2">
+              {applications.map((app, i) => (
+                <span
+                  key={i}
+                  className="bg-blue-50 text-blue-700 text-[13px] font-medium px-3 py-1.5 rounded-full"
+                >
+                  {app}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {activeTab === 'Shipping' && (
           <div className="space-y-3 text-[14px] text-slate-600">
