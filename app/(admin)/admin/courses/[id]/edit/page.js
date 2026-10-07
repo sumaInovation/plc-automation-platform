@@ -16,6 +16,7 @@ export default function EditCoursePage() {
     title: '', slug: '', type: 'physical', description: '',
     price: '', duration: '', level: 'beginner', targetAudience: 'general', isActive: true,
     syllabusFile: '',
+    introVideo: '',
   });
   const [syllabus, setSyllabus] = useState(['']);
 
@@ -30,6 +31,7 @@ export default function EditCoursePage() {
           price: c.price, duration: c.duration || '', level: c.level,
           targetAudience: c.targetAudience, isActive: c.isActive,
           syllabusFile: c.syllabusFile || '',
+          introVideo: c.introVideo || '',
         });
         setSyllabus(c.syllabus?.length > 0 ? c.syllabus : ['']);
         setImage(c.image || null);
@@ -57,6 +59,7 @@ export default function EditCoursePage() {
       price: Number(form.price),
       syllabus: syllabus.filter((s) => s.trim() !== ''),
       syllabusFile: form.syllabusFile.trim() || null,
+      introVideo: form.introVideo.trim() || null,
       image: image || null,
     };
 
@@ -141,19 +144,19 @@ export default function EditCoursePage() {
 
         <SingleImageUpload image={image} setImage={setImage} label="Course Thumbnail" />
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Syllabus Document Link (optional)</label>
-          <input
-            type="url"
-            placeholder="https://... (PDF, DOC, or HTML link - Cloudinary/Drive)"
-            value={form.syllabusFile}
-            onChange={(e) => setForm({ ...form, syllabusFile: e.target.value })}
-            className="w-full border p-2 rounded text-sm"
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Cloudinary/Google Drive ekකට syllabus document eka upload karala, link eka methana paste karanna.
-          </p>
-        </div>
+          <div>
+  <label className="block text-sm font-medium mb-1">Intro Video Link (optional)</label>
+  <input
+    type="url"
+    placeholder="https://youtu.be/... or Vimeo / .mp4 link"
+    value={form.introVideo}
+    onChange={(e) => setForm({ ...form, introVideo: e.target.value })}
+    className="w-full border p-2 rounded text-sm"
+  />
+  <p className="text-xs text-gray-500 mt-1">
+    YouTube, Vimeo, nathnam direct video (.mp4 / Cloudinary) link ekak paste karanna. Thumbnail eka uda play button ekak ekka pennanawa.
+  </p>
+</div>
 
         <div>
           <label className="block text-sm font-medium mb-2">Syllabus (text modules)</label>

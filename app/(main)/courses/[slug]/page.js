@@ -3,13 +3,13 @@ import Course from '@/models/Course';
 import Batch from '@/models/Batch';
 import Product from '@/models/Product';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import EnrollButton from '@/components/courses/EnrollButton';
 
 import SyllabusSection from '@/components/courses/SyllabusSection';
 import ReviewSection from '@/components/shop/ReviewSection';
 import ShareButtons from '@/components/shop/ShareButtons';
 import CourseProducts from '@/components/courses/CourseProducts';
+import CourseMedia from '@/components/courses/CourseMedia';
 
 const SITE_URL = 'https://www.sumaautomation.lk';
 
@@ -154,24 +154,8 @@ export default async function CourseDetailPage({ params }) {
         <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-10 items-start">
           {/* ───────── MAIN COLUMN ───────── */}
           <main className="min-w-0">
-            {/* Banner */}
-            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-[#e7e7e7] bg-[#f7f8f8]">
-              {course.image ? (
-                <Image
-                  src={course.image}
-                  alt={`${course.title} - PLC and Robotics course by Suma Automation`}
-                  fill
-                  sizes="(max-width: 1024px) 100vw, 700px"
-                  className="object-contain"
-                  priority
-                />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center">
-                  <div className="w-14 h-14 rounded-full bg-[#f0f2f2] flex items-center justify-center text-xl">📷</div>
-                  <span className="text-[#565959] text-sm mt-3 font-medium">No image available</span>
-                </div>
-              )}
-            </div>
+            {/* Banner: thumbnail + intro video */}
+            <CourseMedia image={course.image} video={course.introVideo} title={course.title} />
 
             {/* Share - directly under the banner */}
             <div className="flex items-center justify-between gap-3 py-3 border-b border-[#e7e7e7]">

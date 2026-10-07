@@ -60,7 +60,9 @@ const CourseSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+       introVideo: { type: String, trim: true },
   },
+  
   { timestamps: true }
 );
 
